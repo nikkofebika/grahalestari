@@ -2,7 +2,15 @@
 
 namespace App\Http\Requests\User;
 
+use App\Enums\Education;
+use App\Enums\Gender;
+use App\Enums\MaritalStatus;
+use App\Enums\Religion;
+use App\Enums\UserType;
+use App\Rules\NameRule;
+use App\Rules\PhoneRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Enum;
 
 class StoreRequest extends FormRequest
 {
@@ -22,9 +30,23 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'min:3', "max:50"],
+            'group_id' => ['nullable', 'exists:groups,id'],
+            'name' => ['required', new NameRule],
             'email' => ['required', 'string', 'email'],
             'password' => ['required', 'string'],
+            'type' => ['required', new Enum(UserType::class)],
+
+            "no_kk" => ['nullable', 'string', 'max:16'],
+            "no_ktp" => ['nullable', 'string', 'max:16'],
+            "phone" => ['nullable', new PhoneRule],
+            "birth_date" => ['nullable', 'date'],
+            "birth_place" => ['nullable', 'string'],
+            'gender' => ['nullable', new Enum(Gender::class)],
+            'religion' => ['nullable', new Enum(Religion::class)],
+            'marital_status' => ['nullable', new Enum(MaritalStatus::class)],
+            'education' => ['nullable', new Enum(Education::class)],
+            "job" => ['nullable', 'string'],
+            "address" => ['nullable', 'string'],
         ];
     }
 }

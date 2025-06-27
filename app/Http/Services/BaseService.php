@@ -2,47 +2,47 @@
 
 namespace App\Http\Services;
 
-use App\Http\Repositories\BaseRepository;
+use App\Interfaces\Repositories\BaseRepositoryInterface;
 use App\Interfaces\Services\BaseServiceInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
 abstract class BaseService implements BaseServiceInterface
 {
-    public function __construct(protected BaseRepository $repository) {}
+    public function __construct(protected BaseRepositoryInterface $baseRepository) {}
 
     public function findAll(): Collection
     {
-        return $this->repository->findAll();
+        return $this->baseRepository->findAll();
     }
 
-    public function findById(int $id): ?Model
+    public function findById(int $id, ?array $load = []): ?Model
     {
-        return $this->repository->findById($id);
+        return $this->baseRepository->findById($id, $load);
     }
 
     public function create(array $data): Model
     {
-        return $this->repository->create($data);
+        return $this->baseRepository->create($data);
     }
 
     public function update(int $id, array $data): bool
     {
-        return $this->repository->update($id, $data);
+        return $this->baseRepository->update($id, $data);
     }
 
     public function delete(int $id): bool
     {
-        return $this->repository->delete($id);
+        return $this->baseRepository->delete($id);
     }
 
     public function forceDelete(int $id): bool
     {
-        return $this->repository->forceDelete($id);
+        return $this->baseRepository->forceDelete($id);
     }
 
     public function restore(int $id): bool
     {
-        return $this->repository->restore($id);
+        return $this->baseRepository->restore($id);
     }
 }

@@ -21,10 +21,17 @@ abstract class BaseRepository implements BaseRepositoryInterface
         return $this->query()->get();
     }
 
-    public function findById(int $id): ?Model
+    public function findById(int $id, ?array $load = []): ?Model
     {
-        return $this->query()->find($id);
+        $data = $this->query()->find($id);
+
+        if (count($load)) {
+            $data = $data->load($load);
+        }
+
+        return $data;
     }
+
     public function create(array $data): Model
     {
         return $this->model->create($data);
