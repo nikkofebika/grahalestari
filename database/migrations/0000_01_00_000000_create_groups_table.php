@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('groups', function (Blueprint $table) {
+        Schema::create('tenants', function (Blueprint $table) {
             $table->id();
             $table->integer('parent_id')->unsigned()->nullable()->index();
             $table->integer('leader_id')->unsigned()->nullable()->index();
@@ -23,11 +23,11 @@ return new class extends Migration
             $table->string('district_name', 50)->nullable();
             $table->integer('village_id')->unsigned()->nullable();
             $table->string('village_name', 50)->nullable();
+            $table->string('postal_code', 10)->nullable();
             $table->string('name', 50);
             $table->text('address')->nullable();
             $table->string('latitude', 20)->nullable();
             $table->string('longitude', 20)->nullable();
-            $table->string('postal_code', 10)->nullable();
             $table->timestamps();
 
             // created/updated/deleted info
@@ -36,7 +36,7 @@ return new class extends Migration
             $table->integer('deleted_by_id')->unsigned()->nullable();
             $table->softDeletes();
 
-            // $table->foreign('parent_id')->references('id')->on('groups')->onDelete('cascade');
+            // $table->foreign('parent_id')->references('id')->on('tenants')->onDelete('cascade');
         });
     }
 
@@ -45,6 +45,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('groups');
+        Schema::dropIfExists('tenants');
     }
 };

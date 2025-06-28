@@ -1,7 +1,7 @@
 <?php
 
-namespace App\Interfaces\Services\Group;
+namespace App\Interfaces\Services\Tenant;
 
 use App\Interfaces\Services\BaseServiceInterface;
 
-interface GroupServiceInterface extends BaseServiceInterface {}
+interface TenantServiceInterface extends BaseServiceInterface {}

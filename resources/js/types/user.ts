@@ -1,14 +1,14 @@
 import { TCreatedUpdatedDeletedInfo } from './global';
-import { TGroup } from './group';
+import { TTenant } from './tenant';
 
 export type TUser = {
     id: number;
-    group_id: number | null;
-    group?: TGroup;
+    tenant_id: number | null;
+    tenant?: TTenant;
     name: string;
     email: string;
     email_verified_at: string;
-    type: UserType;
+    type: TUserType;
     created_at: string;
     updated_at: string;
 
@@ -30,22 +30,40 @@ export type TUserDetail = {
     address: string | null;
 };
 
-export type UserType = 'god' | 'admin' | 'user';
-export const userTypes: UserType[] = ['god', 'admin', 'user'];
-export const userTypeLabels: Record<UserType, string> = {
+export type TUserType = 'god' | 'admin' | 'user';
+export const userTypes: TUserType[] = ['god', 'admin', 'user'];
+export const userTypeLabels: Record<TUserType, string> = {
     god: 'God',
     admin: 'Administrator',
     user: 'Pengguna Biasa',
 };
 
-export type TGender = 'Laki-laki' | 'Perempuan';
-export const genderTypes: TGender[] = ['Laki-laki', 'Perempuan'];
+export type TGender = 'male' | 'female';
+export const genderTypes: TGender[] = ['male', 'female'];
+export const genderTypeLabels: Record<TGender, string> = {
+    male: 'Laki-laki',
+    female: 'Perempuan',
+};
 
-export type TReligion = 'Islam' | 'Kristen' | 'Katolik' | 'Hindu' | 'Budha' | 'Khonghucu' | 'Other';
-export const religionTypes: TReligion[] = ['Islam', 'Kristen', 'Katolik', 'Hindu', 'Budha', 'Khonghucu', 'Other'];
+export type TReligion = 'islam' | 'kristen' | 'katolik' | 'hindu' | 'budha' | 'khonghucu';
+export const religionTypes: TReligion[] = ['islam', 'kristen', 'katolik', 'hindu', 'budha', 'khonghucu'];
+export const religionTypeLabels: Record<TReligion, string> = {
+    islam: 'Islam',
+    kristen: 'Kristen',
+    katolik: 'Katolik',
+    hindu: 'Hindu',
+    budha: 'Budha',
+    khonghucu: 'Khonghucu',
+};
 
-export type TMaritalStatus = 'Belum Menikah' | 'Menikah' | 'Cerai Hidup' | 'Cerai Mati';
-export const maritalStatusTypes: TMaritalStatus[] = ['Belum Menikah', 'Menikah', 'Cerai Hidup', 'Cerai Mati'];
+export type TMaritalStatus = 'single' | 'married' | 'divorced' | 'widowed';
+export const maritalStatusTypes: TMaritalStatus[] = ['single', 'married', 'divorced', 'widowed'];
+export const maritalStatusTypeLabels: Record<TMaritalStatus, string> = {
+    single: 'Belum Menikah',
+    married: 'Menikah',
+    divorced: 'Cerai Hidup',
+    widowed: 'Cerai Mati',
+};
 
 export type TEducation = 'SD' | 'SMP' | 'SMA' | 'D3' | 'D4' | 'S1' | 'S2' | 'S3';
 export const educationTypes: TEducation[] = ['SD', 'SMP', 'SMA', 'D3', 'D4', 'S1', 'S2', 'S3'];
@@ -55,11 +73,11 @@ export type TUserFilters = {
 };
 
 export type TCreateUser = {
-    group_id: number | null;
+    tenant_id: number | null;
     name: string;
     email: string;
     password?: string;
-    type: UserType;
+    type: TUserType;
 
     // detail
     no_kk: string | null;

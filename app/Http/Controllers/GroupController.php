@@ -3,27 +3,27 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\GeneralSearchRequest;
-use App\Http\Requests\Group\StoreRequest;
-use App\Interfaces\Services\Group\GroupServiceInterface;
-use App\Models\Group;
+use App\Http\Requests\Tenant\StoreRequest;
+use App\Interfaces\Services\Tenant\TenantServiceInterface;
+use App\Models\Tenant;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class GroupController extends Controller
+class TenantController extends Controller
 {
-    public function __construct(protected GroupServiceInterface $service)
+    public function __construct(protected TenantServiceInterface $service)
     {
         parent::__construct();
     }
 
-    public function getGroups(Request $request)
+    public function getTenants(Request $request)
     {
         $search = $request->query('q', '');
-        $groups = Group::where('name', 'like', "%{$search}%")
+        $tenants = Tenant::where('name', 'like', "%{$search}%")
             ->select('id', 'name')
             ->paginate(10);
-        return $groups;
+        return $tenants;
     }
 
     /**
@@ -33,7 +33,7 @@ class GroupController extends Controller
     {
         $datas = $this->service->findAllPaginate($this->per_page);
 
-        return Inertia::render('groups/index', [
+        return Inertia::render('tenants/index', [
             'datas' => $datas,
             'filters' => [
                 'search' => $request->filter['search'] ?? ""
@@ -48,7 +48,7 @@ class GroupController extends Controller
      */
     public function create(): Response
     {
-        return Inertia::render('groups/create');
+        return Inertia::render('tenants/create');
     }
 
     /**
@@ -57,7 +57,7 @@ class GroupController extends Controller
     public function store(StoreRequest $request)
     {
         $this->service->create($request->validated());
-        return to_route('groups.index')->with('success', self::CREATED_MESSAGE);
+        return to_route('tenants.index')->with('success', self::CREATED_MESSAGE);
     }
 
     /**
@@ -65,9 +65,9 @@ class GroupController extends Controller
      */
     public function show(string $id): Response
     {
-        $group = $this->service->findById($id);
-        return Inertia::render('groups/show', [
-            'group' => $group
+        $tenant = $this->service->findById($id);
+        return Inertia::render('tenants/show', [
+            'tenant' => $tenant
         ]);
     }
 
@@ -76,9 +76,9 @@ class GroupController extends Controller
      */
     public function edit(string $id)
     {
-        $group = $this->service->findById($id);
-        return Inertia::render('groups/edit', [
-            'group' => $group
+        $tenant = $this->service->findById($id);
+        return Inertia::render('tenants/edit', [
+            'tenant' => $tenant
         ]);
     }
 
@@ -88,7 +88,7 @@ class GroupController extends Controller
     public function update(StoreRequest $request, string $id)
     {
         $this->service->update($id, $request->validated());
-        return to_route('groups.index')->with('success', self::UPDATED_MESSAGE);
+        return to_route('tenants.index')->with('success', self::UPDATED_MESSAGE);
     }
 
     /**

@@ -5,14 +5,16 @@ namespace App\Http\Controllers;
 use App\Http\Requests\GeneralSearchRequest;
 use App\Http\Requests\Rt\StoreRequest;
 use App\Interfaces\Controllers\HasSearch;
-use App\Interfaces\Services\Group\GroupServiceInterface;
+use App\Interfaces\Services\Tenant\TenantServiceInterface;
+use App\Models\Tenant;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class RtController extends Controller implements HasSearch
 {
-    public function __construct(protected GroupServiceInterface $service)
+    public function __construct(protected TenantServiceInterface $service)
     {
         parent::__construct();
     }
@@ -30,13 +32,15 @@ class RtController extends Controller implements HasSearch
      */
     public function index(GeneralSearchRequest $request): Response
     {
+        Gate::authorize('viewAnyRt', Tenant::class);
+
         $datas = $this->service->findAllPaginate(
             $this->per_page,
             fn($q) => $q->whereNotNull('parent_id')
                 ->with('leader')
         );
 
-        return Inertia::render('rt/index', [
+        return Inertia::render('rt/index/index', [
             'datas' => $datas,
             'filters' => [
                 'search' => $request->filter['search'] ?? ""
@@ -51,7 +55,9 @@ class RtController extends Controller implements HasSearch
      */
     public function create(): Response
     {
-        return Inertia::render('rt/create');
+        Gate::authorize('createRt', Tenant::class);
+
+        return Inertia::render('rt/create/index');
     }
 
     /**
@@ -59,6 +65,8 @@ class RtController extends Controller implements HasSearch
      */
     public function store(StoreRequest $request)
     {
+        Gate::authorize('createRt', Tenant::class);
+
         $this->service->create($request->validated());
         return to_route('rt.index')->with('success', self::CREATED_MESSAGE);
     }
@@ -68,9 +76,16 @@ class RtController extends Controller implements HasSearch
      */
     public function show(string $id): Response
     {
-        $group = $this->service->findById($id);
-        return Inertia::render('rt/show', [
-            'group' => $group
+        Gate::authorize('viewRt', Tenant::class);
+
+        $tenant = $this->service->findById($id, [
+            'parent.leader',
+            'leader' => fn($q) => $q->selectMinimalist(),
+            'createdBy' => fn($q) => $q->selectMinimalist(),
+            'updatedBy' => fn($q) => $q->selectMinimalist(),
+        ]);
+        return Inertia::render('rt/show/index', [
+            'data' => $tenant
         ]);
     }
 
@@ -79,9 +94,11 @@ class RtController extends Controller implements HasSearch
      */
     public function edit(string $id)
     {
-        $group = $this->service->findById($id);
-        return Inertia::render('rt/edit', [
-            'group' => $group
+        Gate::authorize('updateRt', Tenant::class);
+
+        $tenant = $this->service->findById($id);
+        return Inertia::render('rt/edit/index', [
+            'data' => $tenant
         ]);
     }
 
@@ -90,6 +107,8 @@ class RtController extends Controller implements HasSearch
      */
     public function update(StoreRequest $request, string $id)
     {
+        Gate::authorize('updateRt', Tenant::class);
+
         $this->service->update($id, $request->validated());
         return to_route('rt.index')->with('success', self::UPDATED_MESSAGE);
     }
@@ -99,6 +118,8 @@ class RtController extends Controller implements HasSearch
      */
     public function destroy(string $id)
     {
+        Gate::authorize('deleteRt', Tenant::class);
+
         $this->service->delete($id);
         return redirect()->back()->with('success', self::DELETED_MESSAGE);
     }

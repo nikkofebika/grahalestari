@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { toNullable } from '@/helpers/helper';
-import { TGroup } from '@/types/group';
+import { TTenant } from '@/types/tenant';
 import { TCreateUser, TUser } from '@/types/user';
 import { InertiaFormProps } from '@inertiajs/react';
 import { SaveIcon } from 'lucide-react';
@@ -16,7 +16,7 @@ import { SelectEducation } from './form/select-education';
 import { SelectGender } from './form/select-gender';
 import { SelectMaritalStatus } from './form/select-marital-status';
 import { SelectReligion } from './form/select-religion';
-import { SelectUserType } from './form/select-user-type';
+import { SelectTUserType } from './form/select-user-type';
 
 type Props = {
     onSubmit: FormEventHandler;
@@ -33,14 +33,14 @@ export default function UserForm({ onSubmit, useForm, submitTitle = 'Simpan', us
             <FormCard title="Data Akun" description="Data akun user">
                 <div className="grid gap-2">
                     <label className="text-sm font-medium">Pilih Grup</label>
-                    <CommandSelectInfinite<Pick<TGroup, 'id' | 'name'>>
-                        endpoint="/get-groups"
+                    <CommandSelectInfinite<Pick<TTenant, 'id' | 'name'>>
+                        endpoint="/get-tenants"
                         labelKey="name"
                         valueKey="id"
                         placeholder="Pilih grup..."
-                        value={data.group_id} // id dari form
-                        onChange={(value) => setData('group_id', Number(value))} // simpan ke form
-                        initialSelectedItem={user?.group ?? null} // object dari props edit
+                        value={data.tenant_id} // id dari form
+                        onChange={(value) => setData('tenant_id', Number(value))} // simpan ke form
+                        initialSelectedItem={user?.tenant ?? null} // object dari props edit
                     />
                 </div>
                 <div className="grid gap-2">
@@ -86,7 +86,7 @@ export default function UserForm({ onSubmit, useForm, submitTitle = 'Simpan', us
                 </div>
                 <div className="grid gap-2">
                     <Label htmlFor="type">Tipe User</Label>
-                    <SelectUserType value={data.type} onChange={(value) => setData('type', value)} placeholder="Pilih Tipe User" />
+                    <SelectTUserType value={data.type} onChange={(value) => setData('type', value)} placeholder="Pilih Tipe User" />
                     <InputError message={errors.type} />
                 </div>
             </FormCard>

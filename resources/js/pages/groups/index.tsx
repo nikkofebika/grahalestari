@@ -7,24 +7,24 @@ import useSearch from '@/hooks/use-search';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { TPaginate } from '@/types/global';
-import { TGroup, TGroupFilters } from '@/types/group';
+import { TTenant, TTenantFilters } from '@/types/tenant';
 import { useForm } from '@inertiajs/react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Groups',
-        href: '/groups',
+        title: 'Tenants',
+        href: '/tenants',
     },
 ];
 
 type Props = {
-    datas: TPaginate<TGroup>;
-    filters: TGroupFilters;
+    datas: TPaginate<TTenant>;
+    filters: TTenantFilters;
     page: number;
     per_page: number;
 };
 
-export default function GroupIndex({ datas, filters, page: pageSize, per_page }: Props) {
+export default function TenantIndex({ datas, filters, page: pageSize, per_page }: Props) {
     const { search, setSearch } = useSearch({
         url: datas.meta.path,
         initialValue: filters.search,
@@ -38,11 +38,11 @@ export default function GroupIndex({ datas, filters, page: pageSize, per_page }:
         filters,
     });
 
-    const { handleRowDelete, isDeleting } = useDeleteRow({ routeName: 'groups.destroy' });
+    const { handleRowDelete, isDeleting } = useDeleteRow({ routeName: 'tenants.destroy' });
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <IndexPageHeading title="Groups" createUrl="groups/create" />
+            <IndexPageHeading title="Tenants" createUrl="tenants/create" />
 
             <DataTable
                 datas={datas.data}
@@ -67,8 +67,8 @@ export default function GroupIndex({ datas, filters, page: pageSize, per_page }:
                 page={page}
                 setPage={setPage}
                 perPage={perPage}
-                getRowDetailUrl={(data) => `groups/${data.id}`}
-                getRowEditUrl={(data) => `groups/${data.id}/edit`}
+                getRowDetailUrl={(data) => `tenants/${data.id}`}
+                getRowEditUrl={(data) => `tenants/${data.id}/edit`}
                 setPerPage={setPerPage}
                 search={search}
                 setSearch={setSearch}

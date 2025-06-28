@@ -10,7 +10,7 @@ export interface BreadcrumbItem {
     href: string;
 }
 
-export interface NavGroup {
+export interface NavTenant {
     title: string;
     items: NavItem[];
 }

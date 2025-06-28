@@ -4,11 +4,14 @@ namespace App\Models;
 
 use App\Enums\ComplaintStatus;
 use App\Enums\ComplaintCategory;
+use App\Models\Scopes\TenantedByUserTenantScope;
 use App\Traits\Models\BelongsToUser;
 use App\Traits\Models\CustomSoftDeletes;
 use App\Traits\Models\UpdatedInfo;
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+#[ScopedBy([TenantedByUserTenantScope::class])]
 class Complaint extends BaseModel
 {
     use BelongsToUser, UpdatedInfo, CustomSoftDeletes;

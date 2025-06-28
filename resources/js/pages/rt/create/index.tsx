@@ -1,10 +1,10 @@
 import CreateUpdatePageHeading from '@/components/headings/create-update-page-heading';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { TCreateGroup } from '@/types/group';
+import { TCreateTenant } from '@/types/tenant';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
-import GroupForm from './form';
+import TenantForm from '../form/form';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -18,7 +18,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function RtCreate() {
-    const form = useForm<TCreateGroup>({
+    const form = useForm<TCreateTenant>({
         parent_id: null,
         leader_id: null,
         province_id: 36,
@@ -31,8 +31,8 @@ export default function RtCreate() {
         village_name: 'Mekar Bakti',
         name: '',
         address: '',
-        latitude: '',
-        longitude: '',
+        latitude: null,
+        longitude: null,
         postal_code: '',
     });
 
@@ -47,7 +47,7 @@ export default function RtCreate() {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <CreateUpdatePageHeading title="Tambah RT" backUrl="/rt" />
-            <GroupForm onSubmit={submit} useForm={form} />
+            <TenantForm onSubmit={submit} useForm={form} />
         </AppLayout>
     );
 }

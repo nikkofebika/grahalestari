@@ -1,15 +1,15 @@
 import CreateUpdatePageHeading from '@/components/headings/create-update-page-heading';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { TCreateGroup } from '@/types/group';
+import { TCreateTenant } from '@/types/tenant';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
-import GroupForm from './form';
+import TenantForm from './form';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Groups',
-        href: '/groups',
+        title: 'Tenants',
+        href: '/tenants',
     },
     {
         title: 'Tambah',
@@ -17,8 +17,8 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function GroupCreate() {
-    const form = useForm<TCreateGroup>({
+export default function TenantCreate() {
+    const form = useForm<TCreateTenant>({
         parent_id: undefined,
         province_id: 36,
         city_id: 3603,
@@ -34,15 +34,15 @@ export default function GroupCreate() {
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
-        form.post(route('groups.store'), {
+        form.post(route('tenants.store'), {
             preserveScroll: true,
         });
     };
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <CreateUpdatePageHeading title="Tambah Group" backUrl="/groups" />
-            <GroupForm onSubmit={submit} useForm={form} />
+            <CreateUpdatePageHeading title="Tambah Tenant" backUrl="/tenants" />
+            <TenantForm onSubmit={submit} useForm={form} />
         </AppLayout>
     );
 }

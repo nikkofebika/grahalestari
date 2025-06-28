@@ -24,7 +24,7 @@ trait TenantedThroughUser
 
         if ($user->is_admin) {
             return $query;
-            // return $query->whereHas('user', fn($q) => $q->where('group_id', $user->group_id));
+            // return $query->whereHas('user', fn($q) => $q->where('tenant_id', $user->tenant_id));
         }
 
         if (UserService::hasDescendants($user)) {

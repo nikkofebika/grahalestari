@@ -1,5 +1,5 @@
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { TReligion, religionTypes } from '@/types/user';
+import { TReligion, religionTypeLabels, religionTypes } from '@/types/user';
 
 type Props = {
     value: TReligion | '';
@@ -18,7 +18,7 @@ export function SelectReligion({ value, onChange, id = 'religion', placeholder =
                 <SelectGroup>
                     {religionTypes.map((value: string) => (
                         <SelectItem key={value} value={value}>
-                            {value}
+                            {religionTypeLabels[value as TReligion]}
                         </SelectItem>
                     ))}
                 </SelectGroup>

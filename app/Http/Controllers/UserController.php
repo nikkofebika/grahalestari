@@ -34,7 +34,7 @@ class UserController extends Controller implements HasSearch
 
         $datas = $this->service->findAllPaginate($this->per_page);
 
-        return Inertia::render('users/index', [
+        return Inertia::render('users/index/index', [
             'datas' => $datas,
             'filters' => [
                 'search' => $request->filter['search'] ?? ""
@@ -49,7 +49,9 @@ class UserController extends Controller implements HasSearch
      */
     public function create(): Response
     {
-        return Inertia::render('users/create');
+        Gate::authorize('create', User::class);
+
+        return Inertia::render('users/create/index');
     }
 
     /**
@@ -57,7 +59,8 @@ class UserController extends Controller implements HasSearch
      */
     public function store(StoreRequest $request)
     {
-        dd($request->validated());
+        Gate::authorize('create', User::class);
+
         $this->service->create($request->validated());
         return to_route('users.index')->with('success', self::CREATED_MESSAGE);
     }
@@ -67,8 +70,10 @@ class UserController extends Controller implements HasSearch
      */
     public function show(string $id): Response
     {
+        Gate::authorize('view', User::class);
+
         $user = $this->service->findById($id);
-        return Inertia::render('users/show', [
+        return Inertia::render('users/show/index', [
             'user' => $user
         ]);
     }
@@ -78,9 +83,11 @@ class UserController extends Controller implements HasSearch
      */
     public function edit(string $id)
     {
+        Gate::authorize('update', User::class);
+
         $user = $this->service->findById($id);
         $user->load('detail');
-        return Inertia::render('users/edit', [
+        return Inertia::render('users/edit/index', [
             'user' => $user
         ]);
     }
@@ -90,6 +97,8 @@ class UserController extends Controller implements HasSearch
      */
     public function update(UpdateRequest $request, string $id)
     {
+        Gate::authorize('update', User::class);
+
         $this->service->update($id, $request->validated());
         return to_route('users.index')->with('success', self::UPDATED_MESSAGE);
     }
@@ -99,6 +108,8 @@ class UserController extends Controller implements HasSearch
      */
     public function destroy(string $id)
     {
+        Gate::authorize('delete', User::class);
+
         $this->service->delete($id);
         return redirect()->back()->with('success', self::DELETED_MESSAGE);
     }

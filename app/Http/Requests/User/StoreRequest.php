@@ -30,7 +30,7 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'group_id' => ['nullable', 'exists:groups,id'],
+            'tenant_id' => ['nullable', 'exists:tenants,id'],
             'name' => ['required', new NameRule],
             'email' => ['required', 'string', 'email'],
             'password' => ['required', 'string'],

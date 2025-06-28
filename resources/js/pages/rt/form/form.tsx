@@ -3,19 +3,20 @@ import FormCard from '@/components/form/form-card';
 import InputError from '@/components/input-error';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { TCreateGroup, TGroup } from '@/types/group';
+import { toNullable } from '@/helpers/helper';
+import { TCreateTenant, TTenant } from '@/types/tenant';
 import { TUser } from '@/types/user';
 import { InertiaFormProps } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
 type Props = {
     onSubmit: FormEventHandler;
-    useForm: InertiaFormProps<TCreateGroup>;
+    useForm: InertiaFormProps<TCreateTenant>;
     submitTitle?: string;
-    group?: TGroup;
+    tenant?: TTenant;
 };
 
-export default function GroupForm({ onSubmit, useForm, submitTitle = 'Simpan', group }: Props) {
+export default function TenantForm({ onSubmit, useForm, submitTitle = 'Simpan', tenant }: Props) {
     const { data, setData, processing, errors } = useForm;
 
     return (
@@ -23,13 +24,13 @@ export default function GroupForm({ onSubmit, useForm, submitTitle = 'Simpan', g
             <FormCard submitTitle={submitTitle} processing={processing}>
                 <div className="grid gap-2">
                     <label className="text-sm font-medium">Pilih RW</label>
-                    <CommandSelectInfinite<Pick<TGroup, 'id' | 'name'>>
+                    <CommandSelectInfinite<Pick<TTenant, 'id' | 'name'>>
                         endpoint="/search-rw"
                         labelKey="name"
                         valueKey="id"
                         value={data.parent_id} // id dari form
                         onChange={(value) => setData('parent_id', Number(value))} // simpan ke form
-                        initialSelectedItem={group?.parent ?? null} // object dari props edit
+                        initialSelectedItem={tenant?.parent ?? null} // object dari props edit
                     />
                 </div>
                 <div className="grid gap-2">
@@ -40,7 +41,7 @@ export default function GroupForm({ onSubmit, useForm, submitTitle = 'Simpan', g
                         valueKey="id"
                         value={data.leader_id} // id dari form
                         onChange={(value) => setData('leader_id', Number(value))} // simpan ke form
-                        initialSelectedItem={group?.leader ?? null} // object dari props edit
+                        initialSelectedItem={tenant?.leader ?? null} // object dari props edit
                     />
                 </div>
                 <div className="grid gap-2">
@@ -73,8 +74,8 @@ export default function GroupForm({ onSubmit, useForm, submitTitle = 'Simpan', g
                         <Input
                             id="latitude"
                             className="mt-1 block w-full"
-                            value={data.latitude}
-                            onChange={(e) => setData('latitude', e.target.value)}
+                            value={data.latitude ?? ''}
+                            onChange={(e) => setData('latitude', toNullable(e.target.value))}
                             autoComplete="latitude"
                             placeholder="Latitude"
                         />
@@ -85,8 +86,8 @@ export default function GroupForm({ onSubmit, useForm, submitTitle = 'Simpan', g
                         <Input
                             id="longitude"
                             className="mt-1 block w-full"
-                            value={data.longitude}
-                            onChange={(e) => setData('longitude', e.target.value)}
+                            value={data.longitude ?? ''}
+                            onChange={(e) => setData('longitude', toNullable(e.target.value))}
                             autoComplete="longitude"
                             placeholder="Longitude"
                         />

@@ -1,5 +1,5 @@
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { TMaritalStatus, maritalStatusTypes } from '@/types/user';
+import { TMaritalStatus, maritalStatusTypeLabels, maritalStatusTypes } from '@/types/user';
 
 type Props = {
     value: TMaritalStatus | '';
@@ -18,7 +18,7 @@ export function SelectMaritalStatus({ value, onChange, id = 'marital_status', pl
                 <SelectGroup>
                     {maritalStatusTypes.map((value: string) => (
                         <SelectItem key={value} value={value}>
-                            {value}
+                            {maritalStatusTypeLabels[value as TMaritalStatus]}
                         </SelectItem>
                     ))}
                 </SelectGroup>

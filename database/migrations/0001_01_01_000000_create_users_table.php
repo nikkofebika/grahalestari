@@ -1,7 +1,7 @@
 <?php
 
 use App\Enums\UserType;
-use App\Models\Group;
+use App\Models\Tenant;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -15,7 +15,8 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Group::class)->nullable()->constrained();
+            $table->bigInteger('tenant_parent_id')->unsigned()->nullable();
+            $table->foreignIdFor(Tenant::class)->nullable()->constrained();
             $table->string('name', 100);
             $table->string('email', 100)->unique();
             $table->timestamp('email_verified_at')->nullable();
@@ -29,6 +30,8 @@ return new class extends Migration
             $table->integer('updated_by_id')->unsigned()->nullable();
             $table->integer('deleted_by_id')->unsigned()->nullable();
             $table->softDeletes();
+
+            $table->foreign('tenant_parent_id')->references('id')->on('tenants');
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

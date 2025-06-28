@@ -4,15 +4,18 @@ namespace App\Models;
 
 use App\Enums\AnnouncementCategory;
 use App\Enums\AnnouncementTargetScope;
+use App\Models\Scopes\TenantedByUserTenantScope;
 use App\Traits\Models\BelongsToUser;
 use App\Traits\Models\CustomSoftDeletes;
 use App\Traits\Models\UpdatedInfo;
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 
 /**
  * @property \Illuminate\Support\Carbon $start_at
  * @property \Illuminate\Support\Carbon $end_at
  */
+#[ScopedBy([TenantedByUserTenantScope::class])]
 class Announcement extends BaseModel
 {
     use BelongsToUser, UpdatedInfo, CustomSoftDeletes;

@@ -5,6 +5,7 @@ namespace App\Http\Repositories\User;
 use App\Http\Repositories\BaseRepository;
 use App\Interfaces\Repositories\User\UserRepositoryInterface;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 
 class UserRepository extends BaseRepository implements UserRepositoryInterface
 {
@@ -13,12 +14,23 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
         parent::__construct($model);
     }
 
-    public function findById(int $id): ?User
+    protected function query(): Builder
     {
-        return $this->query()
+        return $this->model->newQuery()->tenanted();
+    }
+
+    public function findById(int $id, ?array $load = []): ?User
+    {
+        $data = $this->query()
             ->with([
-                'group' => fn($q) => $q->select('id', 'name')
+                'tenant' => fn($q) => $q->select('id', 'name')
             ])
             ->find($id);
+
+        if (count($load)) {
+            $data = $data->load($load);
+        }
+
+        return $data;
     }
 }

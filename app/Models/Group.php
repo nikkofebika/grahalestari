@@ -2,14 +2,17 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\TenantedByTenantScope;
 use App\Traits\Models\CreatedInfo;
 use App\Traits\Models\CustomSoftDeletes;
 use App\Traits\Models\UpdatedInfo;
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Group extends BaseModel
+#[ScopedBy([TenantedByTenantScope::class])]
+class Tenant extends BaseModel
 {
     use CreatedInfo, UpdatedInfo, CustomSoftDeletes;
 
@@ -24,11 +27,11 @@ class Group extends BaseModel
         'district_name',
         'village_id',
         'village_name',
+        'postal_code',
         'name',
         'address',
         'latitude',
         'longitude',
-        'postal_code',
     ];
 
     public function parent(): BelongsTo

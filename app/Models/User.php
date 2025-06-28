@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use App\Enums\UserType;
+use App\Interfaces\Models\TenantedInterface;
 use App\Traits\Models\CreatedInfo;
 use App\Traits\Models\CustomSoftDeletes;
 use App\Traits\Models\UpdatedInfo;
@@ -19,7 +20,7 @@ use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable implements JWTSubject
+class User extends Authenticatable implements JWTSubject, TenantedInterface
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, CreatedInfo, UpdatedInfo, CustomSoftDeletes, HasRoles;
@@ -30,7 +31,8 @@ class User extends Authenticatable implements JWTSubject
      * @var list<string>
      */
     protected $fillable = [
-        'group_id',
+        'tenant_parent_id',
+        'tenant_id',
         'name',
         'email',
         'password',
@@ -93,14 +95,53 @@ class User extends Authenticatable implements JWTSubject
         return $date->format('Y-m-d H:i:s');
     }
 
-    public function group(): BelongsTo
+    protected function getIsGodAttribute(): bool
     {
-        return $this->belongsTo(Group::class);
+        return $this->type->is(UserType::GOD);
+    }
+
+    protected function getIsAdminRwAttribute(): bool
+    {
+        return $this->type->is(UserType::ADMIN_RW);
+    }
+
+    protected function getIsAdminRtAttribute(): bool
+    {
+        return $this->type->is(UserType::ADMIN_RT);
+    }
+
+    protected function getIsUserRtAttribute(): bool
+    {
+        return $this->type->is(UserType::USER);
+    }
+
+    public function tenant(): BelongsTo
+    {
+        return $this->belongsTo(Tenant::class)->withoutGlobalScopes();
     }
 
     public function detail(): HasOne
     {
         return $this->hasOne(UserDetail::class);
+    }
+
+    public function scopeTenanted(Builder $query): void
+    {
+        /** @var User */
+        $user = auth()->user();
+
+        if ($user->is_admin_rw) {
+            $query->where(
+                fn($q) => $q->where('tenant_id', $user->tenant_id)
+                    ->orWhereHas(
+                        'tenant',
+                        fn($q) => $q->withoutGlobalScopes()
+                            ->where('parent_id', $user->tenant_id)
+                    )
+            );
+        } elseif (!$user->is_god) {
+            $query->where('tenant_id', $user->tenant_id);
+        }
     }
 
     public function scopeSelectMinimalist(Builder $query, $additionalColumns = [])

@@ -4,7 +4,6 @@ import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 import { ChartAreaInteractive } from './chart-area-interactive';
 import { SectionCards } from './section-cards';
-import { UserDataTable } from './users/user-table';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -223,7 +222,7 @@ export default function Dashboard() {
                         <div className="px-4 lg:px-6">
                             <ChartAreaInteractive />
                         </div>
-                        <UserDataTable data={data} />
+                        {/* <UserDataTable data={data} /> */}
                     </div>
                 </div>
             </div>

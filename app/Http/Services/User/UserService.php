@@ -25,11 +25,11 @@ class UserService extends BaseService implements UserServiceInterface
     public function findAllPaginate(int $perPage = 15, ?Closure $query = null, bool $isSimplePaginate = false): AnonymousResourceCollection
     {
         $datas = QueryBuilder::for(
-            User::query()->when($query, $query)
+            User::tenanted()->when($query, $query)
         )
             ->allowedFields(['id', 'name'])
             ->allowedIncludes([
-                AllowedInclude::callback('group', fn($q) => $q->selectMinimalist())
+                AllowedInclude::callback('tenant', fn($q) => $q->selectMinimalist())
             ])
             ->allowedFilters([
                 AllowedFilter::scope('search')

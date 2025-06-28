@@ -56,11 +56,11 @@ class PermissionService
                 'role_edit',
                 'role_delete',
             ],
-            'group_access' => [
-                // 'group_read',
-                'group_create',
-                'group_edit',
-                'group_delete',
+            'tenant_access' => [
+                // 'tenant_read',
+                'tenant_create',
+                'tenant_edit',
+                'tenant_delete',
             ],
         ];
     }
@@ -76,11 +76,11 @@ class PermissionService
             //     'user_set_supervisor',
             //     'can_read_all_users',
             // ],
-            // 'group_access' => [
-            //     'group_read',
-            //     'group_create',
-            //     'group_edit',
-            //     'group_delete',
+            // 'tenant_access' => [
+            //     'tenant_read',
+            //     'tenant_create',
+            //     'tenant_edit',
+            //     'tenant_delete',
             // ],
         ];
     }
@@ -191,7 +191,7 @@ class PermissionService
 
         foreach ($allPermissions as $parent => $childs) {
             foreach ($childs as $key => $value) {
-                if (in_array($key, ['group_access', 'company_access', 'branch_access', 'role_access', 'user_access']) && $value === true) $allPermissions['navbar']['company']['user_management_access'] = true;
+                if (in_array($key, ['tenant_access', 'company_access', 'branch_access', 'role_access', 'user_access']) && $value === true) $allPermissions['navbar']['company']['user_management_access'] = true;
                 if (in_array($key, ['payroll_schedule_access', 'cut_off_and_tax_setting_access', 'payroll_component_access', 'run_payroll_access', 'pro_rate_setting_access']) && $value === true) $allPermissions['navbar']['company']['payroll_access'] = true;
                 if (in_array($key, ['company_access', 'time_management_access', 'timeoff_regulation_access']) && $value === true) $allPermissions['navbar']['company']['setting_access'] = true;
             }

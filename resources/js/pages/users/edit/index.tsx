@@ -4,7 +4,7 @@ import { type BreadcrumbItem } from '@/types';
 import { TCreateUser, TUser } from '@/types/user';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
-import UserForm from './form';
+import UserForm from '../form';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -22,7 +22,7 @@ type Props = {
 };
 export default function UserCreate({ user }: Props) {
     const form = useForm<TCreateUser>({
-        group_id: user.group_id,
+        tenant_id: user.tenant_id,
         name: user.name,
         email: user.email,
         password: undefined,

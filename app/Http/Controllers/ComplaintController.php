@@ -6,8 +6,10 @@ use App\Http\Requests\GeneralSearchRequest;
 use App\Http\Requests\Complaint\StoreRequest;
 use App\Interfaces\Controllers\HasSearch;
 use App\Interfaces\Services\Complaint\ComplaintServiceInterface;
+use App\Models\Complaint;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -28,6 +30,8 @@ class ComplaintController extends Controller implements HasSearch
      */
     public function index(GeneralSearchRequest $request): Response
     {
+        Gate::authorize('viewAny', Complaint::class);
+
         $datas = $this->service->findAllPaginate(
             $this->per_page,
             fn(Builder $q) => $q->with('user')
@@ -48,6 +52,8 @@ class ComplaintController extends Controller implements HasSearch
      */
     public function create(): Response
     {
+        Gate::authorize('create', Complaint::class);
+
         return Inertia::render('complaint/create/index');
     }
 
@@ -56,6 +62,8 @@ class ComplaintController extends Controller implements HasSearch
      */
     public function store(StoreRequest $request)
     {
+        Gate::authorize('create', Complaint::class);
+
         $this->service->create($request->validated());
         return to_route('aduan-masyarakat.index')->with('success', self::CREATED_MESSAGE);
     }
@@ -65,6 +73,8 @@ class ComplaintController extends Controller implements HasSearch
      */
     public function show(string $id): Response
     {
+        Gate::authorize('view', Complaint::class);
+
         $Complaint = $this->service->findById($id, [
             'user' => fn($q) => $q->selectMinimalist()
         ]);
@@ -78,6 +88,8 @@ class ComplaintController extends Controller implements HasSearch
      */
     public function edit(string $id)
     {
+        Gate::authorize('update', Complaint::class);
+
         $Complaint = $this->service->findById($id);
         return Inertia::render('complaint/edit/index', [
             'data' => $Complaint
@@ -89,6 +101,8 @@ class ComplaintController extends Controller implements HasSearch
      */
     public function update(StoreRequest $request, string $id)
     {
+        Gate::authorize('update', Complaint::class);
+
         $this->service->update($id, $request->validated());
         return to_route('aduan-masyarakat.index')->with('success', self::UPDATED_MESSAGE);
     }
@@ -98,6 +112,8 @@ class ComplaintController extends Controller implements HasSearch
      */
     public function destroy(string $id)
     {
+        Gate::authorize('delete', Complaint::class);
+
         $this->service->delete($id);
         return redirect()->back()->with('success', self::DELETED_MESSAGE);
     }

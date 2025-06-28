@@ -1,10 +1,10 @@
 import CreateUpdatePageHeading from '@/components/headings/create-update-page-heading';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { TCreateGroup, TGroup } from '@/types/group';
+import { TCreateTenant } from '@/types/tenant';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
-import GroupForm from './form';
+import TenantForm from '../form/form';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -12,18 +12,15 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/rw',
     },
     {
-        title: 'Update',
+        title: 'Tambah',
         href: '',
     },
 ];
 
-type Props = {
-    group: TGroup;
-};
-export default function RwEdit({ group }: Props) {
-    const form = useForm<TCreateGroup>({
-        parent_id: group.parent_id ?? null,
-        leader_id: group.leader_id ?? null,
+export default function RwCreate() {
+    const form = useForm<TCreateTenant>({
+        parent_id: null,
+        leader_id: null,
         province_id: 36,
         province_name: 'Banten',
         city_id: 3603,
@@ -32,25 +29,25 @@ export default function RwEdit({ group }: Props) {
         district_name: 'Panongan',
         village_id: 3603191002,
         village_name: 'Mekar Asri',
-        name: group.name,
-        address: group.address,
-        latitude: group.latitude,
-        longitude: group.longitude,
-        postal_code: group.postal_code,
+        name: '',
+        address: '',
+        latitude: null,
+        longitude: null,
+        postal_code: '',
     });
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
-        form.put(route('rw.update', group), {
+        form.post(route('rw.store'), {
             preserveScroll: true,
         });
     };
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <CreateUpdatePageHeading title="Edit RW" backUrl="/rw" />
-            <GroupForm onSubmit={submit} useForm={form} submitTitle="Update" />
+            <CreateUpdatePageHeading title="Tambah RW" backUrl="/rw" />
+            <TenantForm onSubmit={submit} useForm={form} />
         </AppLayout>
     );
 }

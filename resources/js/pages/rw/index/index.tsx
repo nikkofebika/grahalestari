@@ -7,23 +7,23 @@ import useSearch from '@/hooks/use-search';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { TPaginate } from '@/types/global';
-import { TUser, TUserFilters } from '@/types/user';
+import { TTenant, TTenantFilters } from '@/types/tenant';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Users',
-        href: '/users',
+        title: 'RW',
+        href: '/rw',
     },
 ];
 
 type Props = {
-    datas: TPaginate<TUser>;
-    filters: TUserFilters;
+    datas: TPaginate<TTenant>;
+    filters: TTenantFilters;
     page: number;
     per_page: number;
 };
 
-export default function UserIndex({ datas, filters, page: pageSize, per_page }: Props) {
+export default function TenantIndex({ datas, filters, page: pageSize, per_page }: Props) {
     const { search, setSearch } = useSearch({
         url: datas.meta.path,
         initialValue: filters.search,
@@ -37,30 +37,26 @@ export default function UserIndex({ datas, filters, page: pageSize, per_page }: 
         filters,
     });
 
-    const { handleRowDelete, isDeleting } = useDeleteRow({ routeName: 'users.destroy' });
+    const { handleRowDelete, isDeleting } = useDeleteRow({ routeName: 'rw.destroy' });
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <IndexPageHeading title="Users" createUrl="users/create" />
+            <IndexPageHeading title="RW" createUrl="rw/create" />
 
             <DataTable
                 datas={datas.data}
                 columns={[
                     {
-                        label: 'Group',
-                        name: 'group.name',
-                    },
-                    {
                         label: 'Nama',
                         name: 'name',
                     },
                     {
-                        label: 'Email',
-                        name: 'email',
+                        label: 'Ketua',
+                        name: 'leader.name',
                     },
                     {
-                        label: 'Type',
-                        name: 'type',
+                        label: 'Alamat',
+                        name: 'address',
                     },
                     {
                         label: 'Tgl Buat',
@@ -74,10 +70,10 @@ export default function UserIndex({ datas, filters, page: pageSize, per_page }: 
                 page={page}
                 setPage={setPage}
                 perPage={perPage}
+                getRowDetailUrl={(data) => `rw/${data.id}`}
+                getRowEditUrl={(data) => `rw/${data.id}/edit`}
                 setPerPage={setPerPage}
                 search={search}
-                getRowDetailUrl={(user) => route('users.show', user.id)}
-                getRowEditUrl={(user) => route('users.edit', user.id)}
                 setSearch={setSearch}
                 isDeleting={isDeleting}
                 handleRowDelete={handleRowDelete}

@@ -36,9 +36,9 @@ export default function RoleForm({ permissions, onSubmit, useForm, submitTitle =
                 <InputError className="mt-1" message={errors.name} />
             </div>
             <div className="space-y-4">
-                {Object.entries(permissions).map(([groupName, perms]) => (
-                    <div key={groupName}>
-                        <h4 className="mb-1 text-sm font-semibold text-gray-700 capitalize">{groupName.replace('_', ' ')}</h4>
+                {Object.entries(permissions).map(([tenantName, perms]) => (
+                    <div key={tenantName}>
+                        <h4 className="mb-1 text-sm font-semibold text-gray-700 capitalize">{tenantName.replace('_', ' ')}</h4>
                         <div className="grid grid-cols-2 gap-2">
                             {perms.map((perm) => (
                                 <label key={perm} className="flex items-center gap-2 text-sm">

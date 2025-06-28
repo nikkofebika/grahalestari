@@ -2,18 +2,18 @@ import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { TCreateGroup } from '@/types/group';
+import { TCreateTenant } from '@/types/tenant';
 import { InertiaFormProps } from '@inertiajs/react';
 import { SaveIcon } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
 type Props = {
     onSubmit: FormEventHandler;
-    useForm: InertiaFormProps<TCreateGroup>;
+    useForm: InertiaFormProps<TCreateTenant>;
     submitTitle?: string;
 };
 
-export default function GroupForm({ onSubmit, useForm, submitTitle = 'Simpan' }: Props) {
+export default function TenantForm({ onSubmit, useForm, submitTitle = 'Simpan' }: Props) {
     const { data, setData, processing, errors } = useForm;
 
     return (

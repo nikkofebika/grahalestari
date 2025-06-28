@@ -2,13 +2,14 @@ import DetailCard from '@/components/detail-card';
 import CreateUpdatePageHeading from '@/components/headings/create-update-page-heading';
 import { Table, TableCell, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
+import LocationInfoShow from '@/pages/rw/components/location-info-show';
 import { type BreadcrumbItem } from '@/types';
-import { TGroup } from '@/types/group';
+import { TTenant } from '@/types/tenant';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'RW',
-        href: '/rw',
+        title: 'RT',
+        href: '/rt',
     },
     {
         title: 'Detail',
@@ -17,43 +18,32 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 type Props = {
-    data: TGroup;
+    data: TTenant;
 };
 
-export default function RwShow({ data }: Props) {
+export default function RtShow({ data }: Props) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <CreateUpdatePageHeading title="Detail RW" backUrl="/rw" />
+            <CreateUpdatePageHeading title="Detail RT" backUrl="/rt" />
             <DetailCard data={data}>
                 <Table>
                     <TableRow>
+                        <TableCell className="font-bold">RW</TableCell>
+                        <TableCell>{data.parent?.name}</TableCell>
+                    </TableRow>
+                    <TableRow>
                         <TableCell className="font-bold">Ketua RW</TableCell>
+                        <TableCell>{data.parent?.leader?.name}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                        <TableCell className="font-bold">Ketua RT</TableCell>
                         <TableCell>{data.leader?.name}</TableCell>
                     </TableRow>
                     <TableRow>
                         <TableCell className="font-bold">Nama</TableCell>
                         <TableCell>{data.name}</TableCell>
                     </TableRow>
-                    <TableRow>
-                        <TableCell className="font-bold">Provinsi</TableCell>
-                        <TableCell>{data.province_name}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                        <TableCell className="font-bold">Kota/Kabupaten</TableCell>
-                        <TableCell>{data.city_name}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                        <TableCell className="font-bold">Kecamatan</TableCell>
-                        <TableCell>{data.district_name}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                        <TableCell className="font-bold">Kelurahan</TableCell>
-                        <TableCell>{data.village_name}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                        <TableCell className="font-bold">Alamat</TableCell>
-                        <TableCell>{data.address}</TableCell>
-                    </TableRow>
+                    <LocationInfoShow data={data.parent} />
                     <TableRow>
                         <TableCell className="font-bold">Lokasi</TableCell>
                         <TableCell>
@@ -61,10 +51,6 @@ export default function RwShow({ data }: Props) {
                                 Lihat Lokasi
                             </a>
                         </TableCell>
-                    </TableRow>
-                    <TableRow>
-                        <TableCell className="font-bold">Kode POS</TableCell>
-                        <TableCell>{data.postal_code}</TableCell>
                     </TableRow>
                     <TableRow>
                         <TableCell className="font-bold">Dibuat Pada</TableCell>

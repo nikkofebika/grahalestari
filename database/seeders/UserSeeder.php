@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\UserType;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -16,9 +17,9 @@ class UserSeeder extends Seeder
         User::factory()->create([
             'name' => 'Admin',
             'email' => 'admin@gmail.com',
+            'type' => UserType::GOD,
         ]);
 
-
-        User::factory(10)->create();
+        // User::factory(10)->create();
     }
 }

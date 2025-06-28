@@ -18,8 +18,8 @@ class AppServiceProvider extends ServiceProvider
         \App\Interfaces\Repositories\Complaint\ComplaintRepositoryInterface::class => \App\Http\Repositories\Complaint\ComplaintRepository::class,
         \App\Interfaces\Services\Complaint\ComplaintServiceInterface::class => \App\Http\Services\Complaint\ComplaintService::class,
 
-        \App\Interfaces\Repositories\Group\GroupRepositoryInterface::class => \App\Http\Repositories\Group\GroupRepository::class,
-        \App\Interfaces\Services\Group\GroupServiceInterface::class => \App\Http\Services\Group\GroupService::class,
+        \App\Interfaces\Repositories\Tenant\TenantRepositoryInterface::class => \App\Http\Repositories\Tenant\TenantRepository::class,
+        \App\Interfaces\Services\Tenant\TenantServiceInterface::class => \App\Http\Services\Tenant\TenantService::class,
 
         \App\Interfaces\Repositories\User\UserRepositoryInterface::class => \App\Http\Repositories\User\UserRepository::class,
         \App\Interfaces\Services\User\UserServiceInterface::class => \App\Http\Services\User\UserService::class,
@@ -36,5 +36,7 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot(): void {}
+    public function boot(): void
+    {
+    }
 }

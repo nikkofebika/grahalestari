@@ -8,7 +8,7 @@ use Spatie\Permission\Models\Role as ModelsRole;
 class Role extends ModelsRole
 {
     protected $fillable = [
-        'group_id',
+        'tenant_id',
         'name',
         'guard_name',
     ];
@@ -17,7 +17,7 @@ class Role extends ModelsRole
     {
         static::saving(function (self $model) {
             // $user = auth()->user();
-            // if (empty($model->group_id) && !$user->is_super_admin) $model->group_id = $user->group_id ?? null;
+            // if (empty($model->tenant_id) && !$user->is_super_admin) $model->tenant_id = $user->tenant_id ?? null;
         });
     }
 
@@ -28,7 +28,7 @@ class Role extends ModelsRole
             return $query;
         }
 
-        return $query->where('group_id', $user->group_id);
+        return $query->where('tenant_id', $user->tenant_id);
     }
 
     public function scopeFindTenanted(Builder $query, int|string $id, bool $fail = true): self
@@ -46,9 +46,9 @@ class Role extends ModelsRole
         return $date->format('Y-m-d H:i:s');
     }
 
-    // public function group()
+    // public function tenant()
     // {
-    //     return $this->belongsTo(Group::class);
+    //     return $this->belongsTo(Tenant::class);
     // }
 
     public function scopeSearch(Builder $query, string $search)

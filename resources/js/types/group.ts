@@ -1,10 +1,10 @@
 import { TCreatedUpdatedDeletedInfo } from './global';
 import { TUser } from './user';
 
-export type TGroup = {
+export type TTenant = {
     id: number;
     parent_id: number | null;
-    parent?: TGroup;
+    parent?: TTenant;
     leader_id: number | null;
     leader?: TUser;
     province_id: number | null;
@@ -24,11 +24,11 @@ export type TGroup = {
     updated_at: string;
 } & TCreatedUpdatedDeletedInfo;
 
-export type TGroupFilters = {
+export type TTenantFilters = {
     search: string;
 };
 
-export type TCreateGroup = {
+export type TCreateTenant = {
     parent_id: number | null;
     leader_id: number | null;
     province_id: number | null;

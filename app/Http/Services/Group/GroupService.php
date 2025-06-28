@@ -1,20 +1,20 @@
 <?php
 
-namespace App\Http\Services\Group;
+namespace App\Http\Services\Tenant;
 
-use App\Http\Resources\Group\GroupResource;
+use App\Http\Resources\Tenant\TenantResource;
 use App\Http\Services\BaseService;
-use App\Interfaces\Repositories\Group\GroupRepositoryInterface;
-use App\Interfaces\Services\Group\GroupServiceInterface;
-use App\Models\Group;
+use App\Interfaces\Repositories\Tenant\TenantRepositoryInterface;
+use App\Interfaces\Services\Tenant\TenantServiceInterface;
+use App\Models\Tenant;
 use Closure;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
-class GroupService extends BaseService implements GroupServiceInterface
+class TenantService extends BaseService implements TenantServiceInterface
 {
-    public function __construct(protected GroupRepositoryInterface $repository)
+    public function __construct(protected TenantRepositoryInterface $repository)
     {
         parent::__construct($repository);
     }
@@ -22,7 +22,7 @@ class GroupService extends BaseService implements GroupServiceInterface
     public function findAllPaginate(int $perPage = 15, ?Closure $query = null, bool $isSimplePaginate = false): AnonymousResourceCollection
     {
         $datas = QueryBuilder::for(
-            Group::query()->when($query, $query)
+            Tenant::query()->when($query, $query)
         )
             ->allowedFilters([
                 AllowedFilter::scope('search')
@@ -30,6 +30,6 @@ class GroupService extends BaseService implements GroupServiceInterface
             ->paginate($perPage)
             ->withQueryString();
 
-        return GroupResource::collection($datas);
+        return TenantResource::collection($datas);
     }
 }

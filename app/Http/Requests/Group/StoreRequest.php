@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Group;
+namespace App\Http\Requests\Tenant;
 
 use App\Rules\LatLngRule;
 use App\Rules\NameRule;

@@ -7,23 +7,23 @@ import useSearch from '@/hooks/use-search';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { TPaginate } from '@/types/global';
-import { TGroup, TGroupFilters } from '@/types/group';
+import { TTenant, TTenantFilters } from '@/types/tenant';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'RW',
-        href: '/rw',
+        title: 'RT',
+        href: '/rt',
     },
 ];
 
 type Props = {
-    datas: TPaginate<TGroup>;
-    filters: TGroupFilters;
+    datas: TPaginate<TTenant>;
+    filters: TTenantFilters;
     page: number;
     per_page: number;
 };
 
-export default function GroupIndex({ datas, filters, page: pageSize, per_page }: Props) {
+export default function TenantIndex({ datas, filters, page: pageSize, per_page }: Props) {
     const { search, setSearch } = useSearch({
         url: datas.meta.path,
         initialValue: filters.search,
@@ -37,11 +37,11 @@ export default function GroupIndex({ datas, filters, page: pageSize, per_page }:
         filters,
     });
 
-    const { handleRowDelete, isDeleting } = useDeleteRow({ routeName: 'rw.destroy' });
+    const { handleRowDelete, isDeleting } = useDeleteRow({ routeName: 'rt.destroy' });
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <IndexPageHeading title="RW" createUrl="rw/create" />
+            <IndexPageHeading title="RT" createUrl="rt/create" />
 
             <DataTable
                 datas={datas.data}
@@ -70,8 +70,8 @@ export default function GroupIndex({ datas, filters, page: pageSize, per_page }:
                 page={page}
                 setPage={setPage}
                 perPage={perPage}
-                getRowDetailUrl={(data) => `rw/${data.id}`}
-                getRowEditUrl={(data) => `rw/${data.id}/edit`}
+                getRowDetailUrl={(data) => `rt/${data.id}`}
+                getRowEditUrl={(data) => `rt/${data.id}/edit`}
                 setPerPage={setPerPage}
                 search={search}
                 setSearch={setSearch}

@@ -1,5 +1,5 @@
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { TGender, genderTypes } from '@/types/user';
+import { TGender, genderTypeLabels, genderTypes } from '@/types/user';
 
 type Props = {
     value: TGender | '';
@@ -18,7 +18,7 @@ export function SelectGender({ value, onChange, id = 'gender', placeholder = 'Pi
                 <SelectGroup>
                     {genderTypes.map((value: string) => (
                         <SelectItem key={value} value={value}>
-                            {value}
+                            {genderTypeLabels[value as TGender]}
                         </SelectItem>
                     ))}
                 </SelectGroup>
