@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\ComplaintController;
-use App\Http\Controllers\GroupController;
+use App\Http\Controllers\TenantController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\RtController;
 use App\Http\Controllers\RwController;
@@ -28,8 +28,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('dashboard');
     })->name('dashboard');
 
-    Route::get('get-groups', [GroupController::class, 'getGroups']);
-    Route::resource('groups', GroupController::class);
+    Route::get('get-tenants', [TenantController::class, 'getTenants']);
+    Route::resource('tenants', TenantController::class);
 
     Route::get('search-rw', [RwController::class, 'search']);
     Route::resource('rw', RwController::class);

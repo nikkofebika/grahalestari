@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('tenant_parent_id')->unsigned()->nullable();
+            $table->bigInteger('group_id')->unsigned()->nullable();
             $table->foreignIdFor(Tenant::class)->nullable()->constrained();
             $table->string('name', 100);
             $table->string('email', 100)->unique();
@@ -31,7 +31,7 @@ return new class extends Migration
             $table->integer('deleted_by_id')->unsigned()->nullable();
             $table->softDeletes();
 
-            $table->foreign('tenant_parent_id')->references('id')->on('tenants');
+            $table->foreign('group_id')->references('id')->on('tenants');
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

@@ -8,6 +8,7 @@ export type TUser = {
     name: string;
     email: string;
     email_verified_at: string;
+    // avatar?: string;
     type: TUserType;
     created_at: string;
     updated_at: string;
@@ -30,11 +31,12 @@ export type TUserDetail = {
     address: string | null;
 };
 
-export type TUserType = 'god' | 'admin' | 'user';
-export const userTypes: TUserType[] = ['god', 'admin', 'user'];
+export type TUserType = 'god' | 'admin_rw' | 'admin_rt' | 'user';
+export const userTypes: TUserType[] = ['god', 'admin_rw', 'admin_rt', 'user'];
 export const userTypeLabels: Record<TUserType, string> = {
     god: 'God',
-    admin: 'Administrator',
+    admin_rw: 'Admin RW',
+    admin_rt: 'Admin RT',
     user: 'Pengguna Biasa',
 };
 

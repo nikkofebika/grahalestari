@@ -46,7 +46,7 @@ class RtController extends Controller implements HasSearch
                 'search' => $request->filter['search'] ?? ""
             ],
             'page' => $request->page ?? 1,
-            'per_page' => $this->per_page
+            'per_page' => $this->per_page,
         ]);
     }
 
@@ -76,14 +76,15 @@ class RtController extends Controller implements HasSearch
      */
     public function show(string $id): Response
     {
-        Gate::authorize('viewRt', Tenant::class);
-
         $tenant = $this->service->findById($id, [
             'parent.leader',
             'leader' => fn($q) => $q->selectMinimalist(),
             'createdBy' => fn($q) => $q->selectMinimalist(),
             'updatedBy' => fn($q) => $q->selectMinimalist(),
         ]);
+
+        Gate::authorize('viewRt', $tenant);
+
         return Inertia::render('rt/show/index', [
             'data' => $tenant
         ]);
@@ -94,9 +95,10 @@ class RtController extends Controller implements HasSearch
      */
     public function edit(string $id)
     {
-        Gate::authorize('updateRt', Tenant::class);
-
         $tenant = $this->service->findById($id);
+
+        Gate::authorize('updateRt', $tenant);
+
         return Inertia::render('rt/edit/index', [
             'data' => $tenant
         ]);
@@ -107,7 +109,9 @@ class RtController extends Controller implements HasSearch
      */
     public function update(StoreRequest $request, string $id)
     {
-        Gate::authorize('updateRt', Tenant::class);
+        $tenant = $this->service->findById($id);
+
+        Gate::authorize('updateRt', $tenant);
 
         $this->service->update($id, $request->validated());
         return to_route('rt.index')->with('success', self::UPDATED_MESSAGE);
@@ -118,7 +122,9 @@ class RtController extends Controller implements HasSearch
      */
     public function destroy(string $id)
     {
-        Gate::authorize('deleteRt', Tenant::class);
+        $tenant = $this->service->findById($id);
+
+        Gate::authorize('deleteRt', $tenant);
 
         $this->service->delete($id);
         return redirect()->back()->with('success', self::DELETED_MESSAGE);

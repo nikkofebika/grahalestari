@@ -16,7 +16,7 @@ class TenantedByTenantScope implements Scope
         /** @var \App\Models\User */
         $user = auth()->user();
 
-        if ($user->is_admin_rw) {
+        if (!$user->is_god) {
             $builder->where(
                 fn($q) => $q->where('id', $user->tenant_id)
                     ->orWhereHas(

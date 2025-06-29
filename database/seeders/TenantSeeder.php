@@ -40,6 +40,7 @@ class TenantSeeder extends Seeder
         ]);
 
         $user->update([
+            'group_id' => $parent->id,
             'tenant_id' => $parent->id,
         ]);
 
@@ -60,7 +61,7 @@ class TenantSeeder extends Seeder
             ]);
 
             $user->update([
-                'tenant_parent_id' => $parent->id,
+                'group_id' => $parent->id,
                 'tenant_id' => $child->id,
             ]);
         }
@@ -90,6 +91,7 @@ class TenantSeeder extends Seeder
         ]);
 
         $user->update([
+            'group_id' => $parent->id,
             'tenant_id' => $parent->id,
         ]);
 
@@ -109,7 +111,7 @@ class TenantSeeder extends Seeder
             ]);
 
             $user->update([
-                'tenant_parent_id' => $parent->id,
+                'group_id' => $parent->id,
                 'tenant_id' => $child->id,
             ]);
         }

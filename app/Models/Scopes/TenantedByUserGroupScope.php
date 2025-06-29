@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
 
-class TenantedByUserTenantScope implements Scope
+class TenantedByUserGroupScope implements Scope
 {
     /**
      * Apply the scope to a given Eloquent query builder.
@@ -16,33 +16,11 @@ class TenantedByUserTenantScope implements Scope
         /** @var \App\Models\User */
         $user = auth()->user();
 
-        if ($user->is_admin_rw) {
-            $builder->where(
-                fn($q) => $q->whereHas(
-                    'user',
-                    fn($q) => $q->where('tenant_id', $user->tenant_id)
-                        ->orWhereHas(
-                            'tenant',
-                            fn($q) => $q->withoutGlobalScopes()
-                                ->where('parent_id', $user->tenant_id)
-                        )
-                )
+        if (!$user->is_god) {
+            $builder->whereHas(
+                'user',
+                fn($q) => $q->where('group_id', $user->group_id)
             );
-        } elseif ($user->is_admin_rt) {
-            $builder->where(
-                fn($q) => $q->whereHas(
-                    'user',
-                    fn($q) => $q->where('tenant_id', $user->tenant_id)
-                        ->orWhereHas(
-                            'tenant',
-                            fn($q) => $q->withoutGlobalScopes()
-                                ->where('parent_id', $user->tenant_id)
-                                ->orWhereHas('childs', fn($q) => $q->where('id', $user->tenant_id))
-                        )
-                )
-            );
-        } elseif (!$user->is_god) {
-            $builder->whereHas('user', fn($q) => $q->where('tenant_id', $user->tenant_id));
         }
     }
 }

@@ -1,8 +1,9 @@
 import { LucideIcon } from 'lucide-react';
 import type { Config } from 'ziggy-js';
+import { TUser, TUserType } from './user';
 
 export interface Auth {
-    user: User;
+    user: TUser;
 }
 
 export interface BreadcrumbItem {
@@ -20,6 +21,7 @@ export interface NavItem {
     href: string;
     icon?: LucideIcon | null;
     isActive?: boolean;
+    allowUserType?: TUserType[];
 }
 
 export interface SharedData {
@@ -29,15 +31,4 @@ export interface SharedData {
     ziggy: Config & { location: string };
     sidebarOpen: boolean;
     [key: string]: unknown;
-}
-
-export interface User {
-    id: number;
-    name: string;
-    email: string;
-    avatar?: string;
-    email_verified_at: string | null;
-    created_at: string;
-    updated_at: string;
-    [key: string]: unknown; // This allows for additional properties...
 }

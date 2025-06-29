@@ -3,7 +3,7 @@ import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 import { BookOpen, Folder, GroupIcon, LayoutGrid, MegaphoneIcon, UserPenIcon, Users } from 'lucide-react';
 import AppLogo from './app-logo';
 
@@ -32,11 +32,13 @@ const masterData: NavItem[] = [
         title: 'RW',
         href: '/rw',
         icon: GroupIcon,
+        allowUserType: ['god', 'admin_rw'],
     },
     {
         title: 'RT',
         href: '/rt',
         icon: GroupIcon,
+        allowUserType: ['god', 'admin_rw', 'admin_rt'],
     },
 ];
 
@@ -67,6 +69,8 @@ const footerNavItems: NavItem[] = [
 ];
 
 export function AppSidebar() {
+    const { auth } = usePage().props;
+    console.log('usepage AppSidebar', auth);
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>
@@ -82,8 +86,8 @@ export function AppSidebar() {
             </SidebarHeader>
 
             <SidebarContent>
-                <NavMain label='Master Data' items={masterData} />
-                <NavMain label='Umum' items={generalFeature} />
+                <NavMain label="Master Data" items={masterData} />
+                <NavMain label="Umum" items={generalFeature} />
             </SidebarContent>
 
             <SidebarFooter>

@@ -8,6 +8,7 @@ import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { TPaginate } from '@/types/global';
 import { TTenant, TTenantFilters } from '@/types/tenant';
+import { usePage } from '@inertiajs/react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -24,6 +25,9 @@ type Props = {
 };
 
 export default function TenantIndex({ datas, filters, page: pageSize, per_page }: Props) {
+    const props = usePage().props;
+    console.log('TenantIndex props', props);
+
     const { search, setSearch } = useSearch({
         url: datas.meta.path,
         initialValue: filters.search,
