@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\GeneralSearchRequest;
 use App\Http\Requests\Complaint\StoreRequest;
+use App\Http\Resources\DefaultResource;
 use App\Interfaces\Controllers\HasSearch;
 use App\Interfaces\Services\Complaint\ComplaintServiceInterface;
 use App\Models\Complaint;
@@ -12,6 +13,7 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
+use Spatie\QueryBuilder\AllowedFilter;
 
 class ComplaintController extends Controller implements HasSearch
 {
@@ -22,7 +24,9 @@ class ComplaintController extends Controller implements HasSearch
 
     public function search(): AnonymousResourceCollection
     {
-        return $this->service->findAllPaginate($this->per_page);
+        $datas = $this->service->findAllPaginate($this->per_page);
+
+        return DefaultResource::collection($datas);
     }
 
     /**
@@ -34,11 +38,14 @@ class ComplaintController extends Controller implements HasSearch
 
         $datas = $this->service->findAllPaginate(
             $this->per_page,
-            fn(Builder $q) => $q->with('user')
+            fn(Builder $q) => $q->with('user'),
+            [
+                AllowedFilter::scope('search')
+            ]
         );
 
         return Inertia::render('complaint/index/index', [
-            'datas' => $datas,
+            'datas' => DefaultResource::collection($datas),
             'filters' => [
                 'search' => $request->filter['search'] ?? ""
             ],

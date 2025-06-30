@@ -36,6 +36,7 @@ type Props<T> = {
     getRowEditUrl?: (row: T) => string;
     isDeleting?: boolean;
     handleRowDelete?: (id: number) => void;
+    permissions?: Record<number, Record<string, boolean>>;
     selectedDataLabel?: string;
 };
 
@@ -50,6 +51,7 @@ export default function DataTable<T>({
     getRowEditUrl,
     isDeleting,
     handleRowDelete,
+    permissions,
     selectedDataLabel = 'name',
 }: Props<T>) {
     const [selectedData, setSelectedData] = useState<{
@@ -61,6 +63,7 @@ export default function DataTable<T>({
     });
 
     const totalColumn = columns.length;
+    console.log('permissions table', permissions);
 
     return (
         <>
@@ -104,7 +107,7 @@ export default function DataTable<T>({
                                         <TableCell key={column.name}>{column.renderCell?.(data) ?? get(data, column.name)}</TableCell>
                                     ))}
                                     <TableCell className="flex gap-1">
-                                        {getRowDetailUrl && (
+                                        {permissions[data.id]?.view && getRowDetailUrl && (
                                             <Link
                                                 href={getRowDetailUrl(data)}
                                                 title="Detail"
@@ -113,12 +116,12 @@ export default function DataTable<T>({
                                                 <EyeIcon />
                                             </Link>
                                         )}
-                                        {getRowEditUrl && (
+                                        {permissions[data.id]?.update && getRowEditUrl && (
                                             <Link href={getRowEditUrl(data)} title="Edit" className={buttonVariants({ size: 'sm' }) + ' m-0'}>
                                                 <EditIcon />
                                             </Link>
                                         )}
-                                        {handleRowDelete && (
+                                        {permissions[data.id]?.delete && handleRowDelete && (
                                             <Button
                                                 variant="destructive"
                                                 size="sm"

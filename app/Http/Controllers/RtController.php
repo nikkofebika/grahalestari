@@ -2,15 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Permission\PermissionResolver;
 use App\Http\Requests\GeneralSearchRequest;
 use App\Http\Requests\Rt\StoreRequest;
+use App\Http\Resources\DefaultResource;
 use App\Interfaces\Controllers\HasSearch;
 use App\Interfaces\Services\Tenant\TenantServiceInterface;
 use App\Models\Tenant;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
+use Spatie\QueryBuilder\AllowedFilter;
 
 class RtController extends Controller implements HasSearch
 {
@@ -21,10 +25,12 @@ class RtController extends Controller implements HasSearch
 
     public function search(): AnonymousResourceCollection
     {
-        return $this->service->findAllPaginate(
+        $datas = $this->service->findAllPaginate(
             $this->per_page,
             fn($q) => $q->whereNotNull('parent_id')
         );
+
+        return DefaultResource::collection($datas);
     }
 
     /**
@@ -34,14 +40,23 @@ class RtController extends Controller implements HasSearch
     {
         Gate::authorize('viewAnyRt', Tenant::class);
 
+        // $data = Tenant::query()->paginate();
+        // /** @var Paginator */
+        // $data2 = Tenant::query()->simplePaginate();
+        // $data2->getCollection();
+
         $datas = $this->service->findAllPaginate(
             $this->per_page,
-            fn($q) => $q->whereNotNull('parent_id')
-                ->with('leader')
+            fn($q) => $q->whereNotNull('parent_id')->with('leader'),
+            [AllowedFilter::scope('search')]
         );
 
         return Inertia::render('rt/index/index', [
-            'datas' => $datas,
+            'permissions' => [
+                'collection' => PermissionResolver::forCollection($datas->getCollection(), ['viewRt', 'updateRt', 'deleteRt']),
+                'actions' => PermissionResolver::forActions(Tenant::class, ['createRt']),
+            ],
+            'datas' => DefaultResource::collection($datas),
             'filters' => [
                 'search' => $request->filter['search'] ?? ""
             ],

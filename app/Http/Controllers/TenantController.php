@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\GeneralSearchRequest;
 use App\Http\Requests\Tenant\StoreRequest;
+use App\Http\Resources\DefaultResource;
 use App\Interfaces\Services\Tenant\TenantServiceInterface;
 use App\Models\Tenant;
 use Illuminate\Http\Request;
@@ -34,7 +35,7 @@ class TenantController extends Controller
         $datas = $this->service->findAllPaginate($this->per_page);
 
         return Inertia::render('tenants/index', [
-            'datas' => $datas,
+            'datas' => DefaultResource::collection($datas),
             'filters' => [
                 'search' => $request->filter['search'] ?? ""
             ],

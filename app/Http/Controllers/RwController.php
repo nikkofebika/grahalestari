@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\GeneralSearchRequest;
 use App\Http\Requests\Rw\StoreRequest;
+use App\Http\Resources\DefaultResource;
 use App\Interfaces\Controllers\HasSearch;
 use App\Interfaces\Services\Tenant\TenantServiceInterface;
 use App\Models\Tenant;
@@ -11,6 +12,7 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
+use Spatie\QueryBuilder\AllowedFilter;
 
 class RwController extends Controller implements HasSearch
 {
@@ -21,10 +23,12 @@ class RwController extends Controller implements HasSearch
 
     public function search(): AnonymousResourceCollection
     {
-        return $this->service->findAllPaginate(
+        $datas = $this->service->findAllPaginate(
             $this->per_page,
             fn($q) => $q->whereNull('parent_id')
         );
+
+        return DefaultResource::collection($datas);
     }
 
     /**
@@ -36,12 +40,14 @@ class RwController extends Controller implements HasSearch
 
         $datas = $this->service->findAllPaginate(
             $this->per_page,
-            fn($q) => $q->whereNull('parent_id')
-                ->with('leader')
+            fn($q) => $q->whereNull('parent_id')->with('leader'),
+            [
+                AllowedFilter::scope('search')
+            ]
         );
 
         return Inertia::render('rw/index/index', [
-            'datas' => $datas,
+            'datas' => DefaultResource::collection($datas),
             'filters' => [
                 'search' => $request->filter['search'] ?? ""
             ],

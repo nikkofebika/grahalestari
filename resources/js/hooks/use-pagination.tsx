@@ -12,16 +12,12 @@ export default function usePagination({ url, page: initialPage = 1, perPage: ini
     const [page, setPage] = useState(initialPage);
     const [perPage, setPerPage] = useState(initialPerPage);
 
-    console.log('usePagination initialPage', initialPage);
-    console.log('usePagination initialPerPage', initialPerPage);
-    console.log('usePagination called');
     useEffect(() => {
         if (isFirstRender.current) {
             isFirstRender.current = false;
             return;
         }
 
-        console.log('usePagination useEffect called');
         router.get(
             url,
             {

@@ -4,7 +4,7 @@ namespace App\Http\Services\Role;
 
 use App\Models\Permission;
 
-class PermissionService
+class RolePermissionService
 {
     public static function getAllPermissions()
     {

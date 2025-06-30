@@ -3,13 +3,27 @@
 namespace App\Interfaces\Services;
 
 use Closure;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Collection;
 
 interface BaseServiceInterface
 {
-    public function findAllPaginate(int $perPage, ?Closure $query = null, bool $isSimplePaginate = false): AnonymousResourceCollection;
+    /**
+     * Get all paginated data with optional query modifications.
+     *
+     * @param int $perPage Number of items per page
+     * @param Closure|null $query Optional closure to modify query
+     * @param array $allowedFilters Allowed filters for query builder
+     * @param array $allowedIncludes Allowed includes for query builder
+     * @param array $allowedFields Allowed fields for query builder
+     * @param array $allowedSorts Allowed sorts for query builder
+     * @param bool $isSimplePaginate Whether to use simple pagination
+     *
+     * @return LengthAwarePaginator|Paginator
+     */
+    public function findAllPaginate(int $perPage = 15, ?\Closure $query = null, ?array $allowedFilters = [], ?array $allowedIncludes = [], ?array $allowedFields = [], ?array $allowedSorts = [],  bool $isSimplePaginate = false): LengthAwarePaginator|Paginator;
     public function findAll(): Collection;
     public function findById(int $id, ?array $load = []): ?Model;
     public function create(array $data): Model;

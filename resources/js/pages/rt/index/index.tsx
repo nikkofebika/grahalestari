@@ -22,11 +22,13 @@ type Props = {
     filters: TTenantFilters;
     page: number;
     per_page: number;
+    collection?: any;
 };
 
-export default function TenantIndex({ datas, filters, page: pageSize, per_page }: Props) {
+export default function TenantIndex({ datas, filters, page: pageSize, per_page, permissions }: Props) {
     const props = usePage().props;
     console.log('TenantIndex props', props);
+    console.log('permissions', permissions);
 
     const { search, setSearch } = useSearch({
         url: datas.meta.path,
@@ -81,6 +83,7 @@ export default function TenantIndex({ datas, filters, page: pageSize, per_page }
                 setSearch={setSearch}
                 isDeleting={isDeleting}
                 handleRowDelete={handleRowDelete}
+                permissions={permissions?.collection}
             />
 
             <PaginatePagination setPage={setPage} meta={datas.meta} />

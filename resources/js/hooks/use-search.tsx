@@ -10,14 +10,13 @@ type Props = {
 export default function useSearch({ url, perPage, initialValue = '', debounceMs = 500 }: Props) {
     const isFirstRender = useRef(true);
     const [search, setSearch] = useState(initialValue);
-    console.log('useSearch called');
+
     useEffect(() => {
         if (isFirstRender.current) {
             isFirstRender.current = false;
             return;
         }
 
-        console.log('useSearch useEffect called');
         const timeout = setTimeout(() => {
             router.get(
                 url,

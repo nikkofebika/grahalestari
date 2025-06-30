@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\GeneralSearchRequest;
 use App\Http\Requests\User\StoreRequest;
 use App\Http\Requests\User\UpdateRequest;
+use App\Http\Resources\DefaultResource;
 use App\Interfaces\Controllers\HasSearch;
 use App\Interfaces\Services\User\UserServiceInterface;
 use App\Models\User;
@@ -12,6 +13,8 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\AllowedInclude;
 
 class UserController extends Controller implements HasSearch
 {
@@ -22,7 +25,9 @@ class UserController extends Controller implements HasSearch
 
     public function search(): AnonymousResourceCollection
     {
-        return $this->service->findAllPaginate($this->per_page);
+        $datas = $this->service->findAllPaginate($this->per_page);
+
+        return DefaultResource::collection($datas);
     }
 
     /**
@@ -32,10 +37,20 @@ class UserController extends Controller implements HasSearch
     {
         Gate::authorize('viewAny', User::class);
 
-        $datas = $this->service->findAllPaginate($this->per_page);
+        $datas = $this->service->findAllPaginate(
+            $this->per_page,
+            null,
+            [
+                AllowedFilter::scope('search')
+            ],
+            [
+                AllowedInclude::callback('tenant', fn($q) => $q->selectMinimalist())
+            ],
+            ['id', 'name']
+        );
 
         return Inertia::render('users/index/index', [
-            'datas' => $datas,
+            'datas' => DefaultResource::collection($datas),
             'filters' => [
                 'search' => $request->filter['search'] ?? ""
             ],

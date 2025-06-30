@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\GeneralSearchRequest;
 use App\Http\Requests\Role\StoreRequest;
 use App\Http\Requests\Role\UpdateRequest;
-use App\Http\Services\Role\PermissionService;
+use App\Http\Services\Role\RolePermissionService;
 use App\Interfaces\Services\Role\RoleServiceInterface;
 use App\Models\Role;
 use Inertia\Inertia;
@@ -48,7 +48,7 @@ class RoleController extends Controller
     public function create(): Response
     {
         return Inertia::render('roles/create', [
-            'permissions' => PermissionService::getAllPermissions()
+            'permissions' => RolePermissionService::getAllPermissions()
         ]);
     }
 
