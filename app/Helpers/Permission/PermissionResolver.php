@@ -2,6 +2,8 @@
 
 namespace App\Helpers\Permission;
 
+use App\Models\User;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Gate;
 
@@ -35,7 +37,6 @@ class PermissionResolver
     public static function forCollection(Collection $items, ?array $actions = ['view', 'update', 'delete']): array
     {
         $permissions = [];
-
         foreach ($items as $item) {
             $entry = [];
 
@@ -44,6 +45,21 @@ class PermissionResolver
             }
 
             $permissions[$item->id] = $entry;
+        }
+
+        return $permissions;
+    }
+
+    public static function forItem(Model $item, ?array $actions = ['view', 'update', 'delete']): array
+    {
+        $permissions = [];
+
+        foreach ($actions as $action) {
+            if($item instanceof User && $action === 'delete' && $item->id === auth()->id()) {
+               continue;
+            }
+
+            $permissions[$action] = Gate::check($action, $item);
         }
 
         return $permissions;

@@ -4,7 +4,7 @@ import InputText from '@/components/form/input-text';
 import InputTextArea from '@/components/form/input-text-area';
 import { TCreateAnnouncement } from '@/types/announcement';
 import { InertiaFormProps } from '@inertiajs/react';
-import { FormEventHandler } from 'react';
+import { FormEventHandler, PropsWithChildren } from 'react';
 import { SelectAnnouncementCategory } from './select-announcement-category';
 import { SelectAnnouncementTargetScope } from './select-announcement-target-scope';
 
@@ -14,12 +14,13 @@ type Props = {
     submitTitle?: string;
 };
 
-export default function AnnouncementForm({ onSubmit, useForm, submitTitle = 'Simpan' }: Props) {
+export default function AnnouncementForm({ onSubmit, useForm, submitTitle = 'Simpan', children }: PropsWithChildren<Props>) {
     const { data, setData, processing, errors } = useForm;
 
     return (
         <form onSubmit={onSubmit} className="space-y-5">
             <FormCard submitTitle={submitTitle} processing={processing}>
+                {children}
                 <SelectAnnouncementCategory label="Pilih Kategori" value={data.category} onChange={(value) => setData('category', value)} />
                 <SelectAnnouncementTargetScope
                     label="Pilih Target Penerima"

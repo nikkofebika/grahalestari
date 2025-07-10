@@ -7,10 +7,9 @@ use App\Http\Requests\GeneralSearchRequest;
 use App\Http\Requests\Rt\StoreRequest;
 use App\Http\Resources\DefaultResource;
 use App\Interfaces\Controllers\HasSearch;
-use App\Interfaces\Services\Tenant\TenantServiceInterface;
-use App\Models\Tenant;
+use App\Interfaces\Services\Rt\RtServiceInterface;
+use App\Models\Rt;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -18,7 +17,7 @@ use Spatie\QueryBuilder\AllowedFilter;
 
 class RtController extends Controller implements HasSearch
 {
-    public function __construct(protected TenantServiceInterface $service)
+    public function __construct(protected RtServiceInterface $service)
     {
         parent::__construct();
     }
@@ -38,12 +37,7 @@ class RtController extends Controller implements HasSearch
      */
     public function index(GeneralSearchRequest $request): Response
     {
-        Gate::authorize('viewAnyRt', Tenant::class);
-
-        // $data = Tenant::query()->paginate();
-        // /** @var Paginator */
-        // $data2 = Tenant::query()->simplePaginate();
-        // $data2->getCollection();
+        Gate::authorize('viewAny', Rt::class);
 
         $datas = $this->service->findAllPaginate(
             $this->per_page,
@@ -52,16 +46,13 @@ class RtController extends Controller implements HasSearch
         );
 
         return Inertia::render('rt/index/index', [
-            'permissions' => [
-                'collection' => PermissionResolver::forCollection($datas->getCollection(), ['viewRt', 'updateRt', 'deleteRt']),
-                'actions' => PermissionResolver::forActions(Tenant::class, ['createRt']),
-            ],
             'datas' => DefaultResource::collection($datas),
             'filters' => [
                 'search' => $request->filter['search'] ?? ""
             ],
             'page' => $request->page ?? 1,
             'per_page' => $this->per_page,
+            'permission_actions' => PermissionResolver::forActions(Rt::class),
         ]);
     }
 
@@ -70,7 +61,7 @@ class RtController extends Controller implements HasSearch
      */
     public function create(): Response
     {
-        Gate::authorize('createRt', Tenant::class);
+        Gate::authorize('create', Rt::class);
 
         return Inertia::render('rt/create/index');
     }
@@ -80,7 +71,7 @@ class RtController extends Controller implements HasSearch
      */
     public function store(StoreRequest $request)
     {
-        Gate::authorize('createRt', Tenant::class);
+        Gate::authorize('create', Rt::class);
 
         $this->service->create($request->validated());
         return to_route('rt.index')->with('success', self::CREATED_MESSAGE);
@@ -98,7 +89,7 @@ class RtController extends Controller implements HasSearch
             'updatedBy' => fn($q) => $q->selectMinimalist(),
         ]);
 
-        Gate::authorize('viewRt', $tenant);
+        Gate::authorize('view', $tenant);
 
         return Inertia::render('rt/show/index', [
             'data' => $tenant
@@ -112,7 +103,7 @@ class RtController extends Controller implements HasSearch
     {
         $tenant = $this->service->findById($id);
 
-        Gate::authorize('updateRt', $tenant);
+        Gate::authorize('update', $tenant);
 
         return Inertia::render('rt/edit/index', [
             'data' => $tenant
@@ -126,7 +117,7 @@ class RtController extends Controller implements HasSearch
     {
         $tenant = $this->service->findById($id);
 
-        Gate::authorize('updateRt', $tenant);
+        Gate::authorize('update', $tenant);
 
         $this->service->update($id, $request->validated());
         return to_route('rt.index')->with('success', self::UPDATED_MESSAGE);
@@ -139,7 +130,7 @@ class RtController extends Controller implements HasSearch
     {
         $tenant = $this->service->findById($id);
 
-        Gate::authorize('deleteRt', $tenant);
+        Gate::authorize('delete', $tenant);
 
         $this->service->delete($id);
         return redirect()->back()->with('success', self::DELETED_MESSAGE);

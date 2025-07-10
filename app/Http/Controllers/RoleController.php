@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Permission\PermissionResolver;
 use App\Http\Requests\GeneralSearchRequest;
 use App\Http\Requests\Role\StoreRequest;
 use App\Http\Requests\Role\UpdateRequest;
@@ -38,7 +39,8 @@ class RoleController extends Controller
                 'search' => $request->filter['search'] ?? ""
             ],
             'page' => $request->page ?? 1,
-            'per_page' => $this->per_page
+            'per_page' => $this->per_page,
+            'permission_actions' => PermissionResolver::forActions(Role::class),
         ]);
     }
 

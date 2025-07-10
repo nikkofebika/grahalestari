@@ -36,6 +36,19 @@ class UserService extends BaseService implements UserServiceInterface
     {
         if (empty($data['password'])) unset($data['password']);
 
-        return $this->baseRepository->update($id, $data);
+        $user = $this->findById($id);
+
+        try {
+            /** @var User */
+            // $this->baseRepository->update($id, $data);
+            $user->update($data);
+            $user->detail->update($data);
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
+
+        return true;
     }
 }

@@ -4,10 +4,10 @@ namespace App\Http\Repositories;
 
 use App\Interfaces\Repositories\BaseRepositoryInterface;
 use Closure;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -23,7 +23,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
     public function findAllPaginate(int $perPage = 15, ?Closure $query = null, ?array $allowedFilters = [], ?array $allowedIncludes = [], ?array $allowedFields = [], ?array $allowedSorts = [], bool $isSimplePaginate = false): LengthAwarePaginator|Paginator
     {
         $query = QueryBuilder::for(
-            $this->model->query()->when($query, $query)
+            $this->query()->when($query, $query)
         );
 
         if (count($allowedFields)) {

@@ -1,4 +1,4 @@
-import { TCreatedUpdatedDeletedInfo } from './global';
+import { TCreatedUpdatedDeletedInfo, TItemPermissions } from './global';
 import { TUser } from './user';
 
 export type TTenant = {
@@ -22,7 +22,7 @@ export type TTenant = {
     postal_code: string;
     created_at: string;
     updated_at: string;
-} & TCreatedUpdatedDeletedInfo;
+} & TCreatedUpdatedDeletedInfo & TItemPermissions;
 
 export type TTenantFilters = {
     search: string;

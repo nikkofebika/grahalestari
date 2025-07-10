@@ -13,27 +13,30 @@ Route::controller(\App\Http\Controllers\RegionController::class)
     });
 
 Route::controller(\App\Http\Controllers\Api\AuthController::class)
-    ->middleware('auth:api')
     ->prefix('auth')
     ->group(function () {
         Route::post('/token', 'token');
-        Route::post('logout', 'logout');
-        Route::post('refresh', 'refresh');
-        Route::get('me', 'me');
+        Route::middleware('auth:api')->group(function () {
+            Route::post('logout', 'logout');
+            Route::post('refresh', 'refresh');
+            Route::get('me', 'me');
+        });
     });
 
-// Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware('auth:api')->group(function () {
+    // Route::middleware(['auth', 'verified'])->group(function () {
 
-// Route::get('get-groups', [GroupController::class, 'getGroups']);
-// Route::resource('groups', GroupController::class);
+    // Route::get('get-groups', [GroupController::class, 'getGroups']);
+    // Route::resource('groups', GroupController::class);
 
-// Route::get('search-rw', [RwController::class, 'search']);
-// Route::resource('rw', RwController::class);
+    // Route::get('search-rw', [RwController::class, 'search']);
+    // Route::resource('rw', RwController::class);
 
-// Route::get('search-rt', [RtController::class, 'search']);
-// Route::resource('rt', RtController::class);
+    // Route::get('search-rt', [RtController::class, 'search']);
+    // Route::resource('rt', RtController::class);
 
-// Route::get('search-users', [UserController::class, 'search']);
-Route::apiResource('users', UserController::class);
-// Route::resource('roles', RoleController::class);
-// });
+    // Route::get('search-users', [UserController::class, 'search']);
+    Route::apiResource('users', UserController::class);
+    // Route::resource('roles', RoleController::class);
+    // });
+});

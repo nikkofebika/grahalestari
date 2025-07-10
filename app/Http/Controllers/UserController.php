@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Permission\PermissionResolver;
 use App\Http\Requests\GeneralSearchRequest;
 use App\Http\Requests\User\StoreRequest;
 use App\Http\Requests\User\UpdateRequest;
@@ -31,7 +32,9 @@ class UserController extends Controller implements HasSearch
     }
 
     /**
-     * Display a listing of the resource.
+     * Create new user.
+     *
+     * Creates new user or returns already existing user by email.
      */
     public function index(GeneralSearchRequest $request)
     {
@@ -55,7 +58,8 @@ class UserController extends Controller implements HasSearch
                 'search' => $request->filter['search'] ?? ""
             ],
             'page' => $request->page ?? 1,
-            'per_page' => $this->per_page
+            'per_page' => $this->per_page,
+            'permission_actions' => PermissionResolver::forActions(User::class),
         ]);
     }
 

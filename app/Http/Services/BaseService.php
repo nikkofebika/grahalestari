@@ -4,9 +4,9 @@ namespace App\Http\Services;
 
 use App\Interfaces\Repositories\BaseRepositoryInterface;
 use App\Interfaces\Services\BaseServiceInterface;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
 
 abstract class BaseService implements BaseServiceInterface

@@ -12,9 +12,7 @@ class UserPolicy
      */
     public function viewAny(User $user): bool
     {
-        if ($user->type == UserType::USER) return false;
-
-        return true;
+        return !$user->type->is(UserType::USER);
     }
 
     /**
@@ -30,7 +28,7 @@ class UserPolicy
      */
     public function create(User $user): bool
     {
-        return true;
+        return !$user->type->is(UserType::USER);
     }
 
     /**
@@ -38,7 +36,7 @@ class UserPolicy
      */
     public function update(User $user, User $model): bool
     {
-        return true;
+        return !$user->type->is(UserType::USER);
     }
 
     /**
@@ -46,7 +44,7 @@ class UserPolicy
      */
     public function delete(User $user, User $model): bool
     {
-        return true;
+        return !$user->type->is(UserType::USER);
     }
 
     /**
@@ -54,7 +52,7 @@ class UserPolicy
      */
     public function restore(User $user, User $model): bool
     {
-        return true;
+        return !$user->type->is(UserType::USER);
     }
 
     /**
@@ -62,6 +60,6 @@ class UserPolicy
      */
     public function forceDelete(User $user, User $model): bool
     {
-        return true;
+        return !$user->type->is(UserType::USER);
     }
 }

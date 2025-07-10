@@ -60,3 +60,9 @@ export type TUpdatedInfo = {
 };
 
 export type TCreatedUpdatedDeletedInfo = TSoftDelete & TCreatedInfo & TUpdatedInfo;
+
+type TBaseTPermission = Record<'create' | 'view' | 'update' | 'delete' | string, boolean>;
+export type TItemPermissions = {
+    permissions: Partial<TBasePermission>;
+};
+export type TPermissionActions = Partial<TBaseTPermission>;

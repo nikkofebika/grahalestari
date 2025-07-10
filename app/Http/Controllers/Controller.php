@@ -18,4 +18,19 @@ abstract class Controller
     {
         $this->per_page = min(request('per_page', $this->per_page), 100);
     }
+
+    protected function createdResponse(string $message = self::CREATED_MESSAGE)
+    {
+        return response()->json(['message' => $message], 201);
+    }
+
+    protected function updatedResponse(string $message = self::UPDATED_MESSAGE)
+    {
+        return response()->json(['message' => $message], 200);
+    }
+
+    protected function deletedResponse(string $message = self::DELETED_MESSAGE)
+    {
+        return response()->json(['message' => $message], 200);
+    }
 }

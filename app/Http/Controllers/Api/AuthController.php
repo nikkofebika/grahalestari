@@ -2,17 +2,25 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\OpenApiTags;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
-use App\Http\Resources\DefaultResource;
+use App\Http\Resources\Api\DefaultApiResource;
+use App\OpenApi\RequestBodies\Auth\TokenRequestBody;
+use App\OpenApi\Responses\Auth\TokenResponse;
+use Vyuldashev\LaravelOpenApi\Attributes as OpenApi;
 
+#[OpenApi\PathItem]
 class AuthController extends Controller
 {
-    // public function __construct()
-    // {
-    //     $this->middleware('auth:sanctum');
-    // }
-
+    /**
+     * Get token
+     *
+     * Get a JWT via given credentials.
+     */
+    #[OpenApi\Operation(id: 'AuthToken', tags: [OpenApiTags::AUTH->value])]
+    #[OpenApi\RequestBody(factory: TokenRequestBody::class)]
+    #[OpenApi\Response(factory: TokenResponse::class, statusCode:202)]
     public function token(LoginRequest $request)
     {
         if (! $token = auth('api')->attempt($request->validated())) {
@@ -63,7 +71,7 @@ class AuthController extends Controller
      */
     protected function respondWithToken($token)
     {
-        return new DefaultResource([
+        return new DefaultApiResource([
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => auth('api')->factory()->getTTL() * 60

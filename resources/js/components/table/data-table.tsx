@@ -13,6 +13,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { TItemPermissions } from '@/types/global';
 import { Link } from '@inertiajs/react';
 import get from 'lodash/get';
 import { EditIcon, EyeIcon, Trash2 } from 'lucide-react';
@@ -36,11 +37,10 @@ type Props<T> = {
     getRowEditUrl?: (row: T) => string;
     isDeleting?: boolean;
     handleRowDelete?: (id: number) => void;
-    permissions?: Record<number, Record<string, boolean>>;
     selectedDataLabel?: string;
 };
 
-export default function DataTable<T>({
+export default function DataTable<T extends TItemPermissions>({
     datas,
     columns,
     perPage,
@@ -51,7 +51,6 @@ export default function DataTable<T>({
     getRowEditUrl,
     isDeleting,
     handleRowDelete,
-    permissions,
     selectedDataLabel = 'name',
 }: Props<T>) {
     const [selectedData, setSelectedData] = useState<{
@@ -63,7 +62,6 @@ export default function DataTable<T>({
     });
 
     const totalColumn = columns.length;
-    console.log('permissions table', permissions);
 
     return (
         <>
@@ -107,7 +105,7 @@ export default function DataTable<T>({
                                         <TableCell key={column.name}>{column.renderCell?.(data) ?? get(data, column.name)}</TableCell>
                                     ))}
                                     <TableCell className="flex gap-1">
-                                        {permissions[data.id]?.view && getRowDetailUrl && (
+                                        {data.permissions?.view && getRowDetailUrl && (
                                             <Link
                                                 href={getRowDetailUrl(data)}
                                                 title="Detail"
@@ -116,12 +114,12 @@ export default function DataTable<T>({
                                                 <EyeIcon />
                                             </Link>
                                         )}
-                                        {permissions[data.id]?.update && getRowEditUrl && (
+                                        {data.permissions?.update && getRowEditUrl && (
                                             <Link href={getRowEditUrl(data)} title="Edit" className={buttonVariants({ size: 'sm' }) + ' m-0'}>
                                                 <EditIcon />
                                             </Link>
                                         )}
-                                        {permissions[data.id]?.delete && handleRowDelete && (
+                                        {data.permissions?.delete && handleRowDelete && (
                                             <Button
                                                 variant="destructive"
                                                 size="sm"

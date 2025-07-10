@@ -1,0 +1,745 @@
+{
+    "openapi": "3.0.2",
+    "info": {
+        "title": "Keparat Desa",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http:\/\/localhost:8000",
+            "description": ""
+        }
+    ],
+    "paths": {
+        "\/api\/auth\/token": {
+            "post": {
+                "tags": [
+                    "Autentication"
+                ],
+                "summary": "Get token",
+                "description": "Get a JWT via given credentials.",
+                "operationId": "AuthToken",
+                "requestBody": {
+                    "content": {
+                        "application\/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "admin@gmail.com"
+                                    },
+                                    "password": {
+                                        "format": "password",
+                                        "type": "string",
+                                        "example": "password"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "$ref": "#\/components\/schemas\/TokenSchema"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "\/api\/users": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Display a listing of the resource.",
+                "operationId": "UserIndex",
+                "parameters": [
+                    {
+                        "name": "filter[search]",
+                        "in": "query",
+                        "description": "Search by name & email",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "nikko"
+                        }
+                    },
+                    {
+                        "name": "filter[type]",
+                        "in": "query",
+                        "description": "Search by type",
+                        "required": false,
+                        "schema": {
+                            "enum": [
+                                "user",
+                                "admin",
+                                "god"
+                            ],
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "Accept",
+                        "in": "header",
+                        "description": "API call should for json response",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "application\/json"
+                        }
+                    },
+                    {
+                        "name": "Content-Type",
+                        "in": "header",
+                        "description": "API call should be json data",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "application\/json"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#\/components\/schemas\/User"
+                                            }
+                                        },
+                                        "meta": {
+                                            "$ref": "#\/components\/schemas\/meta"
+                                        },
+                                        "links": {
+                                            "$ref": "#\/components\/schemas\/links"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Store a newly created resource in storage.",
+                "operationId": "UserStore",
+                "requestBody": {
+                    "content": {
+                        "application\/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "tenant_id",
+                                    "name",
+                                    "email",
+                                    "password",
+                                    "type"
+                                ],
+                                "properties": {
+                                    "tenant_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Nikko Fe"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "user@gmail.com"
+                                    },
+                                    "password": {
+                                        "format": "password",
+                                        "type": "string",
+                                        "example": "secret#$%"
+                                    },
+                                    "type": {
+                                        "enum": [
+                                            [
+                                                "god",
+                                                "admin_rw",
+                                                "admin_rt",
+                                                "user"
+                                            ]
+                                        ],
+                                        "type": "string",
+                                        "example": "user"
+                                    },
+                                    "no_kk": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "no_ktp": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "phone": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "birth_date": {
+                                        "format": "date",
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "birth_place": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "gender": {
+                                        "enum": [
+                                            [
+                                                "male",
+                                                "female"
+                                            ]
+                                        ],
+                                        "type": "string",
+                                        "nullable": true,
+                                        "example": "male"
+                                    },
+                                    "religion": {
+                                        "enum": [
+                                            [
+                                                "islam",
+                                                "kristen",
+                                                "katolik",
+                                                "hindu",
+                                                "budha",
+                                                "khonghucu"
+                                            ]
+                                        ],
+                                        "type": "string",
+                                        "nullable": true,
+                                        "example": "islam"
+                                    },
+                                    "marital_status": {
+                                        "enum": [
+                                            [
+                                                "single",
+                                                "married",
+                                                "divorced",
+                                                "widowed"
+                                            ]
+                                        ],
+                                        "type": "string",
+                                        "nullable": true,
+                                        "example": "single"
+                                    },
+                                    "education": {
+                                        "enum": [
+                                            [
+                                                "SD",
+                                                "SMP",
+                                                "SMA",
+                                                "D3",
+                                                "D4",
+                                                "S1",
+                                                "S2",
+                                                "S3"
+                                            ]
+                                        ],
+                                        "type": "string",
+                                        "nullable": true,
+                                        "example": "S1"
+                                    },
+                                    "job": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "address": {
+                                        "type": "string",
+                                        "nullable": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Data created successfully",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "$ref": "#\/components\/schemas\/GeneralMessage"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "\/api\/users\/{user}": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Display the specified resource.",
+                "operationId": "UserShow",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#\/components\/schemas\/User"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Update the specified resource in storage.",
+                "operationId": "UserUpdate",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application\/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "tenant_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Nikko Fe"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "user@gmail.com"
+                                    },
+                                    "password": {
+                                        "format": "password",
+                                        "type": "string",
+                                        "example": "secret#$%"
+                                    },
+                                    "type": {
+                                        "enum": [
+                                            [
+                                                "god",
+                                                "admin_rw",
+                                                "admin_rt",
+                                                "user"
+                                            ]
+                                        ],
+                                        "type": "string",
+                                        "example": "user"
+                                    },
+                                    "no_kk": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "no_ktp": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "phone": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "birth_date": {
+                                        "format": "date",
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "birth_place": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "gender": {
+                                        "enum": [
+                                            [
+                                                "male",
+                                                "female"
+                                            ]
+                                        ],
+                                        "type": "string",
+                                        "nullable": true,
+                                        "example": "male"
+                                    },
+                                    "religion": {
+                                        "enum": [
+                                            [
+                                                "islam",
+                                                "kristen",
+                                                "katolik",
+                                                "hindu",
+                                                "budha",
+                                                "khonghucu"
+                                            ]
+                                        ],
+                                        "type": "string",
+                                        "nullable": true,
+                                        "example": "islam"
+                                    },
+                                    "marital_status": {
+                                        "enum": [
+                                            [
+                                                "single",
+                                                "married",
+                                                "divorced",
+                                                "widowed"
+                                            ]
+                                        ],
+                                        "type": "string",
+                                        "nullable": true,
+                                        "example": "single"
+                                    },
+                                    "education": {
+                                        "enum": [
+                                            [
+                                                "SD",
+                                                "SMP",
+                                                "SMA",
+                                                "D3",
+                                                "D4",
+                                                "S1",
+                                                "S2",
+                                                "S3"
+                                            ]
+                                        ],
+                                        "type": "string",
+                                        "nullable": true,
+                                        "example": "S1"
+                                    },
+                                    "job": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "address": {
+                                        "type": "string",
+                                        "nullable": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Data updated successfully",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "$ref": "#\/components\/schemas\/GeneralMessage"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Remove the specified resource from storage.",
+                "operationId": "UserDelete",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Data deleted successfully",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "$ref": "#\/components\/schemas\/GeneralMessage"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "TokenSchema": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "type": "object",
+                        "properties": {
+                            "access_token": {
+                                "description": "Token JWT yang akan digunakan untuk autentikasi.",
+                                "type": "string",
+                                "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+                            },
+                            "token_type": {
+                                "description": "Tipe token.",
+                                "type": "string",
+                                "example": "bearer"
+                            },
+                            "expires_in": {
+                                "description": "Waktu kedaluwarsa token dalam detik.",
+                                "type": "integer",
+                                "example": 3600
+                            }
+                        }
+                    }
+                }
+            },
+            "query": {
+                "type": "object",
+                "properties": {
+                    "foo": {
+                        "type": "string"
+                    }
+                }
+            },
+            "meta": {
+                "type": "object",
+                "properties": {
+                    "current_page": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "current_page_url": {
+                        "type": "string",
+                        "example": "http:\/\/localhost:8000\/api\/users?page=1"
+                    },
+                    "from": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "path": {
+                        "type": "string",
+                        "example": "http:\/\/localhost:8000\/api\/users"
+                    },
+                    "per_page": {
+                        "type": "integer",
+                        "example": 15
+                    },
+                    "to": {
+                        "type": "integer",
+                        "example": 15
+                    }
+                }
+            },
+            "links": {
+                "type": "object",
+                "properties": {
+                    "first": {
+                        "type": "string",
+                        "nullable": true,
+                        "example": "http:\/\/localhost:8000\/api\/users?page=1"
+                    },
+                    "last": {
+                        "type": "string",
+                        "nullable": true,
+                        "example": "http:\/\/localhost:8000\/api\/users?page=1"
+                    },
+                    "prev": {
+                        "type": "string",
+                        "nullable": true,
+                        "example": "http:\/\/localhost:8000\/api\/users?page=1"
+                    },
+                    "next": {
+                        "type": "string",
+                        "nullable": true,
+                        "example": "http:\/\/localhost:8000\/api\/users?page=1"
+                    }
+                }
+            },
+            "GeneralMessage": {
+                "type": "object",
+                "required": [
+                    "message"
+                ],
+                "properties": {
+                    "message": {
+                        "type": "string"
+                    }
+                }
+            },
+            "User": {
+                "type": "object",
+                "required": [
+                    "id",
+                    "group_id",
+                    "tenant_id",
+                    "name",
+                    "email",
+                    "type"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "group_id": {
+                        "type": "integer",
+                        "nullable": true,
+                        "example": 1
+                    },
+                    "tenant_id": {
+                        "type": "integer",
+                        "nullable": true,
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Nikko Fe"
+                    },
+                    "email": {
+                        "type": "string",
+                        "example": "user@gmail.com"
+                    },
+                    "email_verified_at": {
+                        "format": "date-time",
+                        "type": "string",
+                        "nullable": true,
+                        "example": "2020-12-20 22:40:30"
+                    },
+                    "remember_token": {
+                        "type": "string",
+                        "nullable": true,
+                        "example": "osifng024dif"
+                    },
+                    "type": {
+                        "enum": [
+                            [
+                                "god",
+                                "admin_rw",
+                                "admin_rt",
+                                "user"
+                            ]
+                        ],
+                        "type": "string",
+                        "example": "user"
+                    },
+                    "created_at": {
+                        "format": "date-time",
+                        "type": "string",
+                        "example": "2020-12-20 22:40:30"
+                    },
+                    "updated_at": {
+                        "format": "date-time",
+                        "type": "string",
+                        "example": "2020-12-20 22:40:30"
+                    },
+                    "created_by_id": {
+                        "type": "integer",
+                        "nullable": true,
+                        "example": 1
+                    },
+                    "updated_by_id": {
+                        "type": "integer",
+                        "nullable": true,
+                        "example": 1
+                    },
+                    "deleted_by_id": {
+                        "type": "integer",
+                        "nullable": true,
+                        "example": 1
+                    },
+                    "deleted_at": {
+                        "format": "date-time",
+                        "type": "string",
+                        "nullable": true,
+                        "example": "2020-12-20 22:40:30"
+                    }
+                }
+            }
+        },
+        "securitySchemes": {
+            "JWT": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        }
+    },
+    "security": [
+        {
+            "JWT": []
+        }
+    ],
+    "tags": [
+        {
+            "name": "Autentication",
+            "description": "API Autentication"
+        },
+        {
+            "name": "User",
+            "description": "User Management"
+        },
+        {
+            "name": "RW",
+            "description": "API RW"
+        },
+        {
+            "name": "RT",
+            "description": "API RT"
+        },
+        {
+            "name": "Tenant",
+            "description": "API Tenant"
+        },
+        {
+            "name": "Complaint",
+            "description": "API Complaint"
+        },
+        {
+            "name": "Announcement",
+            "description": "API Announcement"
+        }
+    ]
+}

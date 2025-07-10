@@ -32,7 +32,7 @@ class StoreRequest extends FormRequest
         return [
             'tenant_id' => ['nullable', 'exists:tenants,id'],
             'name' => ['required', new NameRule],
-            'email' => ['required', 'string', 'email'],
+            'email' => ['required', 'email'],
             'password' => ['required', 'string'],
             'type' => ['required', new Enum(UserType::class)],
 

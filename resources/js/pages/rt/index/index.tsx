@@ -6,9 +6,8 @@ import usePagination from '@/hooks/use-pagination';
 import useSearch from '@/hooks/use-search';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { TPaginate } from '@/types/global';
+import { TPaginate, TPermissionActions } from '@/types/global';
 import { TTenant, TTenantFilters } from '@/types/tenant';
-import { usePage } from '@inertiajs/react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -22,14 +21,10 @@ type Props = {
     filters: TTenantFilters;
     page: number;
     per_page: number;
-    collection?: any;
+    permission_actions?: TPermissionActions;
 };
 
-export default function TenantIndex({ datas, filters, page: pageSize, per_page, permissions }: Props) {
-    const props = usePage().props;
-    console.log('TenantIndex props', props);
-    console.log('permissions', permissions);
-
+export default function TenantIndex({ datas, filters, page: pageSize, per_page }: Props) {
     const { search, setSearch } = useSearch({
         url: datas.meta.path,
         initialValue: filters.search,
@@ -83,7 +78,6 @@ export default function TenantIndex({ datas, filters, page: pageSize, per_page, 
                 setSearch={setSearch}
                 isDeleting={isDeleting}
                 handleRowDelete={handleRowDelete}
-                permissions={permissions?.collection}
             />
 
             <PaginatePagination setPage={setPage} meta={datas.meta} />

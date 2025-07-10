@@ -32,6 +32,7 @@ export default function TenantForm({ onSubmit, useForm, submitTitle = 'Simpan', 
                         onChange={(value) => setData('parent_id', Number(value))} // simpan ke form
                         initialSelectedItem={tenant?.parent ?? null} // object dari props edit
                     />
+                    <InputError className="mt-1" message={errors.parent_id} />
                 </div>
                 <div className="grid gap-2">
                     <label className="text-sm font-medium">Pilih Ketua RT</label>
@@ -43,6 +44,7 @@ export default function TenantForm({ onSubmit, useForm, submitTitle = 'Simpan', 
                         onChange={(value) => setData('leader_id', Number(value))} // simpan ke form
                         initialSelectedItem={tenant?.leader ?? null} // object dari props edit
                     />
+                    <InputError className="mt-1" message={errors.leader_id} />
                 </div>
                 <div className="grid gap-2">
                     <Label htmlFor="name">Nama</Label>

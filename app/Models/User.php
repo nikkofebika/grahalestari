@@ -132,12 +132,7 @@ class User extends Authenticatable implements JWTSubject, TenantedInterface
 
         if ($user->is_admin_rw) {
             $query->where(
-                fn($q) => $q->where('tenant_id', $user->tenant_id)
-                    ->orWhereHas(
-                        'tenant',
-                        fn($q) => $q->withoutGlobalScopes()
-                            ->where('parent_id', $user->tenant_id)
-                    )
+                fn($q) => $q->where('group_id', $user->group_id)
             );
         } elseif (!$user->is_god) {
             $query->where('tenant_id', $user->tenant_id);

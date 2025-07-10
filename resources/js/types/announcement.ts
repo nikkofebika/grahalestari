@@ -1,4 +1,4 @@
-import { TCreatedUpdatedDeletedInfo } from './global';
+import { TCreatedUpdatedDeletedInfo, TItemPermissions } from './global';
 import { TUser } from './user';
 
 export type TAnnouncement = {
@@ -14,7 +14,7 @@ export type TAnnouncement = {
 
     created_at: string;
     updated_at: string;
-} & TCreatedUpdatedDeletedInfo;
+} & TCreatedUpdatedDeletedInfo & TItemPermissions;
 
 export type TAnnouncementCategory =
     | 'umum'

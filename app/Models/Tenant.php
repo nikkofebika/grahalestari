@@ -6,14 +6,14 @@ use App\Models\Scopes\TenantedByTenantScope;
 use App\Traits\Models\CreatedInfo;
 use App\Traits\Models\CustomSoftDeletes;
 use App\Traits\Models\UpdatedInfo;
-use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[ScopedBy([TenantedByTenantScope::class])]
 class Tenant extends BaseModel
 {
+    protected $table = 'tenants';
+
     use CreatedInfo, UpdatedInfo, CustomSoftDeletes;
 
     protected $fillable = [
@@ -33,6 +33,11 @@ class Tenant extends BaseModel
         'latitude',
         'longitude',
     ];
+
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new TenantedByTenantScope);
+    }
 
     public function parent(): BelongsTo
     {

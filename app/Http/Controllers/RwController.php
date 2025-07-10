@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Permission\PermissionResolver;
 use App\Http\Requests\GeneralSearchRequest;
 use App\Http\Requests\Rw\StoreRequest;
 use App\Http\Resources\DefaultResource;
 use App\Interfaces\Controllers\HasSearch;
-use App\Interfaces\Services\Tenant\TenantServiceInterface;
-use App\Models\Tenant;
+use App\Interfaces\Services\Rw\RwServiceInterface;
+use App\Models\Rw;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
@@ -16,7 +17,7 @@ use Spatie\QueryBuilder\AllowedFilter;
 
 class RwController extends Controller implements HasSearch
 {
-    public function __construct(protected TenantServiceInterface $service)
+    public function __construct(protected RwServiceInterface $service)
     {
         parent::__construct();
     }
@@ -36,11 +37,11 @@ class RwController extends Controller implements HasSearch
      */
     public function index(GeneralSearchRequest $request): Response
     {
-        Gate::authorize('viewAnyRw', Tenant::class);
+        Gate::authorize('viewAny', Rw::class);
 
         $datas = $this->service->findAllPaginate(
             $this->per_page,
-            fn($q) => $q->whereNull('parent_id')->with('leader'),
+            fn($q) => $q->with('leader'),
             [
                 AllowedFilter::scope('search')
             ]
@@ -52,7 +53,8 @@ class RwController extends Controller implements HasSearch
                 'search' => $request->filter['search'] ?? ""
             ],
             'page' => $request->page ?? 1,
-            'per_page' => $this->per_page
+            'per_page' => $this->per_page,
+            'permission_actions' => PermissionResolver::forActions(Rw::class),
         ]);
     }
 
@@ -61,7 +63,7 @@ class RwController extends Controller implements HasSearch
      */
     public function create(): Response
     {
-        Gate::authorize('createRw', Tenant::class);
+        Gate::authorize('create', Rw::class);
 
         return Inertia::render('rw/create/index');
     }
@@ -71,7 +73,7 @@ class RwController extends Controller implements HasSearch
      */
     public function store(StoreRequest $request)
     {
-        Gate::authorize('createRw', Tenant::class);
+        Gate::authorize('create', Rw::class);
 
         $this->service->create($request->validated());
         return to_route('rw.index')->with('success', self::CREATED_MESSAGE);
@@ -82,7 +84,7 @@ class RwController extends Controller implements HasSearch
      */
     public function show(string $id): Response
     {
-        Gate::authorize('viewRw', Tenant::class);
+        Gate::authorize('view', Rw::class);
 
         $tenant = $this->service->findById($id, [
             'leader' => fn($q) => $q->selectMinimalist(),
@@ -100,7 +102,7 @@ class RwController extends Controller implements HasSearch
      */
     public function edit(string $id)
     {
-        Gate::authorize('updateRw', Tenant::class);
+        Gate::authorize('update', Rw::class);
 
         $tenant = $this->service->findById($id);
         return Inertia::render('rw/edit/index', [
@@ -113,7 +115,7 @@ class RwController extends Controller implements HasSearch
      */
     public function update(StoreRequest $request, string $id)
     {
-        Gate::authorize('updateRw', Tenant::class);
+        Gate::authorize('update', Rw::class);
 
         $this->service->update($id, $request->validated());
         return to_route('rw.index')->with('success', self::UPDATED_MESSAGE);
@@ -124,7 +126,7 @@ class RwController extends Controller implements HasSearch
      */
     public function destroy(string $id)
     {
-        Gate::authorize('deleteRw', Tenant::class);
+        Gate::authorize('delete', Rw::class);
 
         $this->service->delete($id);
         return redirect()->back()->with('success', self::DELETED_MESSAGE);

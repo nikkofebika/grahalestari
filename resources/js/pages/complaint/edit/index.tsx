@@ -1,3 +1,4 @@
+import InputText from '@/components/form/input-text';
 import CreateUpdatePageHeading from '@/components/headings/create-update-page-heading';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
@@ -41,7 +42,9 @@ export default function ComplaintEdit({ data }: Props) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <CreateUpdatePageHeading title="Edit Aduan Masyarakat" backUrl="/aduan-masyarakat" />
-            <ComplaintForm onSubmit={submit} useForm={form} submitTitle="Update" />
+            <ComplaintForm onSubmit={submit} useForm={form} submitTitle="Update">
+                <InputText id="creator" label="Creator" value={`${data.user?.name} - ${data.user?.tenant?.name}`} disabled={true} />
+            </ComplaintForm>
         </AppLayout>
     );
 }

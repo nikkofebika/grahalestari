@@ -1,4 +1,4 @@
-import { TCreatedUpdatedDeletedInfo } from './global';
+import { TCreatedUpdatedDeletedInfo, TItemPermissions } from './global';
 import { TTenant } from './tenant';
 
 export type TUser = {
@@ -14,7 +14,7 @@ export type TUser = {
     updated_at: string;
 
     detail?: TUserDetail;
-} & TCreatedUpdatedDeletedInfo;
+} & TCreatedUpdatedDeletedInfo & TItemPermissions;
 
 export type TUserDetail = {
     user_id: number;

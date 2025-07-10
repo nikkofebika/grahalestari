@@ -26,6 +26,12 @@ class AppServiceProvider extends ServiceProvider
 
         \App\Interfaces\Repositories\Role\RoleRepositoryInterface::class => \App\Http\Repositories\Role\RoleRepository::class,
         \App\Interfaces\Services\Role\RoleServiceInterface::class => \App\Http\Services\Role\RoleService::class,
+
+        \App\Interfaces\Repositories\Rt\RtRepositoryInterface::class => \App\Http\Repositories\Rt\RtRepository::class,
+        \App\Interfaces\Services\Rt\RtServiceInterface::class => \App\Http\Services\Rt\RtService::class,
+
+        \App\Interfaces\Repositories\Rw\RwRepositoryInterface::class => \App\Http\Repositories\Rw\RwRepository::class,
+        \App\Interfaces\Services\Rw\RwServiceInterface::class => \App\Http\Services\Rw\RwService::class,
     ];
 
     /**
@@ -36,7 +42,5 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot(): void
-    {
-    }
+    public function boot(): void {}
 }

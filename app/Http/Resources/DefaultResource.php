@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Helpers\Permission\PermissionResolver;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -14,6 +15,11 @@ class DefaultResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        $data = parent::toArray($request);
+        if (!$request->expectsJson() || $request->boolean('with_permission', false)) {
+            $data['permissions'] = PermissionResolver::forItem($this->resource);
+        }
+
+        return $data;
     }
 }
