@@ -26,10 +26,11 @@ class RtController extends Controller implements HasSearch
     {
         $datas = $this->service->findAllPaginate(
             $this->per_page,
-            fn($q) => $q->whereNotNull('parent_id')
+            fn($q) => $q->whereNotNull('parent_id'),
+            allowedFields: ['id', 'name']
         );
 
-        return DefaultResource::collection($datas);
+        return \App\Http\Resources\GeneralResource::collection($datas);
     }
 
     /**
@@ -82,7 +83,7 @@ class RtController extends Controller implements HasSearch
      */
     public function show(string $id): Response
     {
-        $tenant = $this->service->findById($id, [
+        $tenant = $this->service->findById($id, load: [
             'parent.leader',
             'leader' => fn($q) => $q->selectMinimalist(),
             'createdBy' => fn($q) => $q->selectMinimalist(),

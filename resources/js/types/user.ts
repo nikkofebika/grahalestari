@@ -1,8 +1,10 @@
-import { TCreatedUpdatedDeletedInfo, TItemPermissions } from './global';
+import { TCreatedUpdatedDeletedInfo, TItemPermissions, TMedia } from './global';
 import { TTenant } from './tenant';
 
 export type TUser = {
     id: number;
+    group_id: number | null;
+    group?: TTenant;
     tenant_id: number | null;
     tenant?: TTenant;
     name: string;
@@ -14,7 +16,9 @@ export type TUser = {
     updated_at: string;
 
     detail?: TUserDetail;
-} & TCreatedUpdatedDeletedInfo & TItemPermissions;
+    image?: TMedia;
+} & TCreatedUpdatedDeletedInfo &
+    TItemPermissions;
 
 export type TUserDetail = {
     user_id: number;
@@ -75,11 +79,14 @@ export type TUserFilters = {
 };
 
 export type TCreateUser = {
+    parent_id: number | null;
+    group_id: number | null;
     tenant_id: number | null;
     name: string;
     email: string;
     password?: string;
     type: TUserType;
+    image: Blob | null;
 
     // detail
     no_kk: string | null;

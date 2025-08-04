@@ -28,7 +28,7 @@ class StoreRequest extends FormRequest
         return [
             'category' => ['required', new Enum(AnnouncementCategory::class)],
             'target_scope' => ['required', new Enum(AnnouncementTargetScope::class)],
-            'title' => ['required', new NameRule],
+            'title' => [new NameRule],
             'start_at' => ['required', 'date_format:Y-m-d H:i'],
             'end_at' => ['required', 'date_format:Y-m-d H:i'],
             'description' => ['required', 'string', 'min:2'],

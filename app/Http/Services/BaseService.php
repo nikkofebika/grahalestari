@@ -4,6 +4,7 @@ namespace App\Http\Services;
 
 use App\Interfaces\Repositories\BaseRepositoryInterface;
 use App\Interfaces\Services\BaseServiceInterface;
+use Closure;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
@@ -13,19 +14,20 @@ abstract class BaseService implements BaseServiceInterface
 {
     public function __construct(protected BaseRepositoryInterface $baseRepository) {}
 
-    public function findAllPaginate(int $perPage = 15, ?\Closure $query = null, ?array $allowedFilters = [], ?array $allowedIncludes = [], ?array $allowedFields = [], ?array $allowedSorts = [], bool $isSimplePaginate = false): LengthAwarePaginator|Paginator
+    public function findAllPaginate(int $perPage = 15, ?Closure $query = null, ?array $allowedFilters = [], ?array $allowedIncludes = [], ?array $allowedFields = [], ?array $allowedSorts = [], bool $isSimplePaginate = false): LengthAwarePaginator|Paginator
     {
         return $this->baseRepository->findAllPaginate($perPage, $query, $allowedFilters, $allowedIncludes, $allowedFields, $allowedSorts, $isSimplePaginate);
     }
 
-    public function findAll(): Collection
+    public function findAll(?Closure $query = null, ?array $allowedFilters = [], ?array $allowedIncludes = [], ?array $allowedFields = [], ?array $allowedSorts = []): Collection
+
     {
-        return $this->baseRepository->findAll();
+        return $this->baseRepository->findAll($query, $allowedFilters, $allowedIncludes, $allowedFields, $allowedSorts);
     }
 
-    public function findById(int $id, ?array $load = []): ?Model
+    public function findById(int $id, ?Closure $query = null, ?array $load = []): ?Model
     {
-        return $this->baseRepository->findById($id, $load);
+        return $this->baseRepository->findById($id, $query, $load);
     }
 
     public function create(array $data): Model

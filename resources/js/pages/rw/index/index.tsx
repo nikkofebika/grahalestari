@@ -51,6 +51,10 @@ export default function TenantIndex({ datas, filters, page: pageSize, per_page }
                         name: 'name',
                     },
                     {
+                        label: 'Nomor RW',
+                        name: 'number',
+                    },
+                    {
                         label: 'Ketua',
                         name: 'leader.name',
                     },

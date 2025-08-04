@@ -8,7 +8,7 @@ use App\Http\Requests\Tenant\StoreRequest;
 use App\Http\Resources\DefaultResource;
 use App\Interfaces\Services\Tenant\TenantServiceInterface;
 use App\Models\Tenant;
-use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -19,13 +19,14 @@ class TenantController extends Controller
         parent::__construct();
     }
 
-    public function getTenants(Request $request)
+    public function search(): AnonymousResourceCollection
     {
-        $search = $request->query('q', '');
-        $tenants = Tenant::where('name', 'like', "%{$search}%")
-            ->select('id', 'name')
-            ->paginate(10);
-        return $tenants;
+        $datas = $this->service->findAllPaginate(
+            $this->per_page,
+            allowedFields: ['id', 'name']
+        );
+
+        return \App\Http\Resources\GeneralResource::collection($datas);
     }
 
     /**

@@ -27,7 +27,7 @@ class AnnouncementController extends Controller implements HasSearch
     {
         $datas = $this->service->findAllPaginate($this->per_page);
 
-        return DefaultResource::collection($datas);
+        return \App\Http\Resources\GeneralResource::collection($datas);
     }
 
     /**
@@ -82,7 +82,7 @@ class AnnouncementController extends Controller implements HasSearch
      */
     public function show(string $id): Response
     {
-        $announcement = $this->service->findById($id, [
+        $announcement = $this->service->findById($id, load: [
             'user' => fn($q) => $q->selectMinimalist()
         ]);
 
@@ -98,7 +98,7 @@ class AnnouncementController extends Controller implements HasSearch
      */
     public function edit(string $id)
     {
-        $announcement = $this->service->findById($id, ['user.tenant']);
+        $announcement = $this->service->findById($id, load: ['user.tenant']);
 
         Gate::authorize('update', $announcement);
 

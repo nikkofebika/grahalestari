@@ -43,6 +43,10 @@ export default function RtShow({ data }: Props) {
                         <TableCell className="font-bold">Nama</TableCell>
                         <TableCell>{data.name}</TableCell>
                     </TableRow>
+                    <TableRow>
+                        <TableCell className="font-bold">Nomor RW</TableCell>
+                        <TableCell>{data.number}</TableCell>
+                    </TableRow>
                     <LocationInfoShow data={data.parent} />
                     <TableRow>
                         <TableCell className="font-bold">Lokasi</TableCell>

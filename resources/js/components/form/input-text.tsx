@@ -1,3 +1,4 @@
+import { InputHTMLAttributes } from 'react';
 import InputError from '../input-error';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
@@ -5,7 +6,7 @@ import { Label } from '../ui/label';
 type Props = {
     id: string;
     label: string;
-    value: string;
+    value: string | number;
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
     errorMessage?: string;
     autocomplete?: string;
@@ -13,6 +14,7 @@ type Props = {
     disabled?: boolean;
     wrapperClassName?: string;
     inputClassName?: string;
+    props?: InputHTMLAttributes<HTMLInputElement>;
 };
 
 export default function InputText({
@@ -26,6 +28,7 @@ export default function InputText({
     disabled,
     wrapperClassName = 'grid gap-2',
     inputClassName = 'mt-1 block w-full',
+    props,
 }: Props) {
     placeholder = placeholder ? placeholder : label;
     return (
@@ -39,6 +42,7 @@ export default function InputText({
                 autoComplete={autocomplete}
                 placeholder={placeholder}
                 disabled={disabled}
+                {...props}
             />
             {errorMessage && <InputError className="mt-1" message={errorMessage} />}
         </div>

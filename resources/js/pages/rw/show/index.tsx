@@ -35,6 +35,10 @@ export default function RwShow({ data }: Props) {
                         <TableCell className="font-bold">Nama</TableCell>
                         <TableCell>{data.name}</TableCell>
                     </TableRow>
+                    <TableRow>
+                        <TableCell className="font-bold">Nomor RT</TableCell>
+                        <TableCell>{data.number}</TableCell>
+                    </TableRow>
                     <LocationInfoShow data={data} />
                     <TableRow>
                         <TableCell className="font-bold">Lokasi</TableCell>

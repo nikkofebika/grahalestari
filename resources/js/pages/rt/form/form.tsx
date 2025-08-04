@@ -59,6 +59,21 @@ export default function TenantForm({ onSubmit, useForm, submitTitle = 'Simpan', 
                     <InputError className="mt-1" message={errors.name} />
                 </div>
                 <div className="grid gap-2">
+                    <Label htmlFor="number">Nomor RT</Label>
+                    <Input
+                        id="number"
+                        className="mt-1 block w-full"
+                        value={data.number as number}
+                        onChange={(e) => setData('number', Number(e.target.value))}
+                        autoComplete="number"
+                        placeholder="Nomor RT"
+                        type="number"
+                        min={1}
+                        max={255}
+                    />
+                    <InputError className="mt-1" message={errors.number} />
+                </div>
+                <div className="grid gap-2">
                     <Label htmlFor="address">Alamat</Label>
                     <Input
                         id="address"

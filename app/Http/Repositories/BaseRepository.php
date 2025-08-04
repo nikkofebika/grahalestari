@@ -49,14 +49,36 @@ abstract class BaseRepository implements BaseRepositoryInterface
         return $query->paginate($perPage)->withQueryString();
     }
 
-    public function findAll(): Collection
+    public function findAll(?Closure $query = null, ?array $allowedFilters = [], ?array $allowedIncludes = [], ?array $allowedFields = [], ?array $allowedSorts = []): Collection
     {
-        return $this->query()->get();
+        $query = QueryBuilder::for(
+            $this->query()->when($query, $query)
+        );
+
+        if (count($allowedFields)) {
+            $query->allowedFields($allowedFields);
+        }
+
+        if (count($allowedFilters)) {
+            $query->allowedFilters($allowedFilters);
+        }
+
+        if (count($allowedIncludes)) {
+            $query->allowedIncludes($allowedIncludes);
+        }
+
+        if (count($allowedSorts)) {
+            $query->allowedSorts($allowedSorts);
+        }
+
+        return $query->get();
     }
 
-    public function findById(int $id, ?array $load = []): ?Model
+    public function findById(int $id, ?Closure $query = null, ?array $load = []): ?Model
     {
-        $data = $this->query()->find($id);
+        $data = $this->query()
+            ->when($query, $query)
+            ->find($id);
 
         if ($data && count($load)) {
             $data = $data->load($load);
@@ -72,12 +94,14 @@ abstract class BaseRepository implements BaseRepositoryInterface
 
     public function update(int $id, array $data): bool
     {
-        return $this->query()->where('id', $id)->update($data);
+        $model = $this->findById($id);
+        return $model?->update($data);
     }
 
     public function delete(int $id): bool
     {
-        return $this->query()->where('id', $id)->delete();
+        $model = $this->findById($id);
+        return $model?->delete();
     }
 
     public function forceDelete(int $id): bool

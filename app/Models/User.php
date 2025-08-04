@@ -14,16 +14,20 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable implements JWTSubject, TenantedInterface
+class User extends Authenticatable implements JWTSubject, TenantedInterface, HasMedia
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, CreatedInfo, UpdatedInfo, CustomSoftDeletes, HasRoles;
+    use HasFactory, Notifiable, CreatedInfo, UpdatedInfo, CustomSoftDeletes, HasRoles, InteractsWithMedia;
 
     /**
      * The attributes that are mass assignable.
@@ -31,7 +35,8 @@ class User extends Authenticatable implements JWTSubject, TenantedInterface
      * @var list<string>
      */
     protected $fillable = [
-        'tenant_parent_id',
+        'parent_id', // if null, it's mean kepala keluarga
+        'group_id',
         'tenant_id',
         'name',
         'email',
@@ -61,6 +66,15 @@ class User extends Authenticatable implements JWTSubject, TenantedInterface
             'password' => 'hashed',
             'type' => UserType::class,
         ];
+    }
+
+    protected static function booted(): void
+    {
+        static::saving(function (self $model) {
+            if (!$model->group_id && $model->tenant_id) {
+                $model->group_id = $model->tenant?->parent?->id;
+            }
+        });
     }
 
     /**
@@ -110,19 +124,42 @@ class User extends Authenticatable implements JWTSubject, TenantedInterface
         return $this->type->is(UserType::ADMIN_RT);
     }
 
-    protected function getIsUserRtAttribute(): bool
+    protected function getIsUserAttribute(): bool
     {
         return $this->type->is(UserType::USER);
     }
 
+    public function childs(): HasMany
+    {
+        return $this->hasMany(self::class, 'parent_id');
+    }
+
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(self::class, 'parent_id');
+    }
+
+    public function group(): BelongsTo
+    {
+        return $this->belongsTo(Rw::class, 'group_id')->withoutGlobalScopes();
+    }
+
     public function tenant(): BelongsTo
     {
-        return $this->belongsTo(Tenant::class)->withoutGlobalScopes();
+        return $this->belongsTo(Rt::class)->withoutGlobalScopes();
     }
 
     public function detail(): HasOne
     {
         return $this->hasOne(UserDetail::class);
+    }
+
+    /**
+     * @return MorphOne<TMedia, $this>
+     */
+    public function image(): MorphOne
+    {
+        return $this->morphOne($this->getMediaModel(), 'model');
     }
 
     public function scopeTenanted(Builder $query): void
@@ -148,5 +185,12 @@ class User extends Authenticatable implements JWTSubject, TenantedInterface
     {
         $query->where('name', 'like', "%{$search}%")
             ->orWhere('email', 'like', "%{$search}%");
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this
+            ->addMediaCollection('default')
+            ->singleFile();
     }
 }

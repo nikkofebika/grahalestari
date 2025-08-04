@@ -27,7 +27,7 @@ class ComplaintController extends Controller implements HasSearch
     {
         $datas = $this->service->findAllPaginate($this->per_page);
 
-        return DefaultResource::collection($datas);
+        return \App\Http\Resources\GeneralResource::collection($datas);
     }
 
     /**
@@ -82,7 +82,7 @@ class ComplaintController extends Controller implements HasSearch
      */
     public function show(string $id): Response
     {
-        $complaint = $this->service->findById($id, [
+        $complaint = $this->service->findById($id, load: [
             'user' => fn($q) => $q->selectMinimalist()
         ]);
 
@@ -98,7 +98,7 @@ class ComplaintController extends Controller implements HasSearch
      */
     public function edit(string $id)
     {
-        $complaint = $this->service->findById($id, ['user.tenant']);
+        $complaint = $this->service->findById($id, load: ['user.tenant']);
 
         Gate::authorize('update', $complaint);
 

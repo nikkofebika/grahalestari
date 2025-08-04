@@ -21,7 +21,7 @@ class StoreRequest extends FormRequest
             'city_id' => ['required', 'integer'],
             'district_id' => ['required', 'integer'],
             'village_id' => ['required', 'integer'],
-            'name' => ['required', new NameRule],
+            'name' => [new NameRule],
             'latitude' => ['required', new LatLngRule],
             'longitude' => ['required', new LatLngRule],
             'postal_code' => ['required', 'string', 'size:5'],

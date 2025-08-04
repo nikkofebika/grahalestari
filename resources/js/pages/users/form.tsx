@@ -1,17 +1,18 @@
 import { CommandSelectInfinite } from '@/components/form/command-select-infinite';
 import DatePicker from '@/components/form/date-picker';
 import FormCard from '@/components/form/form-card';
+import ImageCropUploader from '@/components/form/image-crop-uploader';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { toNullable } from '@/helpers/helper';
+import { setSelectNumberNullable, toNullable } from '@/helpers/helper';
 import { TTenant } from '@/types/tenant';
 import { TCreateUser, TUser } from '@/types/user';
 import { InertiaFormProps } from '@inertiajs/react';
 import { SaveIcon } from 'lucide-react';
-import { FormEventHandler } from 'react';
+import { FormEventHandler, useState } from 'react';
 import { SelectEducation } from './form/select-education';
 import { SelectGender } from './form/select-gender';
 import { SelectMaritalStatus } from './form/select-marital-status';
@@ -27,19 +28,34 @@ type Props = {
 
 export default function UserForm({ onSubmit, useForm, submitTitle = 'Simpan', user }: Props) {
     const { data, setData, processing, errors } = useForm;
+    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
     return (
         <form onSubmit={onSubmit} className="space-y-5">
             <FormCard title="Data Akun" description="Data akun user">
                 <div className="grid gap-2">
-                    <label className="text-sm font-medium">Pilih Grup</label>
+                    <label className="text-sm font-medium">Pilih RT</label>
                     <CommandSelectInfinite<Pick<TTenant, 'id' | 'name'>>
-                        endpoint="/get-tenants"
+                        endpoint="/search-rt"
+                        query="fields[tenants]=id,name"
                         labelKey="name"
                         valueKey="id"
-                        placeholder="Pilih grup..."
+                        placeholder="Pilih RT..."
                         value={data.tenant_id} // id dari form
-                        onChange={(value) => setData('tenant_id', Number(value))} // simpan ke form
+                        onChange={(value) => setData('tenant_id', setSelectNumberNullable(value as number))} // simpan ke form
+                        initialSelectedItem={user?.tenant ?? null} // object dari props edit
+                    />
+                </div>
+                <div className="grid gap-2">
+                    <label className="text-sm font-medium">Kepala Keluarga</label>
+                    <CommandSelectInfinite<Pick<TTenant, 'id' | 'name'>>
+                        endpoint="/search-users"
+                        query="fields[users]=id,name"
+                        labelKey="name"
+                        valueKey="id"
+                        placeholder="Pilih Kepala Keluarga..."
+                        value={data.parent_id} // id dari form
+                        onChange={(value) => setData('parent_id', setSelectNumberNullable(value as number))} // simpan ke form
                         initialSelectedItem={user?.tenant ?? null} // object dari props edit
                     />
                 </div>
@@ -89,6 +105,14 @@ export default function UserForm({ onSubmit, useForm, submitTitle = 'Simpan', us
                     <SelectTUserType value={data.type} onChange={(value) => setData('type', value)} placeholder="Pilih Tipe User" />
                     <InputError message={errors.type} />
                 </div>
+
+                <ImageCropUploader
+                    previewUrl={previewUrl}
+                    onImageCropped={(blob) => {
+                        setData('image', blob);
+                        setPreviewUrl(URL.createObjectURL(blob));
+                    }}
+                />
             </FormCard>
             <FormCard title="Data Detail" description="Data detail user">
                 <div className="grid gap-2">
@@ -130,7 +154,13 @@ export default function UserForm({ onSubmit, useForm, submitTitle = 'Simpan', us
                     <InputError className="mt-1" message={errors.phone} />
                 </div>
 
-                <DatePicker id="birth_date" label="Tanggal Lahir" value={data.birth_date ?? null} onChange={(val) => setData('birth_date', val)} />
+                <DatePicker
+                    id="birth_date"
+                    label="Tanggal Lahir"
+                    value={data.birth_date ?? null}
+                    onChange={(val) => setData('birth_date', val)}
+                    errorMessage={errors.birth_date}
+                />
                 <div className="grid gap-2">
                     <Label htmlFor="birth_place">Tempat Lahir</Label>
 
@@ -182,19 +212,20 @@ export default function UserForm({ onSubmit, useForm, submitTitle = 'Simpan', us
                     />
                     <InputError className="mt-1" message={errors.job} />
                 </div>
-
-                <div className="col-span-2 grid gap-2">
-                    <Label htmlFor="address">Alamat</Label>
-                    <Textarea
-                        id="address"
-                        className="mt-1 block w-full"
-                        value={data.address ?? ''}
-                        onChange={(e) => setData('address', e.target.value)}
-                        autoComplete="address"
-                        placeholder="Alamat Lengkap"
-                    />
-                    <InputError className="mt-1" message={errors.address} />
-                </div>
+                {!data.parent_id && (
+                    <div className="col-span-2 grid gap-2">
+                        <Label htmlFor="address">Alamat</Label>
+                        <Textarea
+                            id="address"
+                            className="mt-1 block w-full"
+                            value={data.address ?? ''}
+                            onChange={(e) => setData('address', e.target.value)}
+                            autoComplete="address"
+                            placeholder="Alamat Lengkap"
+                        />
+                        <InputError className="mt-1" message={errors.address} />
+                    </div>
+                )}
             </FormCard>
 
             <div className="flex items-center gap-4">

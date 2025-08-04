@@ -2,6 +2,7 @@
 
 namespace App\OpenApi\Parameters\User;
 
+use App\Enums\UserType;
 use App\OpenApi\Parameters\BaseParameterFactoryParameters;
 use App\OpenApi\Parameters\HeaderApplicationJsonParameters;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
@@ -38,7 +39,7 @@ class UserIndexParameters extends BaseParameterFactoryParameters
                 ->required(false)
                 ->schema(
                     Schema::string('type')
-                        ->enum('user', 'admin', 'god')
+                        ->enum(UserType::getValues())
                 ),
         ];
 

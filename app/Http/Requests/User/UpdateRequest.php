@@ -42,7 +42,7 @@ class UpdateRequest extends FormRequest
     {
         return [
             'tenant_id' => ['sometimes', 'nullable', 'exists:tenants,id'],
-            'name' => ['sometimes', 'required', new NameRule],
+            'name' => ['sometimes', new NameRule],
             'email' => ['sometimes', 'required', 'email'],
             'password' => ['sometimes', 'required', 'string'],
             'type' => ['sometimes', 'required', new Enum(UserType::class)],

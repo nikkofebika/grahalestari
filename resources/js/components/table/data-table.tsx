@@ -16,7 +16,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { TItemPermissions } from '@/types/global';
 import { Link } from '@inertiajs/react';
 import get from 'lodash/get';
-import { EditIcon, EyeIcon, Trash2 } from 'lucide-react';
+import { EditIcon, EyeIcon, Trash2Icon } from 'lucide-react';
 import { Dispatch, ReactNode, SetStateAction, useState } from 'react';
 
 type Props<T> = {
@@ -132,7 +132,7 @@ export default function DataTable<T extends TItemPermissions>({
                                                     }))
                                                 }
                                             >
-                                                <Trash2 />
+                                                <Trash2Icon />
                                             </Button>
                                         )}
                                     </TableCell>

@@ -47,7 +47,7 @@ export default function UserIndex({ datas, filters, page: pageSize, per_page }: 
                 datas={datas.data}
                 columns={[
                     {
-                        label: 'Tenant',
+                        label: 'RT',
                         name: 'tenant.name',
                     },
                     {

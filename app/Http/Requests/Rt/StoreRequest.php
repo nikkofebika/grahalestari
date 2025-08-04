@@ -4,6 +4,7 @@ namespace App\Http\Requests\Rt;
 
 use App\Rules\LatLngRule;
 use App\Rules\NameRule;
+use App\Rules\TenantNumberRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreRequest extends FormRequest
@@ -22,7 +23,8 @@ class StoreRequest extends FormRequest
             // 'city_id' => ['required', 'integer'],
             // 'district_id' => ['required', 'integer'],
             // 'village_id' => ['required', 'integer'],
-            'name' => ['required', new NameRule],
+            'name' => [new NameRule],
+            'number' => ['required', new TenantNumberRule],
             'latitude' => ['required', 'string', new LatLngRule],
             'longitude' => ['required', 'string', new LatLngRule],
             'postal_code' => ['required', 'string', 'size:5'],

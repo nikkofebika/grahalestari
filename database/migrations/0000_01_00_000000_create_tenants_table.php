@@ -21,10 +21,11 @@ return new class extends Migration
             $table->string('city_name', 50)->nullable();
             $table->mediumInteger('district_id')->unsigned()->nullable();
             $table->string('district_name', 50)->nullable();
-            $table->integer('village_id')->unsigned()->nullable();
+            $table->bigInteger('village_id')->unsigned()->nullable();
             $table->string('village_name', 50)->nullable();
             $table->string('postal_code', 10)->nullable();
             $table->string('name', 50);
+            $table->tinyInteger('number')->unsigned();
             $table->text('address')->nullable();
             $table->string('latitude', 20)->nullable();
             $table->string('longitude', 20)->nullable();

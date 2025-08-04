@@ -30,6 +30,7 @@ export default function RtCreate() {
         village_id: 3603191002,
         village_name: 'Mekar Bakti',
         name: '',
+        number: null,
         address: '',
         latitude: null,
         longitude: null,

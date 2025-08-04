@@ -4,7 +4,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, Folder, GroupIcon, LayoutGrid, MegaphoneIcon, UserPenIcon, Users } from 'lucide-react';
+import { BookOpen, ContactRoundIcon, Folder, GroupIcon, LayoutGrid, MegaphoneIcon, UserPenIcon, Users } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const masterData: NavItem[] = [
@@ -40,6 +40,12 @@ const masterData: NavItem[] = [
         icon: GroupIcon,
         allowUserType: ['god', 'admin_rw', 'admin_rt'],
     },
+    {
+        title: 'Kepala Keluarga',
+        href: '/kepala-keluarga',
+        icon: ContactRoundIcon,
+        allowUserType: ['god', 'admin_rw', 'admin_rt'],
+    },
 ];
 
 const generalFeature: NavItem[] = [
@@ -53,6 +59,29 @@ const generalFeature: NavItem[] = [
         href: '/aduan-masyarakat',
         icon: UserPenIcon,
     },
+];
+
+const financeFeature: NavItem[] = [
+    {
+        title: 'COA',
+        href: '/coas',
+        icon: MegaphoneIcon,
+    },
+    {
+        title: 'Transaction',
+        href: '/transactions',
+        icon: MegaphoneIcon,
+    },
+    {
+        title: 'Jurnal',
+        href: '/journals',
+        icon: MegaphoneIcon,
+    },
+    // {
+    //     title: 'Aduan Masyarakat',
+    //     href: '/aduan-masyarakat',
+    //     icon: UserPenIcon,
+    // },
 ];
 
 const footerNavItems: NavItem[] = [
@@ -88,6 +117,7 @@ export function AppSidebar() {
             <SidebarContent>
                 <NavMain label="Master Data" items={masterData} />
                 <NavMain label="Umum" items={generalFeature} />
+                <NavMain label="Keuangan" items={financeFeature} />
             </SidebarContent>
 
             <SidebarFooter>

@@ -2,6 +2,7 @@
 
 namespace App\Interfaces\Repositories;
 
+use Closure;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
@@ -23,9 +24,9 @@ interface BaseRepositoryInterface
      *
      * @return LengthAwarePaginator|Paginator
      */
-    public function findAllPaginate(int $perPage = 15, ?\Closure $query = null, ?array $allowedFilters = [], ?array $allowedIncludes = [], ?array $allowedFields = [], ?array $allowedSorts = [],  bool $isSimplePaginate = false): LengthAwarePaginator|Paginator;
-    public function findAll(): Collection;
-    public function findById(int $id, ?array $load = null): ?Model;
+    public function findAllPaginate(int $perPage = 15, ?Closure $query = null, ?array $allowedFilters = [], ?array $allowedIncludes = [], ?array $allowedFields = [], ?array $allowedSorts = [],  bool $isSimplePaginate = false): LengthAwarePaginator|Paginator;
+    public function findAll(?Closure $query = null, ?array $allowedFilters = [], ?array $allowedIncludes = [], ?array $allowedFields = [], ?array $allowedSorts = []): Collection;
+    public function findById(int $id, ?Closure $query = null, ?array $load = []): ?Model;
     public function create(array $data): Model;
     public function update(int $id, array $data): bool;
     public function delete(int $id): bool;

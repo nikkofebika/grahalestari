@@ -30,11 +30,14 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'parent_id' => ['nullable', 'exists:users,id'],
+            'group_id' => ['nullable', 'exists:tenants,id'],
             'tenant_id' => ['nullable', 'exists:tenants,id'],
-            'name' => ['required', new NameRule],
+            'name' => [new NameRule],
             'email' => ['required', 'email'],
             'password' => ['required', 'string'],
             'type' => ['required', new Enum(UserType::class)],
+            'image' => ['sometimes', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
 
             "no_kk" => ['nullable', 'string', 'max:16'],
             "no_ktp" => ['nullable', 'string', 'max:16'],

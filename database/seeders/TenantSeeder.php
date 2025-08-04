@@ -15,7 +15,7 @@ class TenantSeeder extends Seeder
      */
     public function run(): void
     {
-        $user = User::factory()->create([
+        $userLeader = User::factory()->create([
             'name' => 'Admin RW',
             'email' => 'admin.rw@gmail.com',
             'type' => UserType::ADMIN_RW,
@@ -23,7 +23,7 @@ class TenantSeeder extends Seeder
 
         $parent = Tenant::create([
             'parent_id' => null,
-            'leader_id' => $user->id,
+            'leader_id' => $userLeader->id,
             'province_id' => 36,
             'province_name' => 'Banten',
             'city_id' => 3603,
@@ -34,16 +34,11 @@ class TenantSeeder extends Seeder
             'village_name' => 'Mekar Bakti',
             'postal_code' => '15710',
             'name' => 'RW 08 - Graha Lestari',
+            'number' => 8,
             'address' => 'Graha Lestari Citra Raya Kab Tangerang',
             'latitude' => '-6.2529363',
             'longitude' => '106.5135358',
         ]);
-
-        $user->update([
-            'group_id' => $parent->id,
-            'tenant_id' => $parent->id,
-        ]);
-
 
         for ($i = 1; $i < 7; $i++) {
             $user = User::factory()->create([
@@ -55,6 +50,7 @@ class TenantSeeder extends Seeder
             $child = $parent->childs()->create([
                 'leader_id' => $user->id,
                 'name' => 'RT 0' . $i . ' - Graha Lestari',
+                'number' => $i,
                 'address' => $parent->address,
                 'latitude' => $parent->latitude,
                 'longitude' => $parent->longitude,
@@ -66,7 +62,12 @@ class TenantSeeder extends Seeder
             ]);
         }
 
-        $user = User::factory()->create([
+        $userLeader->update([
+            'group_id' => $parent->id,
+            'tenant_id' => $child->id,
+        ]);
+
+        $userLeader = User::factory()->create([
             'name' => 'Admin RW Konoha',
             'email' => 'admin.konoha@gmail.com',
             'type' => UserType::ADMIN_RW,
@@ -74,7 +75,7 @@ class TenantSeeder extends Seeder
 
         $parent = Tenant::create([
             'parent_id' => null,
-            'leader_id' => $user->id,
+            'leader_id' => $userLeader->id,
             'province_id' => 36,
             'province_name' => 'Banten',
             'city_id' => 3603,
@@ -85,14 +86,10 @@ class TenantSeeder extends Seeder
             'village_name' => 'Mekar Bakti',
             'postal_code' => '15710',
             'name' => 'RW Konoha',
+            'number' => 1,
             'address' => 'Kp. Konoha',
             'latitude' => '-6.2529363',
             'longitude' => '106.5135358',
-        ]);
-
-        $user->update([
-            'group_id' => $parent->id,
-            'tenant_id' => $parent->id,
         ]);
 
         for ($i = 1; $i < 7; $i++) {
@@ -105,6 +102,7 @@ class TenantSeeder extends Seeder
             $child = $parent->childs()->create([
                 'leader_id' => $user->id,
                 'name' => 'RT 0' . $i . ' - Konoha',
+                'number' => $i,
                 'address' => $parent->address,
                 'latitude' => $parent->latitude,
                 'longitude' => $parent->longitude,
@@ -115,5 +113,10 @@ class TenantSeeder extends Seeder
                 'tenant_id' => $child->id,
             ]);
         }
+
+        $userLeader->update([
+            'group_id' => $parent->id,
+            'tenant_id' => $child->id,
+        ]);
     }
 }

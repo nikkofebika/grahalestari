@@ -33,6 +33,7 @@ export default function RtEdit({ data }: Props) {
         village_id: 3603191002,
         village_name: 'Mekar Bakti',
         name: data.name,
+        number: data.number,
         address: data.address,
         latitude: data.latitude,
         longitude: data.longitude,

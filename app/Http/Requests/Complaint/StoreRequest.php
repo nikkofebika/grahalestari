@@ -22,11 +22,11 @@ class StoreRequest extends FormRequest
         return [
             'category' => ['required', new Enum(ComplaintCategory::class)],
             // 'status' => ['nullable', new Enum(ComplaintStatus::class)],
-            'title' => ['required', new NameRule],
+            'title' => [new NameRule],
             'description' => ['required', new DescriptionRule],
             'latitude' => ['nullable', new LatLngRule],
             'longitude' => ['nullable', new LatLngRule],
-            'location' => ['required', new NameRule],
+            'location' => [new NameRule],
             // 'handled_by_id' => ['nullable', 'exists:users,id'],
             // 'handled_at' => ['nullable', 'date_format:Y-m-d H:i'],
             // 'done_by_id' => ['nullable', 'exists:users,id'],

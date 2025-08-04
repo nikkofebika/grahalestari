@@ -2,7 +2,7 @@
 
 namespace App\Http\Services\Region;
 
-use App\Http\Resources\DefaultResource;
+use App\Http\Resources\GeneralResource;
 use Illuminate\Support\Facades\Http;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -21,16 +21,16 @@ class RegionService
         $data = $response->object();
 
         if (is_object($data)) {
-            return new DefaultResource((array)$data);
+            return new GeneralResource((array)$data);
         }
 
         $data = $response->json();
 
         if ($id) {
-            return new DefaultResource(collect($data)->firstWhere('id', $id));
+            return new GeneralResource(collect($data)->firstWhere('id', $id));
         }
 
-        $data = DefaultResource::collection($data);
+        $data = GeneralResource::collection($data);
 
         return $data;
     }
@@ -47,10 +47,10 @@ class RegionService
         $data = $response->object();
 
         if (is_object($data)) {
-            return new DefaultResource((array)$data);
+            return new GeneralResource((array)$data);
         }
 
-        return DefaultResource::collection($response->json());
+        return GeneralResource::collection($response->json());
     }
 
     public function getDistricts(int $id)
@@ -66,10 +66,10 @@ class RegionService
         $data = $response->object();
 
         if (is_object($data)) {
-            return new DefaultResource((array)$data);
+            return new GeneralResource((array)$data);
         }
 
-        return DefaultResource::collection($response->json());
+        return GeneralResource::collection($response->json());
     }
 
     public function getVillages(int $id)
@@ -85,9 +85,9 @@ class RegionService
         $data = $response->object();
 
         if (is_object($data)) {
-            return new DefaultResource((array)$data);
+            return new GeneralResource((array)$data);
         }
 
-        return DefaultResource::collection($response->json());
+        return GeneralResource::collection($response->json());
     }
 }

@@ -34,4 +34,22 @@ class UserDetail extends Model
         'marital_status' => MaritalStatus::class,
         'education' => Education::class,
     ];
+
+    protected function getNoKkAttribute(): ?string
+    {
+        if ($this->user->parent_id) {
+            return $this->user->parent?->detail?->no_kk;
+        }
+
+        return $this->attributes['no_kk'];
+    }
+
+    protected function getAddressAttribute(): ?string
+    {
+        if ($this->user->parent_id) {
+            return $this->user->parent?->detail?->address;
+        }
+
+        return $this->attributes['address'];
+    }
 }

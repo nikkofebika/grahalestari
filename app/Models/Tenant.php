@@ -29,6 +29,7 @@ class Tenant extends BaseModel
         'village_name',
         'postal_code',
         'name',
+        'number',
         'address',
         'latitude',
         'longitude',
@@ -53,6 +54,17 @@ class Tenant extends BaseModel
     {
         return $this->hasMany(self::class, 'parent_id');
     }
+
+    public function coas(): HasMany
+    {
+        return $this->hasMany(Coa::class);
+    }
+
+    public function scopeSelectMinimalist(Builder $query, $additionalColumns = [])
+    {
+        $query->select('id', 'name', 'number', ...$additionalColumns);
+    }
+
 
     public function scopeSearch(Builder $query, string $search)
     {

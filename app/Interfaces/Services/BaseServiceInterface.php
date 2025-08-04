@@ -23,9 +23,9 @@ interface BaseServiceInterface
      *
      * @return LengthAwarePaginator|Paginator
      */
-    public function findAllPaginate(int $perPage = 15, ?\Closure $query = null, ?array $allowedFilters = [], ?array $allowedIncludes = [], ?array $allowedFields = [], ?array $allowedSorts = [],  bool $isSimplePaginate = false): LengthAwarePaginator|Paginator;
-    public function findAll(): Collection;
-    public function findById(int $id, ?array $load = []): ?Model;
+    public function findAllPaginate(int $perPage = 15, ?Closure $query = null, ?array $allowedFilters = [], ?array $allowedIncludes = [], ?array $allowedFields = [], ?array $allowedSorts = [],  bool $isSimplePaginate = false): LengthAwarePaginator|Paginator;
+    public function findAll(?Closure $query = null, ?array $allowedFilters = [], ?array $allowedIncludes = [], ?array $allowedFields = [], ?array $allowedSorts = []): Collection;
+    public function findById(int $id, ?Closure $query = null, ?array $load = []): ?Model;
     public function create(array $data): Model;
     public function update(int $id, array $data): bool;
     public function delete(int $id): bool;

@@ -15,8 +15,14 @@ class AppServiceProvider extends ServiceProvider
         \App\Interfaces\Repositories\Announcement\AnnouncementRepositoryInterface::class => \App\Http\Repositories\Announcement\AnnouncementRepository::class,
         \App\Interfaces\Services\Announcement\AnnouncementServiceInterface::class => \App\Http\Services\Announcement\AnnouncementService::class,
 
+        \App\Interfaces\Repositories\Coa\CoaRepositoryInterface::class => \App\Http\Repositories\Coa\CoaRepository::class,
+        \App\Interfaces\Services\Coa\CoaServiceInterface::class => \App\Http\Services\Coa\CoaService::class,
+
         \App\Interfaces\Repositories\Complaint\ComplaintRepositoryInterface::class => \App\Http\Repositories\Complaint\ComplaintRepository::class,
         \App\Interfaces\Services\Complaint\ComplaintServiceInterface::class => \App\Http\Services\Complaint\ComplaintService::class,
+
+        \App\Interfaces\Repositories\Journal\JournalRepositoryInterface::class => \App\Http\Repositories\Journal\JournalRepository::class,
+        \App\Interfaces\Services\Journal\JournalServiceInterface::class => \App\Http\Services\Journal\JournalService::class,
 
         \App\Interfaces\Repositories\Tenant\TenantRepositoryInterface::class => \App\Http\Repositories\Tenant\TenantRepository::class,
         \App\Interfaces\Services\Tenant\TenantServiceInterface::class => \App\Http\Services\Tenant\TenantService::class,

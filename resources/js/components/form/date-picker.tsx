@@ -13,13 +13,13 @@ type Props = {
     value: string | null; // "YYYY-MM-DD"
     onChange: (val: string | null) => void;
     label?: string;
-    error?: string;
+    errorMessage?: string;
     required?: boolean;
     disabled?: boolean;
     placeholder?: string;
 };
 
-export default function DatePicker({ id, value, onChange, label, error, required = false, disabled = false, placeholder = 'Pilih tanggal' }: Props) {
+export default function DatePicker({ id, value, onChange, label, errorMessage, required = false, disabled = false, placeholder = 'Pilih tanggal' }: Props) {
     const [open, setOpen] = React.useState(false);
 
     const dateValue = value ? parseISO(value) : undefined;
@@ -56,7 +56,7 @@ export default function DatePicker({ id, value, onChange, label, error, required
                     <Calendar mode="single" selected={dateValue} onSelect={handleSelect} captionLayout="dropdown" />
                 </PopoverContent>
             </Popover>
-            {error && <InputError message={error} />}
+            {errorMessage && <InputError message={errorMessage} />}
         </div>
     );
 }

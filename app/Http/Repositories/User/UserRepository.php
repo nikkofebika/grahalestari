@@ -19,9 +19,10 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
         return $this->model->newQuery()->tenanted();
     }
 
-    public function findById(int $id, ?array $load = []): ?User
+    public function findById(int $id, ?\Closure $query = null, ?array $load = []): ?User
     {
         $data = $this->query()
+            ->when($query, $query)
             ->with([
                 'tenant' => fn($q) => $q->select('id', 'name')
             ])

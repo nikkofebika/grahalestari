@@ -15,7 +15,6 @@ use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
 use Spatie\QueryBuilder\AllowedFilter;
-use Spatie\QueryBuilder\AllowedInclude;
 
 class UserController extends Controller implements HasSearch
 {
@@ -26,9 +25,12 @@ class UserController extends Controller implements HasSearch
 
     public function search(): AnonymousResourceCollection
     {
-        $datas = $this->service->findAllPaginate($this->per_page);
+        $datas = $this->service->findAllPaginate(
+            $this->per_page,
+            allowedFields: ['id', 'name']
+        );
 
-        return DefaultResource::collection($datas);
+        return \App\Http\Resources\GeneralResource::collection($datas);
     }
 
     /**
@@ -42,14 +44,11 @@ class UserController extends Controller implements HasSearch
 
         $datas = $this->service->findAllPaginate(
             $this->per_page,
-            null,
+            fn($q) => $q->with('tenant', fn($q) => $q->selectMinimalist()),
             [
                 AllowedFilter::scope('search')
             ],
-            [
-                AllowedInclude::callback('tenant', fn($q) => $q->selectMinimalist())
-            ],
-            ['id', 'name']
+            allowedFields: ['id', 'name']
         );
 
         return Inertia::render('users/index/index', [
@@ -89,11 +88,22 @@ class UserController extends Controller implements HasSearch
      */
     public function show(string $id): Response
     {
-        Gate::authorize('view', User::class);
-
         $user = $this->service->findById($id);
+
+        Gate::authorize('view', $user);
+
+        $user->load([
+            'group' => fn($q) => $q->selectMinimalist(),
+            'tenant' => fn($q) => $q->selectMinimalist(),
+            'detail',
+            'image',
+        ]);
+
+        $familyMembers = $this->service->familyMembers($user);
+
         return Inertia::render('users/show/index', [
-            'user' => $user
+            'data' => $user,
+            'family_members' => $familyMembers,
         ]);
     }
 
@@ -102,12 +112,18 @@ class UserController extends Controller implements HasSearch
      */
     public function edit(string $id)
     {
-        Gate::authorize('update', User::class);
-
         $user = $this->service->findById($id);
-        $user->load('detail');
+
+        Gate::authorize('update', $user);
+
+        $user->load([
+            'group' => fn($q) => $q->selectMinimalist(),
+            'tenant' => fn($q) => $q->selectMinimalist(),
+            'detail',
+        ]);
+
         return Inertia::render('users/edit/index', [
-            'user' => $user
+            'data' => $user
         ]);
     }
 
@@ -116,7 +132,9 @@ class UserController extends Controller implements HasSearch
      */
     public function update(UpdateRequest $request, string $id)
     {
-        Gate::authorize('update', User::class);
+        $user = $this->service->findById($id);
+
+        Gate::authorize('update', $user);
 
         $this->service->update($id, $request->validated());
         return to_route('users.index')->with('success', self::UPDATED_MESSAGE);
@@ -127,7 +145,9 @@ class UserController extends Controller implements HasSearch
      */
     public function destroy(string $id)
     {
-        Gate::authorize('delete', User::class);
+        $user = $this->service->findById($id);
+
+        Gate::authorize('delete', $user);
 
         $this->service->delete($id);
         return redirect()->back()->with('success', self::DELETED_MESSAGE);

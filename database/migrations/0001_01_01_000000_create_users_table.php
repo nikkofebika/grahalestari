@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('parent_id')->unsigned()->nullable();
             $table->bigInteger('group_id')->unsigned()->nullable();
             $table->foreignIdFor(Tenant::class)->nullable()->constrained();
             $table->string('name', 100);
@@ -31,6 +32,7 @@ return new class extends Migration
             $table->integer('deleted_by_id')->unsigned()->nullable();
             $table->softDeletes();
 
+            $table->foreign('parent_id')->references('id')->on('users');
             $table->foreign('group_id')->references('id')->on('tenants');
         });
 

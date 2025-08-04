@@ -26,10 +26,11 @@ class RwController extends Controller implements HasSearch
     {
         $datas = $this->service->findAllPaginate(
             $this->per_page,
-            fn($q) => $q->whereNull('parent_id')
+            fn($q) => $q->whereNull('parent_id'),
+            allowedFields: ['id', 'name']
         );
 
-        return DefaultResource::collection($datas);
+        return \App\Http\Resources\GeneralResource::collection($datas);
     }
 
     /**
@@ -86,7 +87,7 @@ class RwController extends Controller implements HasSearch
     {
         Gate::authorize('view', Rw::class);
 
-        $tenant = $this->service->findById($id, [
+        $tenant = $this->service->findById($id, load: [
             'leader' => fn($q) => $q->selectMinimalist(),
             'createdBy' => fn($q) => $q->selectMinimalist(),
             'updatedBy' => fn($q) => $q->selectMinimalist(),

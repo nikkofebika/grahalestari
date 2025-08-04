@@ -6,10 +6,11 @@ import { useEffect, useRef, useState } from 'react';
 
 interface SelectInfiniteIdProps<T> {
     endpoint: string;
+    query?: string;
     labelKey?: keyof T;
     valueKey?: keyof T;
     placeholder?: string;
-    onChange?: (value: T[keyof T]) => void;
+    onChange?: (value: T[keyof T] | null) => void;
     value?: T[keyof T] | null;
     className?: string;
     initialSelectedItem?: T | null;
@@ -17,6 +18,7 @@ interface SelectInfiniteIdProps<T> {
 
 export function CommandSelectInfinite<T extends Record<string, string | number>>({
     endpoint,
+    query = '',
     labelKey = 'name',
     valueKey = 'id',
     placeholder = 'Cari...',
@@ -50,7 +52,7 @@ export function CommandSelectInfinite<T extends Record<string, string | number>>
             if (!hasMore || loading) return;
             setLoading(true);
             try {
-                const res = await fetch(`${endpoint}?filter[search]=${keySearch}&fields[users]=${String(valueKey)},${String(labelKey)}&page=${page}`);
+                const res = await fetch(`${endpoint}?filter[search]=${keySearch}&page=${page}&${query}`);
                 const json = await res.json();
                 const newItems = json.data;
 
@@ -86,7 +88,16 @@ export function CommandSelectInfinite<T extends Record<string, string | number>>
                     <CommandInput placeholder="Cari..." onValueChange={setSearch} className="h-9" />
                     <CommandList ref={listRef} onScroll={handleScroll} className="max-h-[200px] overflow-y-auto">
                         <CommandEmpty>Tidak ditemukan</CommandEmpty>
-
+                        <CommandItem
+                            className="text-muted-foreground"
+                            key="delete-value"
+                            onSelect={() => {
+                                onChange?.(null);
+                                setOpen(false);
+                            }}
+                        >
+                            Reset Data
+                        </CommandItem>
                         {data.map((item) => (
                             <CommandItem
                                 key={item[valueKey]}

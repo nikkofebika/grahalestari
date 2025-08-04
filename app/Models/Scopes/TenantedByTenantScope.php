@@ -17,16 +17,18 @@ class TenantedByTenantScope implements Scope
         $user = auth()->user();
 
         if (!$user->is_god) {
-            $builder->where(
-                fn($q) => $q->where('id', $user->tenant_id)
-                    ->orWhereHas(
-                        'parent',
-                        fn($q) => $q->withoutGlobalScope(self::class)
-                            ->where('id', $user->tenant_id)
-                    )
-            );
-        } elseif (!$user->is_god) {
-            $builder->where('id', $user->tenant_id);
+            if ($user->is_admin_rw) {
+                $builder->where(
+                    fn($q) => $q->where('id', $user->group_id)->orWhere('parent_id', $user->group_id)
+                    // ->orWhereHas(
+                    //     'parent',
+                    //     fn($q) => $q->withoutGlobalScope(self::class)
+                    //         ->where('id', $user->tenant_id)
+                    // )
+                );
+            } else {
+                $builder->where('id', $user->tenant_id);
+            }
         }
     }
 }
