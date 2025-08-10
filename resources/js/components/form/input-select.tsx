@@ -6,7 +6,7 @@ type Props = {
     // data: Record<string, string>[];
     data: any;
     value?: number | null;
-    onChange: (value: number) => void;
+    onChange: (value: number | null) => void;
     id: string;
     valueKey?: string;
     labelKey?: string;
@@ -16,6 +16,8 @@ type Props = {
     inputClassName?: string;
     errorMessage?: string;
     formDescription?: string;
+    isWithSelectAll?: boolean;
+    selectAllLabel?: string;
 };
 
 export function InputSelect({
@@ -28,20 +30,32 @@ export function InputSelect({
     label,
     placeholder,
     wrapperClassName = 'grid gap-2',
-    inputClassName = 'mt-1 w-full',
+    inputClassName = 'w-full',
     errorMessage,
     formDescription,
+    isWithSelectAll = false,
+    selectAllLabel,
 }: Props) {
     placeholder = placeholder ? placeholder : label;
     return (
         <div className={wrapperClassName}>
             {label && <Label htmlFor={id}>{label}</Label>}
-            <Select value={String(value ?? '')} onValueChange={(value) => onChange(Number(value))}>
+            <Select
+                value={String(value ?? '')}
+                onValueChange={(value) => {
+                    if (value === '' || value === 'all') {
+                        onChange(null); // null kalau pilih kosong
+                    } else {
+                        onChange(Number(value));
+                    }
+                }}
+            >
                 <SelectTrigger id={id} className={inputClassName}>
                     <SelectValue placeholder={placeholder} />
                 </SelectTrigger>
                 <SelectContent>
                     <SelectGroup>
+                        {isWithSelectAll && <SelectItem value="all">{selectAllLabel ?? placeholder ?? '- Semua -'}</SelectItem>}
                         {data.map((item) => (
                             <SelectItem key={item[valueKey]} value={String(item[valueKey])}>
                                 {item[labelKey]}

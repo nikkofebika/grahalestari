@@ -1,3 +1,5 @@
+import InputMonth from '@/components/form/input-month';
+import { InputSelect } from '@/components/form/input-select';
 import CustomPageHeading from '@/components/headings/custom-page-heading';
 import {
     AlertDialog,
@@ -10,13 +12,15 @@ import {
     AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Button, buttonVariants } from '@/components/ui/button';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import useDeleteRow from '@/hooks/use-delete-row';
+import usePeriodYearMonth from '@/hooks/use-period-year-month';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
+import { TCoa } from '@/types/coa';
 import { TData, TPermissionActions } from '@/types/global';
-import { TJournal } from '@/types/journal';
-import { Link } from '@inertiajs/react';
+import { TJournal, TJournalFilters } from '@/types/journal';
+import { Link, router } from '@inertiajs/react';
 import { EditIcon, EyeIcon, PlusIcon, Trash2Icon } from 'lucide-react';
 import { Fragment, useState } from 'react';
 
@@ -30,19 +34,15 @@ const breadcrumbs: BreadcrumbItem[] = [
 type Props = {
     datas: TData<TJournal>;
     total: number;
+    coas: TCoa[];
     permission_actions?: TPermissionActions;
-    // filters: TJournalFilters;
+    filters: TJournalFilters;
     // page: number;
     // per_page: number;
 };
 
-export default function TransactionIndex({ datas, total, permission_actions }: Props) {
-    console.log('datas', datas);
-    // const { search, setSearch } = useSearch({
-    //     url: datas.meta.path,
-    //     initialValue: filters.search,
-    //     perPage: per_page,
-    // });
+export default function TransactionIndex({ datas, total, coas, filters, permission_actions }: Props) {
+    const { yearMonth, setYearMonth } = usePeriodYearMonth({ url: route('transactions.index'), initialValue: filters.period });
 
     const [selectedData, setSelectedData] = useState<{
         id: number | undefined;
@@ -68,12 +68,30 @@ export default function TransactionIndex({ datas, total, permission_actions }: P
                     </div>
                 )}
             </CustomPageHeading>
-
+            <div className="flex flex-wrap gap-2">
+                <InputMonth id="filter_period" label="Periode" value={yearMonth} onChange={(val) => setYearMonth(val)} />
+                <InputSelect
+                    id="filter_coa_id"
+                    label="Pilih Akun"
+                    placeholder="Semua Akun"
+                    labelKey="account_name"
+                    data={coas}
+                    value={filters.coa_id}
+                    onChange={(val) =>
+                        router.get(
+                            route('transactions.index'),
+                            { filter: { period: yearMonth, coa_id: val } },
+                            { preserveState: true, preserveScroll: true },
+                        )
+                    }
+                    isWithSelectAll={true}
+                />
+            </div>
             <div className="overflow-hidden rounded-lg border">
                 <Table>
                     <TableHeader className="bg-muted sticky top-0 z-10">
                         <TableRow>
-                            <TableHead>Tgl Transaction</TableHead>
+                            <TableHead>Tgl Transaksi</TableHead>
                             <TableHead>Keterangan</TableHead>
                             <TableHead>Dibuat Oleh</TableHead>
                             <TableHead>Akun</TableHead>
@@ -140,6 +158,13 @@ export default function TransactionIndex({ datas, total, permission_actions }: P
                             </TableRow>
                         )}
                     </TableBody>
+                    <TableFooter>
+                        <TableRow>
+                            <TableCell colSpan={4}>Total</TableCell>
+                            <TableCell className="text-right">{total}</TableCell>
+                            <TableCell></TableCell>
+                        </TableRow>
+                    </TableFooter>
                 </Table>
             </div>
             {handleRowDelete && (

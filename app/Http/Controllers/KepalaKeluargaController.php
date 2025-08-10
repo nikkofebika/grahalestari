@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\UserType;
 use App\Exports\User\UsersGroupByKK;
 use App\Helpers\Permission\PermissionResolver;
 use App\Http\Requests\GeneralSearchRequest;
@@ -28,7 +29,7 @@ class KepalaKeluargaController extends Controller implements HasSearch
 
     public function search(): AnonymousResourceCollection
     {
-        $datas = $this->service->findAllPaginate($this->per_page);
+        $datas = $this->service->findAllPaginate($this->per_page, fn($q) => $q->where('type', '!=', UserType::GOD));
 
         return \App\Http\Resources\GeneralResource::collection($datas);
     }
@@ -44,7 +45,8 @@ class KepalaKeluargaController extends Controller implements HasSearch
 
         $datas = $this->service->findAllPaginate(
             $this->per_page,
-            fn($q) => $q->whereNull('parent_id')
+            fn($q) => $q->where('type', '!=', UserType::GOD)
+                ->whereNull('parent_id')
                 ->with([
                     'detail',
                     'tenant' => fn($q) => $q->selectMinimalist(),

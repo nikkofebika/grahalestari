@@ -1,4 +1,5 @@
 import { TCreatedUpdatedDeletedInfo, TItemPermissions } from './global';
+import { TJournalDetail } from './journal';
 import { TTenant } from './tenant';
 
 export type TCoa = {
@@ -10,7 +11,12 @@ export type TCoa = {
     account_name: string;
     account_number: string;
     normal_balance: TNormalBalance;
-    childs: TCoa[];
+    childs?: TCoa[];
+    journal_details?: TJournalDetail[];
+
+    total_credit?: string; // currently used in ledger
+    total_debit?: string; // currently used in ledger
+    total_saldo?: string; // currently used in ledger
 
     created_at: string;
     updated_at: string;
@@ -21,7 +27,7 @@ export type TNormalBalance = 'debit' | 'credit';
 export const normalBalances: TNormalBalance[] = ['debit', 'credit'];
 export const normalBalanceLabels: Record<TNormalBalance, string> = {
     debit: 'Debit',
-    credit: 'Credit',
+    credit: 'Kredit',
 };
 
 export type TCoaFilters = {

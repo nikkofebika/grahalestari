@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class JournalDetail extends BaseModel
@@ -14,18 +14,19 @@ class JournalDetail extends BaseModel
         'credit',
     ];
 
-    protected function debit(): Attribute
+    protected $appends = [
+        'debit_formatted',
+        'credit_formatted',
+    ];
+
+    public function getDebitFormattedAttribute(): string
     {
-        return Attribute::make(
-            get: fn(int $value) => number_format($value, 0, ',', '.'),
-        );
+        return formatNumber($this->debit);
     }
 
-    protected function credit(): Attribute
+    public function getCreditFormattedAttribute(): string
     {
-        return Attribute::make(
-            get: fn(int $value) => number_format($value, 0, ',', '.'),
-        );
+        return formatNumber($this->credit);
     }
 
     public function journal(): BelongsTo
@@ -36,5 +37,10 @@ class JournalDetail extends BaseModel
     public function coa(): BelongsTo
     {
         return $this->belongsTo(Coa::class);
+    }
+
+    public function scopeSelectMinimalist(Builder $query, $additionalColumns = [])
+    {
+        $query->select('id', 'journal_id', 'coa_id', 'debit', 'credit', ...$additionalColumns);
     }
 }

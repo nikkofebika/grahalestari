@@ -4,7 +4,7 @@ namespace App\Http\Requests\Coa;
 
 use App\Rules\ExistCoaRule;
 use App\Rules\NameRule;
-use App\Rules\TenantedRule;
+use App\Rules\TenantRule;
 use App\Rules\UniqueCoaAccountNumberRule;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -19,7 +19,7 @@ class StoreRequest extends FormRequest
     {
         return [
             'parent_id' => [new ExistCoaRule(fn($q) => $q->whereParent())],
-            'tenant_id' => [new TenantedRule],
+            'tenant_id' => [new TenantRule],
             'account_name' => [new NameRule],
             'account_number' => [new UniqueCoaAccountNumberRule($this->tenant_id)], // unique per tenant
         ];

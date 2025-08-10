@@ -30,13 +30,15 @@ export type TJournalDetail = {
     debit_formatted: string;
     credit: number;
     credit_formatted: string;
+    saldo?: string; // currently used in ledger
 
     created_at: string;
     updated_at: string;
 };
 
 export type TJournalFilters = {
-    search: string;
+    period: string; // YYYY-MM
+    coa_id: number;
 };
 
 export type TCreateJournal = {

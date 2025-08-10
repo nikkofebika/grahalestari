@@ -74,7 +74,7 @@ class JournalController extends Controller implements HasSearch
             'page' => $request->page ?? 1,
             'per_page' => $this->per_page,
             'permission_actions' => PermissionResolver::forActions(Journal::class),
-            'total' => number_format($datas->sum('amount'), 0, ',', '.'),
+            'total' => formatNumber($datas->sum('amount')),
         ]);
     }
 

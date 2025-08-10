@@ -68,13 +68,28 @@ const financeFeature: NavItem[] = [
         icon: MegaphoneIcon,
     },
     {
-        title: 'Transaction',
+        title: 'Transaksi',
         href: '/transactions',
         icon: MegaphoneIcon,
     },
     {
         title: 'Jurnal',
         href: '/journals',
+        icon: MegaphoneIcon,
+    },
+    {
+        title: 'Ledger',
+        href: '/ledger',
+        icon: MegaphoneIcon,
+    },
+    {
+        title: 'Posisi Keuangan',
+        href: '/tribal',
+        icon: MegaphoneIcon,
+    },
+    {
+        title: 'Laporan Keuangan',
+        href: '/laporan-keuangan',
         icon: MegaphoneIcon,
     },
     // {

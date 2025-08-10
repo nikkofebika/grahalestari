@@ -1,3 +1,4 @@
+import InputMonth from '@/components/form/input-month';
 import CustomPageHeading from '@/components/headings/custom-page-heading';
 import {
     AlertDialog,
@@ -15,15 +16,15 @@ import useDeleteRow from '@/hooks/use-delete-row';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { TData, TPermissionActions } from '@/types/global';
-import { TJournal } from '@/types/journal';
-import { Link } from '@inertiajs/react';
+import { TJournal, TJournalFilters } from '@/types/journal';
+import { Link, router } from '@inertiajs/react';
 import { EditIcon, EyeIcon, PlusIcon, Trash2Icon } from 'lucide-react';
 import { Fragment, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Jurnal',
-        href: '/journal',
+        title: 'Transaksi',
+        href: '/transactions',
     },
 ];
 
@@ -31,18 +32,12 @@ type Props = {
     datas: TData<TJournal>;
     total: number;
     permission_actions?: TPermissionActions;
-    // filters: TJournalFilters;
+    filters: TJournalFilters;
     // page: number;
     // per_page: number;
 };
 
-export default function JournalIndex({ datas, total, permission_actions }: Props) {
-    // const { search, setSearch } = useSearch({
-    //     url: datas.meta.path,
-    //     initialValue: filters.search,
-    //     perPage: per_page,
-    // });
-
+export default function TransactionIndex({ datas, total, filters, permission_actions }: Props) {
     const [selectedData, setSelectedData] = useState<{
         id: number | undefined;
         name: string | undefined;
@@ -53,9 +48,13 @@ export default function JournalIndex({ datas, total, permission_actions }: Props
 
     const { handleRowDelete, isDeleting } = useDeleteRow({ routeName: 'transactions.force-delete' });
 
+    const handleFilterPeriod = (period: string) => {
+        router.get(route('transactions.index'), { filter: { period } }, { preserveState: true, preserveScroll: true });
+    };
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <CustomPageHeading title="Jurnal">
+            <CustomPageHeading title="Transaksi">
                 {(permission_actions?.create ?? true) && (
                     <div className="flex gap-2">
                         <Link href={route('transactions.create', 'credit')} className={buttonVariants({ size: 'sm', variant: 'primaryGreen' })}>
@@ -67,7 +66,7 @@ export default function JournalIndex({ datas, total, permission_actions }: Props
                     </div>
                 )}
             </CustomPageHeading>
-
+            <InputMonth id="period" value={filters.period} onChange={handleFilterPeriod} />
             <div className="overflow-hidden rounded-lg border">
                 <Table>
                     <TableHeader className="bg-muted sticky top-0 z-10">
@@ -76,8 +75,7 @@ export default function JournalIndex({ datas, total, permission_actions }: Props
                             <TableHead>Keterangan</TableHead>
                             <TableHead>Dibuat Oleh</TableHead>
                             <TableHead>Akun</TableHead>
-                            <TableHead>Debit</TableHead>
-                            <TableHead>Kredit</TableHead>
+                            <TableHead>Jumlah</TableHead>
                             <TableHead>Opsi</TableHead>
                         </TableRow>
                     </TableHeader>
@@ -86,16 +84,14 @@ export default function JournalIndex({ datas, total, permission_actions }: Props
                             datas.data.map((data) => (
                                 <Fragment key={`fragment-${data.id}`}>
                                     <TableRow key={`table-row-${data.id}`}>
-                                        <TableCell rowSpan={2}>{data.transaction_date}</TableCell>
-                                        <TableCell rowSpan={2}>{data.description}</TableCell>
-                                        <TableCell rowSpan={2}>{data.created_by?.name}</TableCell>
-                                        <TableCell>{data.details[0]?.coa?.account_name}</TableCell>
-                                        <TableCell className="text-right">{data.details[0]?.debit_formatted}</TableCell>
-                                        <TableCell className="text-right">{data.details[0]?.credit_formatted}</TableCell>
-                                        {/* <TableCell>
-                                            <NormalBalanceBadge normalBalance={data.normal_balance} />
-                                        </TableCell> */}
-                                        <TableCell rowSpan={2}>
+                                        <TableCell>{data.transaction_date}</TableCell>
+                                        <TableCell>{data.description}</TableCell>
+                                        <TableCell>{data.created_by?.name}</TableCell>
+                                        <TableCell>{data.detail?.coa?.account_name}</TableCell>
+                                        <TableCell className={`text-right ${data.normal_balance === 'debit' ? 'text-red-600' : 'text-green-600'}`}>
+                                            {data.amount_formatted}
+                                        </TableCell>
+                                        <TableCell>
                                             {data.permissions?.view && (
                                                 <Link
                                                     href={`transactions/${data.id}`}
@@ -132,14 +128,6 @@ export default function JournalIndex({ datas, total, permission_actions }: Props
                                             )}
                                         </TableCell>
                                     </TableRow>
-                                    <TableRow key={`table-row-child-${data.id}`}>
-                                        <TableCell>
-                                            {`\u00A0`.repeat(5)}
-                                            {data.details[1]?.coa?.account_name}
-                                        </TableCell>
-                                        <TableCell className="text-right">{data.details[1]?.debit_formatted}</TableCell>
-                                        <TableCell className="text-right">{data.details[1]?.credit_formatted}</TableCell>
-                                    </TableRow>
                                 </Fragment>
                             ))
                         ) : (
@@ -153,7 +141,6 @@ export default function JournalIndex({ datas, total, permission_actions }: Props
                     <TableFooter>
                         <TableRow>
                             <TableCell colSpan={4}>Total</TableCell>
-                            <TableCell className="text-right">{total}</TableCell>
                             <TableCell className="text-right">{total}</TableCell>
                             <TableCell></TableCell>
                         </TableRow>

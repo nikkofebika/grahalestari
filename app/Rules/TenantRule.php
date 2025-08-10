@@ -6,7 +6,7 @@ use App\Models\Tenant;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 
-class TenantedRule implements ValidationRule
+class TenantRule implements ValidationRule
 {
     /**
      * Run the validation rule.

@@ -63,4 +63,9 @@ class Coa extends BaseModel implements TenantedInterface
     {
         return $this->hasMany(self::class, 'parent_id');
     }
+
+    public function journalDetails(): HasMany
+    {
+        return $this->hasMany(JournalDetail::class);
+    }
 }

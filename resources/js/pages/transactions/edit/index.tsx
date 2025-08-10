@@ -24,12 +24,24 @@ type Props = {
     credit_accounts: TCoa[];
 };
 export default function JournalEdit({ data, debit_accounts, credit_accounts }: Props) {
+    console.log('data', data);
+
+    let type = 'Pemasukan';
+    let debitAccountId = data.details[1].coa_id;
+    let creditAccountId = data.details[0].coa_id;
+
+    if (data.normal_balance === 'debit') {
+        type = 'Pengeluaran';
+        debitAccountId = data.details[0].coa_id;
+        creditAccountId = data.details[1].coa_id;
+    }
+
     const form = useForm<TCreateJournal>({
         transaction_date: data.transaction_date,
         amount: data.amount,
         description: data.description,
-        debit_account_id: data.details[0].coa_id,
-        credit_account_id: data.details[1].coa_id,
+        debit_account_id: debitAccountId,
+        credit_account_id: creditAccountId,
         files: [],
         removed_file_ids: [],
     });
@@ -42,8 +54,6 @@ export default function JournalEdit({ data, debit_accounts, credit_accounts }: P
             preserveScroll: true,
         });
     };
-
-    const type = data.normal_balance === 'credit' ? 'Pemasukan' : 'Pengeluaran';
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>

@@ -4,13 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Enums\NormalBalance;
 use App\Helpers\Permission\PermissionResolver;
-use App\Http\Requests\GeneralSearchRequest;
+use App\Http\Requests\Journal\JouralIndexRequest;
 use App\Http\Requests\Journal\StoreRequest;
 use App\Http\Requests\Journal\UpdateRequest;
 use App\Http\Resources\Transaction\TransactionResource;
 use App\Interfaces\Controllers\HasSearch;
 use App\Interfaces\Services\Coa\CoaServiceInterface;
 use App\Interfaces\Services\Journal\JournalServiceInterface;
+use App\Models\Coa;
 use App\Models\Journal;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Gate;
@@ -45,7 +46,7 @@ class TransactionController extends Controller implements HasSearch
      *
      * Creates new Journal or returns already existing Journal by email.
      */
-    public function index(GeneralSearchRequest $request)
+    public function index(JouralIndexRequest $request)
     {
         Gate::authorize('viewAny', Journal::class);
 
@@ -54,9 +55,11 @@ class TransactionController extends Controller implements HasSearch
             fn($q) => $q->with([
                 'createdBy' => fn($q) => $q->selectMinimalist(),
                 'details' => fn($q) => $q->with('coa', fn($q) => $q->selectMinimalist()),
+                'detail' => fn($q) => $q->with('coa', fn($q) => $q->selectMinimalist()),
             ]),
             allowedFilters: [
-                AllowedFilter::exact('tenant_id'),
+                AllowedFilter::scope('period', 'whereYearMonth'),
+                AllowedFilter::scope('coa_id', 'whereCoaId'),
             ],
             allowedIncludes: [
                 'tenant',
@@ -66,14 +69,30 @@ class TransactionController extends Controller implements HasSearch
             allowedFields: ['id', 'name'],
         );
 
+        $total = formatNumber($datas->reduce(fn($carry, $journal) => $carry + ($journal->normal_balance->is(NormalBalance::CREDIT->value) ? $journal->amount : -$journal->amount), 0));
+
+        $coas = $this->coaService->findAll(
+            fn($q) => $q->select('id', 'account_number', 'account_name')
+                ->whereNotNull('parent_id')
+                ->orderBy('parent_id')
+                ->orderBy('account_number'),
+        )->map(function (Coa $coa) {
+            return [
+                'id' => $coa->id,
+                'account_name' => $coa->account_number . ' - ' . $coa->account_name,
+            ];
+        });
+
         return Inertia::render('transactions/index/index', [
             'datas' => TransactionResource::collection($datas),
+            'coas' => $coas,
             'filters' => [
-                'search' => $request->filter['search'] ?? ""
+                'period' => $request->filter['period'] ?? ""
             ],
             'page' => $request->page ?? 1,
             'per_page' => $this->per_page,
             'permission_actions' => PermissionResolver::forActions(Journal::class),
+            'total' => $total,
         ]);
     }
 
@@ -129,6 +148,10 @@ class TransactionController extends Controller implements HasSearch
 
         $journal->load([
             'tenant' => fn($q) => $q->selectMinimalist(),
+            'details' => fn($q) => $q->with('coa', fn($q) => $q->selectMinimalist()),
+            'media',
+            'createdBy',
+            'updatedBy',
         ]);
 
         return Inertia::render('transactions/show/index', [
