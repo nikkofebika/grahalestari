@@ -115,7 +115,7 @@ class JournalController extends Controller implements HasSearch
 
         Gate::authorize('create', Journal::class);
 
-        $this->service->createJournal($normalBalance, $request->validated());
+        $this->service->createJournal($request->validated());
         return to_route('journals.index')->with('success', self::CREATED_MESSAGE);
     }
 

@@ -3,11 +3,9 @@
 namespace App\Models;
 
 use App\Enums\NormalBalance;
-use App\Interfaces\Models\TenantedInterface;
 use App\Models\Scopes\TenantedScope;
 use App\Traits\Models\CreatedInfo;
 use App\Traits\Models\CustomSoftDeletes;
-use App\Traits\Models\Tenanted;
 use App\Traits\Models\UpdatedInfo;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Builder;
@@ -15,9 +13,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[ScopedBy([TenantedScope::class])]
-class Coa extends BaseModel implements TenantedInterface
+class Coa extends BaseModel
 {
-    use Tenanted, CustomSoftDeletes, CreatedInfo, UpdatedInfo;
+    use CustomSoftDeletes, CreatedInfo, UpdatedInfo;
 
     protected $fillable = [
         'tenant_id',

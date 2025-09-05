@@ -5,7 +5,7 @@ namespace App\Http\Requests\Journal;
 use App\Rules\AmountRule;
 use App\Rules\ExistCoaRule;
 use App\Rules\NormalBalanceRule;
-use App\Rules\TenantRule;
+use App\Rules\TenantedRule;
 use App\Rules\VarcharRule;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -29,7 +29,7 @@ class UpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            // 'tenant_id' => ['required', new TenantRule],
+            // 'tenant_id' => ['required', new TenantedRule],
             // 'normal_balance' => [new NormalBalanceRule],
             'transaction_date' => ['required', 'date'],
             'amount' => [new AmountRule],

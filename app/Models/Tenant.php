@@ -65,8 +65,7 @@ class Tenant extends BaseModel
         $query->select('id', 'name', 'number', ...$additionalColumns);
     }
 
-
-    public function scopeSearch(Builder $query, string $search)
+    public function scopeSearch(Builder $query, string $search): void
     {
         $query->where('name', 'like', "%{$search}%");
     }

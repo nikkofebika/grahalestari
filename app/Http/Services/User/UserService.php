@@ -64,14 +64,17 @@ class UserService extends BaseService implements UserServiceInterface
         $query = User::select('users.id', 'users.name')
             ->with('detail', fn($q) => $q->select('user_details.user_id', 'user_details.no_kk', 'user_details.no_ktp', 'user_details.birth_date', 'user_details.birth_place', 'user_details.birth_place', 'user_details.gender', 'user_details.religion', 'user_details.marital_status', 'user_details.education', 'user_details.job'))
             ->join('user_details', 'users.id', '=', 'user_details.user_id')
-            ->orderBy('user_details.birth_date', 'desc');
+            ->orderBy('users.parent_id')
+            ->orderByDesc('user_details.birth_date');
 
         if ($user->parent_id) {
-            $parent = $user->parent;
-            $users->push($parent);
+            // $parent = $user->parent;
+            // $users->push($parent);
 
             $members = $query
-                ->where('parent_id', $parent->id)
+                ->where('users.parent_id', $user->parent_id)
+                ->orWhere('users.id', $user->parent_id)
+                ->orderByDesc('users.parent_id')
                 ->get();
         } else {
             $users->push($user);

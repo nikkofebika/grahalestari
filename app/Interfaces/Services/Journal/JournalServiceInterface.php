@@ -7,5 +7,5 @@ use App\Models\Journal;
 
 interface JournalServiceInterface extends BaseServiceInterface
 {
-    public function createJournal(string $type, array $data): Journal;
+    public function createJournal(array $data): Journal;
 }

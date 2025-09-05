@@ -44,7 +44,7 @@ class JournalService extends BaseService implements JournalServiceInterface
         }
     }
 
-    public function createJournal(string $type, array $data): Journal
+    public function createJournal(array $data): Journal
     {
         DB::beginTransaction();
         try {

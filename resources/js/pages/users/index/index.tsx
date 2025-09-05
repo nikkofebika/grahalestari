@@ -11,7 +11,7 @@ import { TUser, TUserFilters } from '@/types/user';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Users',
+        title: 'Warga',
         href: '/users',
     },
 ];
@@ -41,7 +41,7 @@ export default function UserIndex({ datas, filters, page: pageSize, per_page }: 
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <IndexPageHeading title="Users" createUrl="users/create" />
+            <IndexPageHeading title="Warga" createUrl="users/create" />
 
             <DataTable
                 datas={datas.data}

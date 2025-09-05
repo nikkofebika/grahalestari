@@ -1,12 +1,16 @@
 <?php
 
 use App\Http\Controllers\AnnouncementController;
+use App\Http\Controllers\CitizenFeeCategoryController;
+use App\Http\Controllers\CitizenFeeController;
 use App\Http\Controllers\CoaController;
 use App\Http\Controllers\ComplaintController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\JournalController;
 use App\Http\Controllers\KepalaKeluargaController;
 use App\Http\Controllers\LedgerController;
+use App\Http\Controllers\ProfitActivityCategoryController;
+use App\Http\Controllers\ProfitActivityController;
 use App\Http\Controllers\TenantController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\RtController;
@@ -30,11 +34,11 @@ Route::controller(\App\Http\Controllers\RegionController::class)
         Route::get('/villages/{district_id}', 'getVillages')->name('region.villages');
     });
 
-    Route::prefix('dashboard')->controller(DashboardController::class)->group(function () {
-        Route::get('/', 'index');
-        Route::get('chart/demografi/by-gender', 'byGender');
-    });
-    Route::middleware(['auth', 'verified'])->group(function () {
+Route::prefix('dashboard')->controller(DashboardController::class)->group(function () {
+    Route::get('/', 'index')->name('dashboard');
+    Route::get('chart/demografi/by-gender', 'byGender');
+});
+Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('search-aduan-masyarakat', [ComplaintController::class, 'search']);
     Route::resource('aduan-masyarakat', ComplaintController::class);
@@ -53,6 +57,18 @@ Route::controller(\App\Http\Controllers\RegionController::class)
     Route::get('kepala-keluarga/export', [KepalaKeluargaController::class, 'export'])->name('kepala-keluarga.export');
     Route::delete('kepala-keluarga/{user_id}/delete-member/{member_id}', [KepalaKeluargaController::class, 'deleteMember'])->name('kepala-keluarga.delete-member');
     Route::resource('kepala-keluarga', KepalaKeluargaController::class);
+
+    Route::get('search-kategori-iuran-warga', [CitizenFeeCategoryController::class, 'search']);
+    Route::resource('kategori-iuran-warga', CitizenFeeCategoryController::class);
+
+    Route::get('search-iuran-warga', [CitizenFeeController::class, 'search']);
+    Route::resource('iuran-warga', CitizenFeeController::class);
+
+    Route::get('search-kategori-kegiatan-profit', [ProfitActivityCategoryController::class, 'search']);
+    Route::resource('kategori-kegiatan-profit', ProfitActivityCategoryController::class);
+
+    Route::get('search-kegiatan-profit', [ProfitActivityController::class, 'search']);
+    Route::resource('kegiatan-profit', ProfitActivityController::class);
 
     Route::get('search-pengumuman', [AnnouncementController::class, 'search']);
     Route::resource('pengumuman', AnnouncementController::class);

@@ -32,7 +32,7 @@ export default function UserForm({ onSubmit, useForm, submitTitle = 'Simpan', us
 
     return (
         <form onSubmit={onSubmit} className="space-y-5">
-            <FormCard title="Data Akun" description="Data akun user">
+            <FormCard title="Data Akun" description="Data akun warga">
                 <div className="grid gap-2">
                     <label className="text-sm font-medium">Pilih RT</label>
                     <CommandSelectInfinite<Pick<TTenant, 'id' | 'name'>>

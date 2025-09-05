@@ -133,7 +133,7 @@ class TransactionController extends Controller implements HasSearch
 
         Gate::authorize('create', Journal::class);
 
-        $this->service->createJournal($normalBalance, $request->validated());
+        $this->service->createJournal($request->validated());
         return to_route('transactions.index')->with('success', self::CREATED_MESSAGE);
     }
 
@@ -149,6 +149,7 @@ class TransactionController extends Controller implements HasSearch
         $journal->load([
             'tenant' => fn($q) => $q->selectMinimalist(),
             'details' => fn($q) => $q->with('coa', fn($q) => $q->selectMinimalist()),
+            'model.media',
             'media',
             'createdBy',
             'updatedBy',

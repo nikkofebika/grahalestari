@@ -59,11 +59,11 @@ export default function InputMultipleFiles({ id, label, errorMessage, onChange, 
     };
 
     useEffect(() => {
-        setFiles(values);
+        if (values) setFiles(values);
     }, [values]);
 
     useEffect(() => {
-        setOldFiles(existingFiles);
+        if (existingFiles.length) setOldFiles(existingFiles);
     }, [existingFiles]);
 
     return (

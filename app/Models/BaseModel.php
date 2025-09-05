@@ -18,6 +18,11 @@ abstract class BaseModel extends Model
         $query->select('id', 'name', ...$additionalColumns);
     }
 
+    public function scopeSearch(Builder $query, string $search): void
+    {
+        $query->where('name', 'like', "%{$search}%");
+    }
+
     public function scopeActive(Builder $query)
     {
         $query->where('is_active', true);

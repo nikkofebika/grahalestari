@@ -14,6 +14,7 @@ return new class extends Migration
     {
         Schema::create('journals', function (Blueprint $table) {
             $table->id();
+            $table->nullableMorphs('model');
             $table->foreignIdFor(Tenant::class)->constrained();
             $table->date('transaction_date');
             $table->string('normal_balance', 6);

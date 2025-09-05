@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
@@ -21,6 +22,8 @@ class Journal extends BaseModel implements HasMedia
     use BelongsToTenant, CreatedInfo, UpdatedInfo, CustomSoftDeletes, InteractsWithMedia;
 
     protected $fillable = [
+        'model_id',
+        'model_type',
         'tenant_id',
         'transaction_date',
         'normal_balance',
@@ -29,6 +32,8 @@ class Journal extends BaseModel implements HasMedia
     ];
 
     protected $appends = [
+        'model_type_formatted',
+        'model_type_route',
         'amount_formatted',
     ];
 
@@ -39,6 +44,22 @@ class Journal extends BaseModel implements HasMedia
     public function getAmountFormattedAttribute(): string
     {
         return formatNumber($this->amount);
+    }
+
+    public function getModelTypeFormattedAttribute(): string
+    {
+        return match ($this->model_type) {
+            ProfitActivity::class => 'Aktifitas Profit',
+            default => str_replace('App\\Models\\', '', $this->model_type),
+        };
+    }
+
+    public function getModelTypeRouteAttribute(): string
+    {
+        return match ($this->model_type) {
+            ProfitActivity::class => route('kegiatan-profit.show', $this->model_id),
+            default => '',
+        };
     }
 
     // protected function debit(): Attribute
@@ -54,6 +75,11 @@ class Journal extends BaseModel implements HasMedia
     //         get: fn(int $value) => formatNumber($value),
     //     );
     // }
+
+    public function model(): MorphTo
+    {
+        return $this->morphTo();
+    }
 
     public function detail(): HasOne
     {

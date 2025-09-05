@@ -7,7 +7,7 @@ import UserForm from '../form';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Users',
+        title: 'Warga',
         href: '/users',
     },
     {
@@ -71,7 +71,7 @@ export default function UserCreate() {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <CreateUpdatePageHeading title="Tambah User" backUrl="/users" />
+            <CreateUpdatePageHeading title="Tambah Warga" backUrl="/users" />
             <UserForm onSubmit={submit} useForm={form} />
         </AppLayout>
     );

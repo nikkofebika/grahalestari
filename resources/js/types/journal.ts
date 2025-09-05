@@ -1,9 +1,15 @@
 import { TCoa, TNormalBalance } from './coa';
 import { TCreatedUpdatedDeletedInfo, TItemPermissions, TMedia } from './global';
+import { TProfitActivity } from './profit-activity';
 import { TTenant } from './tenant';
 
 export type TJournal = {
     id: number;
+    model_id: number | null;
+    model_type: string | null;
+    model_type_formatted: string | null;
+    model_type_route: string | null;
+    model?: TProfitActivity;
     tenant_id: number;
     tenant?: TTenant;
     transaction_date: string;

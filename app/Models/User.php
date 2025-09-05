@@ -8,6 +8,7 @@ use App\Enums\UserType;
 use App\Interfaces\Models\TenantedInterface;
 use App\Traits\Models\CreatedInfo;
 use App\Traits\Models\CustomSoftDeletes;
+use App\Traits\Models\Tenanted;
 use App\Traits\Models\UpdatedInfo;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Builder;
@@ -27,7 +28,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 class User extends Authenticatable implements JWTSubject, TenantedInterface, HasMedia
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, CreatedInfo, UpdatedInfo, CustomSoftDeletes, HasRoles, InteractsWithMedia;
+    use Tenanted, HasFactory, Notifiable, CreatedInfo, UpdatedInfo, CustomSoftDeletes, HasRoles, InteractsWithMedia;
 
     /**
      * The attributes that are mass assignable.

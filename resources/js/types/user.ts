@@ -41,7 +41,7 @@ export const userTypeLabels: Record<TUserType, string> = {
     god: 'God',
     admin_rw: 'Admin RW',
     admin_rt: 'Admin RT',
-    user: 'Pengguna Biasa',
+    user: 'Warga',
 };
 
 export type TGender = 'male' | 'female';

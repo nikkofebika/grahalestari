@@ -11,8 +11,10 @@ trait Tenanted
 
     public function scopeTenanted(Builder $query, ?User $user = null): void
     {
-        /** @var \App\Models\User */
-        $user = auth()->user();
+        if (!$user) {
+            /** @var \App\Models\User */
+            $user = auth()->user();
+        }
 
         if (!$user->is_god) {
             if ($user->is_admin_rw) {

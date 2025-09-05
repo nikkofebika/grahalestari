@@ -28,10 +28,6 @@ export default function JournalForm({
     submitTitle = 'Simpan',
     journal,
 }: Props) {
-    console.log('journal', journal);
-
-    const media = journal?.media?.map((m) => m.original_url) ?? [];
-    console.log('media', media);
     const { data, setData, processing, errors } = useForm;
 
     let debitFormDesciption = 'Pemasukan masuk ke akun mana?';

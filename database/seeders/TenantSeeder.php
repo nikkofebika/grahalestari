@@ -67,56 +67,56 @@ class TenantSeeder extends Seeder
             'tenant_id' => $child->id,
         ]);
 
-        $userLeader = User::factory()->create([
-            'name' => 'Admin RW Konoha',
-            'email' => 'admin.konoha@gmail.com',
-            'type' => UserType::ADMIN_RW,
-        ]);
+        // $userLeader = User::factory()->create([
+        //     'name' => 'Admin RW Konoha',
+        //     'email' => 'admin.konoha@gmail.com',
+        //     'type' => UserType::ADMIN_RW,
+        // ]);
 
-        $parent = Tenant::create([
-            'parent_id' => null,
-            'leader_id' => $userLeader->id,
-            'province_id' => 36,
-            'province_name' => 'Banten',
-            'city_id' => 3603,
-            'city_name' => 'Kab. Tangerang',
-            'district_id' => 360319,
-            'district_name' => 'Panongan',
-            'village_id' => 3603191002,
-            'village_name' => 'Mekar Bakti',
-            'postal_code' => '15710',
-            'name' => 'RW Konoha',
-            'number' => 1,
-            'address' => 'Kp. Konoha',
-            'latitude' => '-6.2529363',
-            'longitude' => '106.5135358',
-        ]);
+        // $parent = Tenant::create([
+        //     'parent_id' => null,
+        //     'leader_id' => $userLeader->id,
+        //     'province_id' => 36,
+        //     'province_name' => 'Banten',
+        //     'city_id' => 3603,
+        //     'city_name' => 'Kab. Tangerang',
+        //     'district_id' => 360319,
+        //     'district_name' => 'Panongan',
+        //     'village_id' => 3603191002,
+        //     'village_name' => 'Mekar Bakti',
+        //     'postal_code' => '15710',
+        //     'name' => 'RW Konoha',
+        //     'number' => 1,
+        //     'address' => 'Kp. Konoha',
+        //     'latitude' => '-6.2529363',
+        //     'longitude' => '106.5135358',
+        // ]);
 
-        for ($i = 1; $i < 7; $i++) {
-            $user = User::factory()->create([
-                'name' => 'Admin RT ' . $i . ' Konoha',
-                'email' => 'admin.konoha' . $i . '@gmail.com',
-                'type' => UserType::ADMIN_RT,
-            ]);
+        // for ($i = 1; $i < 7; $i++) {
+        //     $user = User::factory()->create([
+        //         'name' => 'Admin RT ' . $i . ' Konoha',
+        //         'email' => 'admin.konoha' . $i . '@gmail.com',
+        //         'type' => UserType::ADMIN_RT,
+        //     ]);
 
-            $child = $parent->childs()->create([
-                'leader_id' => $user->id,
-                'name' => 'RT 0' . $i . ' - Konoha',
-                'number' => $i,
-                'address' => $parent->address,
-                'latitude' => $parent->latitude,
-                'longitude' => $parent->longitude,
-            ]);
+        //     $child = $parent->childs()->create([
+        //         'leader_id' => $user->id,
+        //         'name' => 'RT 0' . $i . ' - Konoha',
+        //         'number' => $i,
+        //         'address' => $parent->address,
+        //         'latitude' => $parent->latitude,
+        //         'longitude' => $parent->longitude,
+        //     ]);
 
-            $user->update([
-                'group_id' => $parent->id,
-                'tenant_id' => $child->id,
-            ]);
-        }
+        //     $user->update([
+        //         'group_id' => $parent->id,
+        //         'tenant_id' => $child->id,
+        //     ]);
+        // }
 
-        $userLeader->update([
-            'group_id' => $parent->id,
-            'tenant_id' => $child->id,
-        ]);
+        // $userLeader->update([
+        //     'group_id' => $parent->id,
+        //     'tenant_id' => $child->id,
+        // ]);
     }
 }

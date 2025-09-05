@@ -1,10 +1,15 @@
 import DetailCard from '@/components/detail-card';
 import CreateUpdatePageHeading from '@/components/headings/create-update-page-heading';
 import NormalBalanceBadge from '@/components/normal-balance-badge';
+import TextLink from '@/components/text-link';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { buttonVariants } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { TJournal } from '@/types/journal';
+import { Link } from '@inertiajs/react';
+import { InfoIcon, LinkIcon } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -22,6 +27,7 @@ type Props = {
 };
 
 export default function TransactionShow({ data }: Props) {
+    const media = data?.media?.length ? data.media : data.model?.media?.length ? data.model.media : [];
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <CreateUpdatePageHeading title="Detail Transaksi" backUrl="/transactions" />
@@ -111,41 +117,59 @@ export default function TransactionShow({ data }: Props) {
                                 </TableCell>
                             </TableRow>
                         )}
+                        {(data.model_id && data.model_type) && (
+                            <TableRow>
+                                <TableCell colSpan={2}>
+                                    <Alert>
+                                        <AlertTitle>Transaksi ini berasal dari {data.model_type_formatted} <Link href={data.model_type_route!} className={buttonVariants({ size: 'sm' })}>Lihat Detail <LinkIcon /></Link></AlertTitle>
+                                    </Alert>
+                                </TableCell>
+                            </TableRow>
+                        )}
                     </TableBody>
                 </Table>
                 <div>
                     <h2 className="mb-3 font-bold">Bukti Transaksi</h2>
                     <div className="flex flex-wrap gap-4">
-                        {data.media?.map((media) => {
-                            const isImage = media.mime_type.includes('image');
+                        {
+                            media.length ? (
+                                media.map((media) => {
+                                    const isImage = media.mime_type.includes('image');
 
-                            return (
-                                <div key={media.id} className="flex flex-col items-center">
-                                    {isImage ? (
-                                        <a
-                                            href={media.original_url}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="block overflow-hidden rounded-lg border shadow transition hover:shadow-lg"
-                                        >
-                                            <img src={media.original_url} alt={media.name} className="h-48 w-48 bg-gray-50 object-contain" />
-                                        </a>
-                                    ) : (
-                                        <div className="flex h-48 w-48 flex-col items-center justify-center rounded-lg border bg-gray-50 shadow">
-                                            <span className="truncate px-2 text-sm text-gray-600">{media.file_name}</span>
-                                            <a
-                                                href={media.original_url}
-                                                target="_blank"
-                                                download
-                                                className="mt-2 rounded bg-blue-500 px-3 py-1 text-sm text-white transition hover:bg-blue-600"
-                                            >
-                                                Download
-                                            </a>
+                                    return (
+                                        <div key={media.id} className="flex flex-col items-center">
+                                            {isImage ? (
+                                                <a
+                                                    href={media.original_url}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="block overflow-hidden rounded-lg border shadow transition hover:shadow-lg"
+                                                >
+                                                    <img src={media.original_url} alt={media.name} className="h-48 w-48 bg-gray-50 object-contain" />
+                                                </a>
+                                            ) : (
+                                                <div className="flex h-48 w-48 flex-col items-center justify-center rounded-lg border bg-gray-50 shadow">
+                                                    <span className="truncate px-2 text-sm text-gray-600">{media.file_name}</span>
+                                                    <a
+                                                        href={media.original_url}
+                                                        target="_blank"
+                                                        download
+                                                        className="mt-2 rounded bg-blue-500 px-3 py-1 text-sm text-white transition hover:bg-blue-600"
+                                                    >
+                                                        Download
+                                                    </a>
+                                                </div>
+                                            )}
                                         </div>
-                                    )}
-                                </div>
-                            );
-                        })}
+                                    );
+                                })
+                            ) : (
+                                <Alert>
+                                    <InfoIcon />
+                                    <AlertDescription>Tidak ada bukti transaksi yang diupload</AlertDescription>
+                                </Alert>
+                            )
+                        }
                     </div>
                 </div>
             </DetailCard>
