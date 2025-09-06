@@ -9,6 +9,7 @@ use App\Traits\Models\Tenanted;
 use App\Traits\Models\UpdatedInfo;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -21,16 +22,21 @@ class CitizenFee extends BaseModel implements TenantedInterface, HasMedia
         'citizen_fee_category_id',
         'name',
         'date',
-        'amount',
     ];
 
     protected $appends = [
-        'amount_formatted',
+        'total_amount',
+        'total_amount_formatted',
     ];
 
-    public function getAmountFormattedAttribute(): string
+    public function getTotalAmountAttribute(): string
     {
-        return formatNumber($this->amount);
+        return $this->details()->sum('amount');
+    }
+
+    public function getTotalAmountFormattedAttribute(): string
+    {
+        return formatNumber($this->total_amount);
     }
 
     public function scopeTenanted(Builder $query, ?User $user = null): void
@@ -46,5 +52,10 @@ class CitizenFee extends BaseModel implements TenantedInterface, HasMedia
     public function category(): BelongsTo
     {
         return $this->belongsTo(CitizenFeeCategory::class, 'citizen_fee_category_id');
+    }
+
+    public function details(): HasMany
+    {
+        return $this->hasMany(CitizenFeeDetail::class);
     }
 }

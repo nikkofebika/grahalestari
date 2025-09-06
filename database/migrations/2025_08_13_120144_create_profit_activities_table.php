@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('name');
             $table->date('date');
             $table->integer('amount')->unsigned()->default(0);
-            $table->text('description')->nullable();
             $table->timestamps();
 
             // created/updated/deleted info

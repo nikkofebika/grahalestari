@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\CitizenFee;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -14,7 +15,9 @@ return new class extends Migration
     {
         Schema::create('citizen_fee_details', function (Blueprint $table) {
             $table->id();
+            $table->foreignIdFor(CitizenFee::class)->constrained();
             $table->foreignIdFor(User::class)->constrained();
+            $table->date('date');
             $table->integer('amount')->unsigned()->default(0);
             $table->timestamps();
 

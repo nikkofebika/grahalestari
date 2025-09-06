@@ -3,7 +3,6 @@
 namespace App\Http\Requests\CitizenFee;
 
 use App\Models\CitizenFeeCategory;
-use App\Rules\AmountRule;
 use App\Rules\NameRule;
 use App\Rules\TenantedRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -18,10 +17,9 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'profit_activity_category_id' => [new TenantedRule(CitizenFeeCategory::class, 'Profit activity category not found')],
+            'citizen_fee_category_id' => [new TenantedRule(CitizenFeeCategory::class, 'Kategori iuran warga tidak ditemukan')],
             'name' => [new NameRule],
             'date' => ['required', 'date'],
-            'amount' => [new AmountRule],
             'files' => ['nullable', 'array'],
             'files.*' => ['required', 'mimes:' . config('app.file_mimes_types')],
         ];

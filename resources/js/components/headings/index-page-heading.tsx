@@ -2,6 +2,7 @@ import { TPermissionActions } from '@/types/global';
 import { Head, Link, usePage } from '@inertiajs/react';
 import { PlusIcon } from 'lucide-react';
 import { buttonVariants } from '../ui/button';
+import HeadingMainTitle from './heading-main-title';
 
 type Props = {
     title: string;
@@ -15,7 +16,7 @@ export default function IndexPageHeading({ title, headTitle, createUrl }: Props)
         <>
             <Head title={headTitle ?? title} />
             <div className="flex items-center justify-between">
-                <h1 className="text-3xl font-extrabold tracking-tight text-balance">{title}</h1>
+                <HeadingMainTitle title={title} />
                 {(permission_actions?.create ?? true) && createUrl && (
                     <Link href={createUrl} className={buttonVariants({ size: 'sm' }) + ' m-0'}>
                         <PlusIcon /> Tambah

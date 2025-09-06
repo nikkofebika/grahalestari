@@ -1,3 +1,4 @@
+import { TCitizenFeeDetail } from './citizen-fee';
 import { TCreatedUpdatedDeletedInfo, TItemPermissions, TMedia } from './global';
 import { TTenant } from './tenant';
 
@@ -17,6 +18,7 @@ export type TUser = {
 
     detail?: TUserDetail;
     image?: TMedia;
+    citizen_fee_detail?: TCitizenFeeDetail;
 } & TCreatedUpdatedDeletedInfo &
     TItemPermissions;
 

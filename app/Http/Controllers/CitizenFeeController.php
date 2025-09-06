@@ -27,7 +27,7 @@ class CitizenFeeController extends Controller implements HasSearch
         $datas = $this->service->findAllPaginate(
             $this->per_page,
             allowedIncludes: [
-                AllowedFilter::callback('category', fn($q) => $q->selectMinimalist())
+                AllowedFilter::callback('category', fn($q) => $q->selectMinimalist(['fix_amount']))
             ],
             allowedFilters: [
                 AllowedFilter::exact('profit_activity_category_id'),
@@ -45,7 +45,7 @@ class CitizenFeeController extends Controller implements HasSearch
 
         $datas = $this->service->findAllPaginate(
             $this->per_page,
-            fn($q) => $q->with('category', fn($q) => $q->selectMinimalist()),
+            fn($q) => $q->with('category', fn($q) => $q->selectMinimalist(['fix_amount'])),
             [
                 AllowedFilter::exact('profit_activity_category_id'),
                 AllowedFilter::scope('search')
@@ -53,7 +53,7 @@ class CitizenFeeController extends Controller implements HasSearch
             allowedFields: ['id', 'name']
         );
 
-        return Inertia::render('profit-activities/index/index', [
+        return Inertia::render('citizen-fees/index/index', [
             'datas' => DefaultResource::collection($datas),
             'filters' => [
                 'search' => $request->filter['search'] ?? ""
@@ -68,7 +68,7 @@ class CitizenFeeController extends Controller implements HasSearch
     {
         Gate::authorize('create', CitizenFee::class);
 
-        return Inertia::render('profit-activities/create/index');
+        return Inertia::render('citizen-fees/create/index');
     }
 
     public function store(StoreRequest $request)
@@ -76,58 +76,58 @@ class CitizenFeeController extends Controller implements HasSearch
         Gate::authorize('create', CitizenFee::class);
 
         $this->service->create($request->validated());
-        return to_route('kegiatan-profit.index')->with('success', self::CREATED_MESSAGE);
+        return to_route('iuran-warga.index')->with('success', self::CREATED_MESSAGE);
     }
 
     public function show(string $id): Response
     {
-        $CitizenFee = $this->service->findById($id);
+        $citizenFee = $this->service->findById($id);
 
-        Gate::authorize('view', $CitizenFee);
+        Gate::authorize('view', $citizenFee);
 
-        $CitizenFee->load([
+        $citizenFee->load([
             'media',
-            'category' => fn($q) => $q->selectMinimalist(['tenant_id'])->with('tenant', fn($q) => $q->selectMinimalist()),
+            'category' => fn($q) => $q->selectMinimalist(['tenant_id', 'fix_amount'])->with('tenant', fn($q) => $q->selectMinimalist()),
             'createdBy' => fn($q) => $q->selectMinimalist(),
             'updatedBy' => fn($q) => $q->selectMinimalist(),
             'deletedBy' => fn($q) => $q->selectMinimalist(),
         ]);
 
-        return Inertia::render('profit-activities/show/index', [
-            'data' => $CitizenFee,
+        return Inertia::render('citizen-fees/show/index', [
+            'data' => $citizenFee,
         ]);
     }
 
     public function edit(string $id)
     {
-        $CitizenFee = $this->service->findById($id);
+        $citizenFee = $this->service->findById($id);
 
-        Gate::authorize('update', $CitizenFee);
+        Gate::authorize('update', $citizenFee);
 
-        $CitizenFee->load([
-            'category' => fn($q) => $q->selectMinimalist(['tenant_id'])->with('tenant', fn($q) => $q->selectMinimalist()),
+        $citizenFee->load([
+            'category' => fn($q) => $q->selectMinimalist(['tenant_id', 'fix_amount'])->with('tenant', fn($q) => $q->selectMinimalist()),
         ]);
 
-        return Inertia::render('profit-activities/edit/index', [
-            'data' => $CitizenFee
+        return Inertia::render('citizen-fees/edit/index', [
+            'data' => $citizenFee
         ]);
     }
 
     public function update(StoreRequest $request, string $id)
     {
-        $CitizenFee = $this->service->findById($id);
+        $citizenFee = $this->service->findById($id);
 
-        Gate::authorize('update', $CitizenFee);
+        Gate::authorize('update', $citizenFee);
 
         $this->service->update($id, $request->validated());
-        return to_route('kegiatan-profit.index')->with('success', self::UPDATED_MESSAGE);
+        return to_route('iuran-warga.index')->with('success', self::UPDATED_MESSAGE);
     }
 
     public function destroy(string $id)
     {
-        $CitizenFee = $this->service->findById($id);
+        $citizenFee = $this->service->findById($id);
 
-        Gate::authorize('delete', $CitizenFee);
+        Gate::authorize('delete', $citizenFee);
 
         $this->service->delete($id);
         return redirect()->back()->with('success', self::DELETED_MESSAGE);

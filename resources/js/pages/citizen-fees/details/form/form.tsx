@@ -4,18 +4,18 @@ import FormCard from '@/components/form/form-card';
 import InputMultipleFiles from '@/components/form/input-multiple-files';
 import InputText from '@/components/form/input-text';
 import InputError from '@/components/input-error';
-import { TCreateProfitActivity, TProfitActivity } from '@/types/profit-activity';
+import { TCreateCitizenFee, TCitizenFee } from '@/types/citizen-fee';
 import { InertiaFormProps } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
 type Props = {
     onSubmit: FormEventHandler;
-    useForm: InertiaFormProps<TCreateProfitActivity>;
+    useForm: InertiaFormProps<TCreateCitizenFee>;
     submitTitle?: string;
-    profitActivity?: TProfitActivity;
+    citizenFee?: TCitizenFee;
 };
 
-export default function ProfitActivityForm({ onSubmit, useForm, submitTitle = 'Simpan', profitActivity }: Props) {
+export default function CitizenFeeForm({ onSubmit, useForm, submitTitle = 'Simpan', citizenFee }: Props) {
     const { data, setData, processing, errors } = useForm;
 
     return (
@@ -23,13 +23,13 @@ export default function ProfitActivityForm({ onSubmit, useForm, submitTitle = 'S
             <FormCard submitTitle={submitTitle} processing={processing}>
                 <div className="grid gap-2">
                     <label className="text-sm font-medium">Pilih Kategori</label>
-                    <CommandSelectInfinite<Pick<TProfitActivity, 'id' | 'name'>>
-                        endpoint='/search-kategori-kegiatan-profit'
-                        onChange={(value) => setData('profit_activity_category_id', Number(value))}
-                        value={data.profit_activity_category_id}
-                        initialSelectedItem={profitActivity?.category}
+                    <CommandSelectInfinite<Pick<TCitizenFee, 'id' | 'name'>>
+                        endpoint='/search-kategori-iuran-warga'
+                        onChange={(value) => setData('citizen_fee_category_id', Number(value))}
+                        value={data.citizen_fee_category_id}
+                        initialSelectedItem={citizenFee?.category}
                     />
-                    <InputError className="mt-1" message={errors.profit_activity_category_id} />
+                    <InputError className="mt-1" message={errors.citizen_fee_category_id} />
                 </div>
                 <InputText
                     id="name"
@@ -46,23 +46,12 @@ export default function ProfitActivityForm({ onSubmit, useForm, submitTitle = 'S
                     errorMessage={errors.date}
                     required={true}
                 />
-                <InputText
-                    id="amount"
-                    label="Jumlah Pendapatan"
-                    value={data.amount}
-                    onChange={(e) => setData('amount', Number(e.target.value))}
-                    errorMessage={errors.amount}
-                    props={{
-                        type: 'number',
-                        min: 0,
-                    }}
-                />
                 <InputMultipleFiles
                     id="files"
                     label="Upload File"
                     values={data.files} // file baru
                     onChange={(files) => setData('files', files)}
-                    existingFiles={profitActivity?.media} // dari backend
+                    existingFiles={citizenFee?.media} // dari backend
                     onDeleteExisting={(id) => {
                         setData('removed_file_ids', [...data.removed_file_ids, id]);
                     }}

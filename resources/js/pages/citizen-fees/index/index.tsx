@@ -6,24 +6,26 @@ import usePagination from '@/hooks/use-pagination';
 import useSearch from '@/hooks/use-search';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
+import { TCitizenFee, TCitizenFeeFilters } from '@/types/citizen-fee';
 import { TPaginate } from '@/types/global';
-import { TProfitActivity, TProfitActivityFilters } from '@/types/profit-activity';
+import { Link } from '@inertiajs/react';
+import { ListIcon } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Kegiatan Profit',
-        href: '/kegiatan-profit',
+        title: 'Iuran Warga',
+        href: '/iuran-warga',
     },
 ];
 
 type Props = {
-    datas: TPaginate<TProfitActivity>;
-    filters: TProfitActivityFilters;
+    datas: TPaginate<TCitizenFee>;
+    filters: TCitizenFeeFilters;
     page: number;
     per_page: number;
 };
 
-export default function ProfitActivityIndex({ datas, filters, page: pageSize, per_page }: Props) {
+export default function CitizenFeeIndex({ datas, filters, page: pageSize, per_page }: Props) {
     const { search, setSearch } = useSearch({
         url: datas.meta.path,
         initialValue: filters.search,
@@ -37,50 +39,40 @@ export default function ProfitActivityIndex({ datas, filters, page: pageSize, pe
         filters,
     });
 
-    const { handleRowDelete, isDeleting } = useDeleteRow({ routeName: 'kegiatan-profit.destroy' });
+    const { handleRowDelete, isDeleting } = useDeleteRow({ routeName: 'iuran-warga.destroy' });
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <IndexPageHeading title="Kegiatan Profit" createUrl="kegiatan-profit/create" />
+            <IndexPageHeading title="Iuran Warga" createUrl="iuran-warga/create" />
 
             <DataTable
                 datas={datas.data}
                 columns={[
-                    {
-                        label: 'Nama',
-                        name: 'name',
-                    },
-                    {
-                        label: 'Kategori',
-                        name: 'category.name',
-                    },
-                    {
-                        label: 'Tanggal',
-                        name: 'date',
-                    },
-                    {
-                        label: 'Total Pendapatan',
-                        name: 'amount_formatted',
-                    },
-                    {
-                        label: 'Tgl Buat',
-                        name: 'created_at',
-                    },
-                    {
-                        label: 'Tgl Update',
-                        name: 'updated_at',
-                    },
+                    { label: "Nama", name: "name" },
+                    { label: "Kategori", name: "category.name" },
+                    { label: "Tanggal", name: "date" },
+                    { label: "Total Pendapatan", name: "total_amount_formatted" },
+                    { label: "Tgl Buat", name: "created_at" },
+                    { label: "Tgl Update", name: "updated_at" },
                 ]}
                 page={page}
                 setPage={setPage}
                 perPage={perPage}
-                getRowDetailUrl={(data) => `kegiatan-profit/${data.id}`}
-                getRowEditUrl={(data) => `kegiatan-profit/${data.id}/edit`}
+                getRowDetailUrl={(data) => `iuran-warga/${data.id}`}
+                getRowEditUrl={(data) => `iuran-warga/${data.id}/edit`}
                 setPerPage={setPerPage}
                 search={search}
                 setSearch={setSearch}
                 isDeleting={isDeleting}
                 handleRowDelete={handleRowDelete}
+                extraRowActions={(row) => [
+                    <Link
+                        key="list-details"
+                        href={`iuran-warga/${row.id}/details`}
+                    >
+                        <ListIcon className="mr-2 h-4 w-4" /> List Pembayaran
+                    </Link>,
+                ]}
             />
             <PaginatePagination setPage={setPage} meta={datas.meta} />
         </AppLayout>

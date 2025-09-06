@@ -155,6 +155,11 @@ class User extends Authenticatable implements JWTSubject, TenantedInterface, Has
         return $this->hasOne(UserDetail::class);
     }
 
+    public function citizenFeeDetail(): HasOne
+    {
+        return $this->hasOne(CitizenFeeDetail::class);
+    }
+
     /**
      * @return MorphOne<TMedia, $this>
      */

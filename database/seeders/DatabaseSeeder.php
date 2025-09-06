@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             CoaSeeder::class,
             ProfitActivitySeeder::class,
+            CitizenFeeSeeder::class,
         ]);
     }
 }

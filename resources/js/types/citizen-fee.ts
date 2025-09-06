@@ -37,13 +37,13 @@ export type TCreateCitizenFeeCategory = {
 
 export type TCitizenFee = {
     id: number;
-    profit_activity_category_id: number;
+    citizen_fee_category_id: number;
     category?: TCitizenFeeCategory;
     name: string;
     date: string;
-    amount: number;
+    total_amount: number;
 
-    amount_formatted: string;
+    total_amount_formatted: string;
     media?: TMedia[];
 
     created_at: string;
@@ -56,10 +56,37 @@ export type TCitizenFeeFilters = {
 };
 
 export type TCreateCitizenFee = {
-    profit_activity_category_id?: number | null;
+    citizen_fee_category_id?: number | null;
     name: string;
     date: string;
-    amount: number;
     files: File[];
     removed_file_ids: number[];
+};
+
+export type TCitizenFeeDetail = {
+    id: number;
+    citizen_fee_id: number;
+    citizen_fee?: TCitizenFee;
+    date: string;
+    amount: number;
+
+    amount_formatted: string;
+    // media?: TMedia[];
+
+    created_at: string;
+    updated_at: string;
+} & TCreatedUpdatedDeletedInfo &
+    TItemPermissions;
+
+export type TCitizenFeeDetailFilters = {
+    search: string;
+};
+
+export type TCreateCitizenFeeDetail = {
+    citizen_fee_id?: number | null;
+    user_id: number | null;
+    date: string;
+    amount: number;
+    // files: File[];
+    // removed_file_ids: number[];
 };

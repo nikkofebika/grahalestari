@@ -36,7 +36,6 @@ type Props = {
 };
 
 export default function CoaIndex({ datas }: Props) {
-    console.log('datas', datas);
     // const { search, setSearch } = useSearch({
     //     url: datas.meta.path,
     //     initialValue: filters.search,

@@ -71,6 +71,12 @@ const generalFeature: NavItem[] = [
         icon: UserPenIcon,
     },
     {
+        title: 'Iuran Warga',
+        href: '/iuran-warga',
+        icon: ContactRoundIcon,
+        allowUserType: ['god', 'admin_rw', 'admin_rt'],
+    },
+    {
         title: 'Kegiatan Profit',
         href: '/kegiatan-profit',
         icon: ContactRoundIcon,

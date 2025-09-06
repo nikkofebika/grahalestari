@@ -2,7 +2,6 @@
 
 namespace App\Http\Services\CitizenFee;
 
-use App\Enums\NormalBalance;
 use App\Http\Services\BaseService;
 use App\Interfaces\Repositories\CitizenFee\CitizenFeeCategoryRepositoryInterface;
 use App\Interfaces\Repositories\CitizenFee\CitizenFeeRepositoryInterface;
@@ -24,10 +23,10 @@ class CitizenFeeService extends BaseService implements CitizenFeeServiceInterfac
 
     public function create(array $data): CitizenFee
     {
-        $citizenFeeCategory = $this->citizenFeeCategoryRepository->findById($data['profit_activity_category_id']);
+        $citizenFeeCategory = $this->citizenFeeCategoryRepository->findById($data['citizen_fee_category_id']);
 
         if (!$citizenFeeCategory) {
-            throw new NotFoundHttpException('Profit activity category not found');
+            throw new NotFoundHttpException('Kategori iuran warga tidak ditemukan');
         }
 
         DB::beginTransaction();
@@ -42,17 +41,17 @@ class CitizenFeeService extends BaseService implements CitizenFeeServiceInterfac
                 }
             }
 
-            $this->journalService->createJournal([
-                'model_id' => $citizenFee->id,
-                'model_type' => CitizenFee::class,
-                'tenant_id' => $citizenFeeCategory->tenant_id,
-                'normal_balance' => NormalBalance::CREDIT,
-                'transaction_date' => $citizenFee->date,
-                'amount' => $citizenFee->amount,
-                'description' => $citizenFee->name,
-                'debit_account_id' => $citizenFeeCategory->debit_coa_id,
-                'credit_account_id' => $citizenFeeCategory->credit_coa_id,
-            ]);
+            // $this->journalService->createJournal([
+            //     'model_id' => $citizenFee->id,
+            //     'model_type' => CitizenFee::class,
+            //     'tenant_id' => $citizenFeeCategory->tenant_id,
+            //     'normal_balance' => NormalBalance::CREDIT,
+            //     'transaction_date' => $citizenFee->date,
+            //     'amount' => $citizenFee->amount,
+            //     'description' => $citizenFee->name,
+            //     'debit_account_id' => $citizenFeeCategory->debit_coa_id,
+            //     'credit_account_id' => $citizenFeeCategory->credit_coa_id,
+            // ]);
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();

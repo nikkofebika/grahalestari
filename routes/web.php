@@ -3,6 +3,7 @@
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\CitizenFeeCategoryController;
 use App\Http\Controllers\CitizenFeeController;
+use App\Http\Controllers\CitizenFeeDetailController;
 use App\Http\Controllers\CoaController;
 use App\Http\Controllers\ComplaintController;
 use App\Http\Controllers\DashboardController;
@@ -62,6 +63,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('kategori-iuran-warga', CitizenFeeCategoryController::class);
 
     Route::get('search-iuran-warga', [CitizenFeeController::class, 'search']);
+    // Route::resource('iuran-warga.details', CitizenFeeDetailController::class)->parameters([
+    //     'iuran-warga' => 'citizenFee',
+    //     'details' => 'id',
+    // ])->only('index', 'store', 'destroy');
+    Route::group(['prefix' => 'iuran-warga/{citizenFee}', 'as' => 'iuran-warga.'], function () {
+        Route::get('details/{user}', [CitizenFeeDetailController::class, 'show'])->name('details.show');
+        Route::delete('details/{user}', [CitizenFeeDetailController::class, 'destroy'])->name('details.destroy');
+        Route::resource('details', CitizenFeeDetailController::class)->only('index', 'store');
+    });
     Route::resource('iuran-warga', CitizenFeeController::class);
 
     Route::get('search-kategori-kegiatan-profit', [ProfitActivityCategoryController::class, 'search']);

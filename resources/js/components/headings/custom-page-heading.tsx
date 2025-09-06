@@ -1,5 +1,6 @@
 import { Head } from '@inertiajs/react';
 import { PropsWithChildren } from 'react';
+import HeadingMainTitle from './heading-main-title';
 
 type Props = {
     title: string;
@@ -10,7 +11,7 @@ export default function CustomPageHeading({ title, headTitle, children }: PropsW
         <>
             <Head title={headTitle ?? title} />
             <div className="flex items-center justify-between">
-                <h1 className="text-3xl font-extrabold tracking-tight text-balance">{title}</h1>
+                <HeadingMainTitle title={title} />
                 {children}
             </div>
         </>
