@@ -76,7 +76,7 @@ export default function JournalForm({
                         label="Debit"
                         placeholder="Pilih Akun"
                         value={data.debit_account_id}
-                        onChange={(value) => setData('debit_account_id', value)}
+                        onChange={(value) => setData('debit_account_id', Number(value))}
                         labelKey="account_name"
                         wrapperClassName="grid gap-2 flex-1"
                         formDescription={debitFormDesciption}
@@ -87,7 +87,7 @@ export default function JournalForm({
                         label="Kredit"
                         placeholder="Pilih Akun"
                         value={data.credit_account_id}
-                        onChange={(value) => setData('credit_account_id', value)}
+                        onChange={(value) => setData('credit_account_id', Number(value))}
                         labelKey="account_name"
                         wrapperClassName="grid gap-2 flex-1"
                         formDescription={creditFormDescription}

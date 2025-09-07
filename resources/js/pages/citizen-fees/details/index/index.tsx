@@ -64,7 +64,7 @@ export default function CitizenFeeDetailsIndex({ datas, citizen_fee, filters, pa
     }, [selectedUser]);
 
     const minAmountPay = citizen_fee.category?.fix_amount ? citizen_fee.category?.fix_amount : 0;
-    const { data, setData, post, reset, errors, processing } = useForm<TCreateCitizenFeeDetail>({
+    const { data, setData, post, errors, processing } = useForm<TCreateCitizenFeeDetail>({
         citizen_fee_id: citizen_fee.id,
         user_id: null,
         amount: minAmountPay,
@@ -77,7 +77,6 @@ export default function CitizenFeeDetailsIndex({ datas, citizen_fee, filters, pa
             preserveScroll: true,
             onSuccess: () => {
                 setSelectedUser(null);
-                reset();
             }
         });
     };
@@ -129,7 +128,7 @@ export default function CitizenFeeDetailsIndex({ datas, citizen_fee, filters, pa
                         <DialogHeader>
                             <DialogTitle>Pembayaran</DialogTitle>
                         </DialogHeader>
-                        <div className="grid gap-4">
+                        <div className="space-y-4">
                             <InputText
                                 id="name"
                                 label="Nama Warga"

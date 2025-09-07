@@ -43,7 +43,7 @@ export default function ProfitActivityCategoryForm({ onSubmit, useForm, submitTi
                         label="Debit"
                         placeholder="Pilih Akun"
                         value={data.debit_coa_id}
-                        onChange={(value) => setData('debit_coa_id', value)}
+                        onChange={(value) => setData('debit_coa_id', Number(value))}
                         labelKey="account_name"
                         wrapperClassName="grid gap-2 flex-1"
                         formDescription='Pemasukan masuk ke akun mana?'
@@ -54,7 +54,7 @@ export default function ProfitActivityCategoryForm({ onSubmit, useForm, submitTi
                         label="Kredit"
                         placeholder="Pilih Akun"
                         value={data.credit_coa_id}
-                        onChange={(value) => setData('credit_coa_id', value)}
+                        onChange={(value) => setData('credit_coa_id', Number(value))}
                         labelKey="account_name"
                         wrapperClassName="grid gap-2 flex-1"
                         formDescription='Sumber Pemasukan dari akun mana?'

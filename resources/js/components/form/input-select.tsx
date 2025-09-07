@@ -5,8 +5,8 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 type Props = {
     // data: Record<string, string>[];
     data: any;
-    value?: number | null;
-    onChange: (value: number | null) => void;
+    value?: number | string | null;
+    onChange: (value: number | string | null) => void;
     id: string;
     valueKey?: string;
     labelKey?: string;

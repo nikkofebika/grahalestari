@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\CitizenFeeStatus;
 use App\Interfaces\Models\TenantedInterface;
 use App\Traits\Models\CreatedInfo;
 use App\Traits\Models\CustomSoftDeletes;
@@ -22,11 +23,16 @@ class CitizenFee extends BaseModel implements TenantedInterface, HasMedia
         'citizen_fee_category_id',
         'name',
         'date',
+        'status',
     ];
 
     protected $appends = [
         'total_amount',
         'total_amount_formatted',
+    ];
+
+    protected $casts = [
+        'status' => CitizenFeeStatus::class
     ];
 
     public function getTotalAmountAttribute(): string

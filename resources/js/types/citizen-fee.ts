@@ -41,6 +41,7 @@ export type TCitizenFee = {
     category?: TCitizenFeeCategory;
     name: string;
     date: string;
+    status: TCitizenFeeStatus;
     total_amount: number;
 
     total_amount_formatted: string;
@@ -50,6 +51,13 @@ export type TCitizenFee = {
     updated_at: string;
 } & TCreatedUpdatedDeletedInfo &
     TItemPermissions;
+
+export type TCitizenFeeStatus = 'in_progress' | 'completed';
+export const citizenFeeStatuses: TCitizenFeeStatus[] = ['in_progress', 'completed'];
+export const citizenFeeStatusLabels: Record<TCitizenFeeStatus, string> = {
+    in_progress: 'Dalam Proses',
+    completed: 'Selesai',
+}
 
 export type TCitizenFeeFilters = {
     search: string;
@@ -61,6 +69,11 @@ export type TCreateCitizenFee = {
     date: string;
     files: File[];
     removed_file_ids: number[];
+};
+
+export type TUpdateStatusCitizenFee = {
+    // id: number | null;
+    status: TCitizenFeeStatus | null;
 };
 
 export type TCitizenFeeDetail = {

@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\CitizenFeeStatus;
 use App\Models\CitizenFeeCategory;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -17,6 +18,7 @@ return new class extends Migration
             $table->foreignIdFor(CitizenFeeCategory::class)->constrained();
             $table->string('name');
             $table->date('date');
+            $table->string('status', 20)->default(CitizenFeeStatus::IN_PROGRESS->value);
             $table->timestamps();
 
             // created/updated/deleted info

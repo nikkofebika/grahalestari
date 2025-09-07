@@ -10,8 +10,6 @@ use App\Interfaces\Services\CitizenFee\CitizenFeeServiceInterface;
 use App\Interfaces\Services\User\UserServiceInterface;
 use App\Models\CitizenFee;
 use App\Models\CitizenFeeDetail;
-use App\Models\User;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;

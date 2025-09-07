@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\CitizenFeeStatus;
 use App\Helpers\Permission\PermissionResolver;
 use App\Http\Requests\GeneralSearchRequest;
 use App\Http\Requests\CitizenFee\StoreRequest;
+use App\Http\Requests\CitizenFeeDetail\UpdateStatusRequest;
 use App\Http\Resources\DefaultResource;
 use App\Interfaces\Controllers\HasSearch;
 use App\Interfaces\Services\CitizenFee\CitizenFeeServiceInterface;
 use App\Models\CitizenFee;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -131,5 +134,16 @@ class CitizenFeeController extends Controller implements HasSearch
 
         $this->service->delete($id);
         return redirect()->back()->with('success', self::DELETED_MESSAGE);
+    }
+
+    public function updateStatus(UpdateStatusRequest $request, int $id)
+    {
+        $citizenFee = $this->service->findById($id);
+
+        Gate::authorize('update', $citizenFee);
+
+        $this->service->updateStatus($citizenFee, $request->validated());
+
+        return redirect()->back()->with('success', self::UPDATED_MESSAGE);
     }
 }
