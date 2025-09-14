@@ -9,6 +9,7 @@ use App\Http\Controllers\ComplaintController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\JournalController;
 use App\Http\Controllers\KepalaKeluargaController;
+use App\Http\Controllers\LaporanKeuanganController;
 use App\Http\Controllers\LedgerController;
 use App\Http\Controllers\ProfitActivityCategoryController;
 use App\Http\Controllers\ProfitActivityController;
@@ -81,6 +82,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('search-kegiatan-profit', [ProfitActivityController::class, 'search']);
     Route::resource('kegiatan-profit', ProfitActivityController::class);
+
+    Route::resource('laporan-keuangan', LaporanKeuanganController::class);
 
     Route::get('search-pengumuman', [AnnouncementController::class, 'search']);
     Route::resource('pengumuman', AnnouncementController::class);
