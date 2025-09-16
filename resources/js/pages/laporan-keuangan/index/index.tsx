@@ -1,25 +1,20 @@
 import InputMonth from '@/components/form/input-month'
 import IndexPageHeading from '@/components/headings/index-page-heading'
-import { Button } from "@/components/ui/button"
 import {
     Card,
     CardContent,
     CardDescription,
-    CardFooter,
     CardHeader,
-    CardTitle,
+    CardTitle
 } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import {
     Table,
     TableBody,
-    TableCaption,
     TableCell,
     TableFooter,
     TableHead,
     TableHeader,
-    TableRow,
+    TableRow
 } from "@/components/ui/table"
 import {
     Tabs,
@@ -30,6 +25,8 @@ import {
 import usePeriodYearMonth from '@/hooks/use-period-year-month'
 import AppLayout from '@/layouts/app-layout'
 import { type BreadcrumbItem } from '@/types'
+import { TCoa } from '@/types/coa'
+import { TData } from '@/types/global'
 import { TLaporanKeuanganFilters } from '@/types/laporan-keuangan'
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -40,11 +37,21 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 type Props = {
-    // datas: TData<TCoa>;
+    datas: TData<TCoa>;
+    posisi_keuangan: {
+        total: string;
+        datas: TData<TCoa>;
+    };
+    tribal: {
+        datas: TData<TCoa>;
+    };
     filters: TLaporanKeuanganFilters;
 };
 
-export default function LaporanKeuanganIndex({ filters }: Props) {
+export default function LaporanKeuanganIndex({ datas, posisi_keuangan, tribal, filters }: Props) {
+    console.log('tribal', tribal);
+    // console.log('posisi_keuangan', posisi_keuangan);
+
     const { yearMonth, setYearMonth } = usePeriodYearMonth({ url: route('laporan-keuangan.index'), initialValue: filters.period });
 
     return (
@@ -77,18 +84,26 @@ export default function LaporanKeuanganIndex({ filters }: Props) {
                                     </TableHeader>
                                     <TableBody>
                                         {
-                                            Array.from({ length: 5 }).map((_, index) => (
-                                                <TableRow key={index}>
-                                                    <TableCell >Penerimaan {index + 1}</TableCell>
-                                                    <TableCell className="text-right font-bold text-green-600">Rp 15.000.000</TableCell>
+                                            datas.data[1]?.childs?.length ? (
+                                                datas.data[1].childs?.map((coa) => (
+                                                    <TableRow key={coa.id}>
+                                                        <TableCell>{`(${coa.account_number}) ${coa.account_name}`}</TableCell>
+                                                        <TableCell className="text-right font-bold text-green-600">Rp {coa.total_saldo}</TableCell>
+                                                    </TableRow>
+                                                ))
+                                            ) : (
+                                                <TableRow>
+                                                    <TableCell colSpan={2} className="text-center">
+                                                        Data tidak tersedia
+                                                    </TableCell>
                                                 </TableRow>
-                                            ))
+                                            )
                                         }
                                     </TableBody>
                                     <TableFooter>
                                         <TableRow>
                                             <TableCell className="font-bold">Total Penerimaan</TableCell>
-                                            <TableCell className="text-right text-green-600">Rp 15.000.000</TableCell>
+                                            <TableCell className="text-right text-green-600">Rp {datas.data[1].total_saldo}</TableCell>
                                         </TableRow>
                                     </TableFooter>
                                 </Table>
@@ -100,18 +115,26 @@ export default function LaporanKeuanganIndex({ filters }: Props) {
                                     </TableHeader>
                                     <TableBody>
                                         {
-                                            Array.from({ length: 5 }).map((_, index) => (
-                                                <TableRow key={index}>
-                                                    <TableCell >Pengeluaran {index + 1}</TableCell>
-                                                    <TableCell className="text-right font-bold text-red-600">Rp 15.000.000</TableCell>
+                                            datas.data[2].childs?.length ? (
+                                                datas.data[2].childs.map((coa) => (
+                                                    <TableRow key={coa.id}>
+                                                        <TableCell>{`(${coa.account_number}) ${coa.account_name}`}</TableCell>
+                                                        <TableCell className="text-right font-bold text-red-600">Rp {coa.total_saldo}</TableCell>
+                                                    </TableRow>
+                                                ))
+                                            ) : (
+                                                <TableRow>
+                                                    <TableCell colSpan={2} className="text-center">
+                                                        Data tidak tersedia
+                                                    </TableCell>
                                                 </TableRow>
-                                            ))
+                                            )
                                         }
                                     </TableBody>
                                     <TableFooter>
                                         <TableRow>
                                             <TableCell className="font-bold">Total Pengeluaran</TableCell>
-                                            <TableCell className="text-right text-red-600">Rp 15.000.000</TableCell>
+                                            <TableCell className="text-right text-red-600">Rp {datas.data[2].total_saldo}</TableCell>
                                         </TableRow>
                                     </TableFooter>
                                 </Table>
@@ -119,7 +142,7 @@ export default function LaporanKeuanganIndex({ filters }: Props) {
                                     <TableHeader>
                                         <TableRow className='border-none bg-slate-200'>
                                             <TableCell className="font-bold">LABA BERSIH</TableCell>
-                                            <TableCell className="font-bold text-right text-red-600">Rp 15.000.000</TableCell>
+                                            <TableCell className="font-bold text-right text-red-600">Rp {datas.data[0].total_saldo}</TableCell>
                                         </TableRow>
                                     </TableHeader>
                                 </Table>
@@ -143,23 +166,17 @@ export default function LaporanKeuanganIndex({ filters }: Props) {
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
-                                        <TableRow>
-                                            <TableCell>Kas</TableCell>
-                                            <TableCell className="text-right font-bold text-blue-600">Rp 10.000.000</TableCell>
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell>Bank</TableCell>
-                                            <TableCell className="text-right font-bold text-blue-600">Rp 10.000.000</TableCell>
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell>Piutan Iuran</TableCell>
-                                            <TableCell className="text-right font-bold text-blue-600">Rp 10.000.000</TableCell>
-                                        </TableRow>
+                                        {posisi_keuangan.datas.data.map((coa) => (
+                                            <TableRow key={coa.id}>
+                                                <TableCell>Kas</TableCell>
+                                                <TableCell className="text-right font-bold text-blue-600">Rp {coa.total_saldo}</TableCell>
+                                            </TableRow>
+                                        ))}
                                     </TableBody>
                                     <TableFooter>
                                         <TableRow>
                                             <TableCell className="font-bold">Total Harta</TableCell>
-                                            <TableCell className="text-right text-blue-600">Rp 30.000.000</TableCell>
+                                            <TableCell className="text-right text-blue-600">Rp {posisi_keuangan.total}</TableCell>
                                         </TableRow>
                                     </TableFooter>
                                 </Table>
@@ -169,7 +186,7 @@ export default function LaporanKeuanganIndex({ filters }: Props) {
                     <TabsContent value="neraca-tabs">
                         <Card>
                             <CardHeader>
-                                <CardTitle>Laporan Laba Rugi</CardTitle>
+                                <CardTitle>Laporan Neraca</CardTitle>
                                 <CardDescription>
                                     Periode: Januari 2024
                                 </CardDescription>
@@ -178,87 +195,35 @@ export default function LaporanKeuanganIndex({ filters }: Props) {
                                 <Table>
                                     <TableHeader>
                                         <TableRow>
-                                            <TableHead className="w-[100px]">Kode Akun</TableHead>
+                                            <TableHead>Kode Akun</TableHead>
                                             <TableHead>Nama Akun</TableHead>
                                             <TableHead className="text-right">Debit</TableHead>
                                             <TableHead className="text-right">Kredit</TableHead>
+                                            <TableHead className="text-right">Total</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
-                                        <TableRow>
-                                            <TableCell>1-1000</TableCell>
-                                            <TableCell>Kas</TableCell>
-                                            <TableCell className="text-right">Rp 24.100.000</TableCell>
-                                            <TableCell className="text-right">-</TableCell>
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell>1-1100</TableCell>
-                                            <TableCell>Bank</TableCell>
-                                            <TableCell className="text-right">Rp 15.000.000</TableCell>
-                                            <TableCell className="text-right">-</TableCell>
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell>1-2000</TableCell>
-                                            <TableCell>Piutang Iuran</TableCell>
-                                            <TableCell className="text-right">Rp 3.500.000</TableCell>
-                                            <TableCell className="text-right">-</TableCell>
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell>4-1000</TableCell>
-                                            <TableCell>Penerimaan Iuran Keamanan</TableCell>
-                                            <TableCell className="text-right">-</TableCell>
-                                            <TableCell className="text-right">Rp 15.000.000</TableCell>
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell>4-1100</TableCell>
-                                            <TableCell>Penerimaan Iuran Kebersihan</TableCell>
-                                            <TableCell className="text-right">-</TableCell>
-                                            <TableCell className="text-right">Rp 9.000.000</TableCell>
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell>4-1200</TableCell>
-                                            <TableCell>Penerimaan Iuran Sosial</TableCell>
-                                            <TableCell className="text-right">-</TableCell>
-                                            <TableCell className="text-right">Rp 3.000.000</TableCell>
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell>4-2000</TableCell>
-                                            <TableCell>Penerimaan Kegiatan Profit</TableCell>
-                                            <TableCell className="text-right">-</TableCell>
-                                            <TableCell className="text-right">Rp 15.250.000</TableCell>
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell>5-1000</TableCell>
-                                            <TableCell>Biaya Gaji & Tunjangan</TableCell>
-                                            <TableCell className="text-right">Rp 16.000.000</TableCell>
-                                            <TableCell className="text-right">-</TableCell>
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell>5-2000</TableCell>
-                                            <TableCell>Biaya Perlengkapan</TableCell>
-                                            <TableCell className="text-right">Rp 1.500.000</TableCell>
-                                            <TableCell className="text-right">-</TableCell>
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell>5-3000</TableCell>
-                                            <TableCell>Biaya Operasional</TableCell>
-                                            <TableCell className="text-right">Rp 3.000.000</TableCell>
-                                            <TableCell className="text-right">-</TableCell>
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell>5-4000</TableCell>
-                                            <TableCell>Biaya Pemeliharaan</TableCell>
-                                            <TableCell className="text-right">Rp 2.000.000</TableCell>
-                                            <TableCell className="text-right">-</TableCell>
-                                        </TableRow>
+                                        {
+                                            tribal.datas.data.length ?
+                                                (
+                                                    tribal.datas.data.map((coa) => (
+                                                        <TableRow key={coa.id}>
+                                                            <TableCell>{coa.account_number}</TableCell>
+                                                            <TableCell>{coa.account_name}</TableCell>
+                                                            <TableCell className="text-right">{coa.total_debit}</TableCell>
+                                                            <TableCell className="text-right">{coa.total_credit}</TableCell>
+                                                            <TableCell className="text-right">{coa.total_saldo}</TableCell>
+                                                        </TableRow>
+                                                    ))
+                                                ) : (
+                                                    <TableRow>
+                                                        <TableCell colSpan={5} className="text-center">
+                                                            Data tidak tersedia
+                                                        </TableCell>
+                                                    </TableRow>
+                                                )
+                                        }
                                     </TableBody>
-                                    <TableFooter>
-                                        <TableRow>
-                                            <TableCell colSpan={2} className="font-bold">TOTAL</TableCell>
-                                            <TableCell className="text-right font-bold">Rp 65.100.000</TableCell>
-                                            <TableCell className="text-right font-bold">Rp 42.250.000</TableCell>
-                                        </TableRow>
-                                    </TableFooter>
                                 </Table>
                             </CardContent>
                         </Card>
