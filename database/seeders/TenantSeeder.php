@@ -2,6 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Enums\Education;
+use App\Enums\Gender;
+use App\Enums\MaritalStatus;
+use App\Enums\Religion;
 use App\Enums\UserType;
 use App\Models\Tenant;
 use App\Models\User;
@@ -15,10 +19,27 @@ class TenantSeeder extends Seeder
      */
     public function run(): void
     {
+        $dataUserDetail = [
+            'birth_date' => date('Y-m-d'),
+            'birth_place' => 'Tangerang',
+            'gender' => Gender::MALE,
+            'religion' => Religion::ISLAM,
+            'marital_status' => MaritalStatus::MARRIED,
+            'education' => Education::S1,
+            'job' => 'Frelancer',
+            'address' => 'Greaha Lestari J9',
+        ];
+
         $userLeader = User::factory()->create([
             'name' => 'Admin RW',
             'email' => 'admin.rw@gmail.com',
             'type' => UserType::ADMIN_RW,
+        ]);
+        $userLeader->detail()->create([
+            ...$dataUserDetail,
+            'no_kk' => random_int('0000000000000000', '9999999999999999'),
+            'no_ktp' => random_int('0000000000000000', '9999999999999999'),
+            'phone' => '08' . random_int('0000000000', '9999999999'),
         ]);
 
         $parent = Tenant::create([
@@ -60,6 +81,30 @@ class TenantSeeder extends Seeder
                 'group_id' => $parent->id,
                 'tenant_id' => $child->id,
             ]);
+
+            $user->detail()->create([
+                ...$dataUserDetail,
+                'no_kk' => random_int('0000000000000000', '9999999999999999'),
+                'no_ktp' => random_int('0000000000000000', '9999999999999999'),
+                'phone' => '08' . random_int('0000000000', '9999999999'),
+            ]);
+
+            for ($j = 1; $j < 7; $j++) {
+                $user = User::factory()->create([
+                    'name' => 'Warga RT ' . $i . ' - ' . $j,
+                    'email' => 'warga.rt' . $i . '.' . $j . '@gmail.com',
+                    'type' => UserType::USER,
+                    'group_id' => $parent->id,
+                    'tenant_id' => $child->id,
+                ]);
+
+                $user->detail()->create([
+                    ...$dataUserDetail,
+                    'no_kk' => random_int('0000000000000000', '9999999999999999'),
+                    'no_ktp' => random_int('0000000000000000', '9999999999999999'),
+                    'phone' => '08' . random_int('0000000000', '9999999999'),
+                ]);
+            }
         }
 
         $userLeader->update([

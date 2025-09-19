@@ -1,4 +1,5 @@
 import DatePicker from '@/components/form/date-picker';
+import InputDateTime from '@/components/form/input-date-time';
 import InputText from '@/components/form/input-text';
 import IndexPageHeading from '@/components/headings/index-page-heading';
 import PaginatePagination from '@/components/pagination/paginate-pagination';
@@ -20,8 +21,10 @@ import { TCitizenFee, TCitizenFeeFilters, TCreateCitizenFeeDetail } from '@/type
 import { TPaginate } from '@/types/global';
 import { TUser } from '@/types/user';
 import { router, useForm } from '@inertiajs/react';
+import { format } from 'date-fns';
 import { SaveIcon } from 'lucide-react';
 import { FormEventHandler, useEffect, useState } from 'react';
+import CitizenFeePaymentStatusBadge from '../components/citizen-fee-status-badge';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -64,11 +67,11 @@ export default function CitizenFeeDetailsIndex({ datas, citizen_fee, filters, pa
     }, [selectedUser]);
 
     const minAmountPay = citizen_fee.category?.fix_amount ? citizen_fee.category?.fix_amount : 0;
-    const { data, setData, post, errors, processing } = useForm<TCreateCitizenFeeDetail>({
+    const { data, setData, post, errors, processing, reset } = useForm<TCreateCitizenFeeDetail>({
         citizen_fee_id: citizen_fee.id,
         user_id: null,
         amount: minAmountPay,
-        date: new Date().toISOString().split('T')[0],
+        payment_at: format(new Date(), 'yyyy-MM-dd HH:mm'),
     });
 
     const onSubmit: FormEventHandler = (e) => {
@@ -77,6 +80,7 @@ export default function CitizenFeeDetailsIndex({ datas, citizen_fee, filters, pa
             preserveScroll: true,
             onSuccess: () => {
                 setSelectedUser(null);
+                reset();
             }
         });
     };
@@ -89,8 +93,10 @@ export default function CitizenFeeDetailsIndex({ datas, citizen_fee, filters, pa
                 datas={datas.data}
                 columns={[
                     { label: "Nama", name: "name" },
-                    { label: "Tgl. Pembayaran", name: "citizen_fee_detail.date" },
+                    { label: "Status", name: "citizen_fee_detail.payment_status", renderCell: (data) => <CitizenFeePaymentStatusBadge payment_status={data.citizen_fee_detail?.payment_status ?? 'not_paid'} /> },
+                    { label: "Tgl. Pembayaran", name: "citizen_fee_detail.payment_at" },
                     { label: "Total Pembayaran", name: "citizen_fee_detail.amount_formatted" },
+                    { label: "Tgl. Approve", name: "citizen_fee_detail.payment_approved_at" },
                     { label: "Tgl Buat", name: "citizen_fee_detail.created_at" },
                 ]}
                 page={page}
@@ -137,13 +143,12 @@ export default function CitizenFeeDetailsIndex({ datas, citizen_fee, filters, pa
                                     readOnly: true
                                 }}
                             />
-                            <DatePicker
-                                id='date'
+                            <InputDateTime
+                                id='payment_at'
                                 label='Tanggal Pembayaran'
-                                value={data.date}
-                                onChange={(value) => setData('date', value ?? '')}
-                                errorMessage={errors.date}
-                                required={true}
+                                value={data.payment_at}
+                                onChange={(e) => setData('payment_at', e.target.value)}
+                                errorMessage={errors.payment_at}
                             />
                             <InputText
                                 id="amount"

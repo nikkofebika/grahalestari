@@ -69,12 +69,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     //     'details' => 'id',
     // ])->only('index', 'store', 'destroy');
     Route::group(['prefix' => 'iuran-warga/{citizenFee}', 'as' => 'iuran-warga.'], function () {
-        Route::put('update-status', [CitizenFeeController::class, 'updateStatus'])->name('update-status');
+        // Route::put('update-status', [CitizenFeeController::class, 'updateStatus'])->name('update-status');
 
         Route::get('details/{user}', [CitizenFeeDetailController::class, 'show'])->name('details.show');
         Route::delete('details/{user}', [CitizenFeeDetailController::class, 'destroy'])->name('details.destroy');
         Route::resource('details', CitizenFeeDetailController::class)->only('index', 'store');
     });
+    Route::get('iuran-warga/get-total-paid-users', [CitizenFeeController::class, 'getTotalPaidUsers'])->name('iuran-warga/get-total-paid-users');
     Route::resource('iuran-warga', CitizenFeeController::class);
 
     Route::get('search-kategori-kegiatan-profit', [ProfitActivityCategoryController::class, 'search']);

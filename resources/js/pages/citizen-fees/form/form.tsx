@@ -1,10 +1,9 @@
 import { CommandSelectInfinite } from '@/components/form/command-select-infinite';
 import DatePicker from '@/components/form/date-picker';
 import FormCard from '@/components/form/form-card';
-import InputMultipleFiles from '@/components/form/input-multiple-files';
 import InputText from '@/components/form/input-text';
 import InputError from '@/components/input-error';
-import { TCreateCitizenFee, TCitizenFee } from '@/types/citizen-fee';
+import { TCitizenFee, TCreateCitizenFee } from '@/types/citizen-fee';
 import { InertiaFormProps } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
@@ -39,14 +38,21 @@ export default function CitizenFeeForm({ onSubmit, useForm, submitTitle = 'Simpa
                     errorMessage={errors.name}
                 />
                 <DatePicker
-                    id='date'
-                    label='Tanggal Kegiatan'
-                    value={data.date}
-                    onChange={(value) => setData('date', value ?? '')}
-                    errorMessage={errors.date}
+                    id='effective_date'
+                    label='Tanggal Efektif'
+                    value={data.effective_date}
+                    onChange={(value) => setData('effective_date', value ?? '')}
+                    errorMessage={errors.effective_date}
                     required={true}
                 />
-                <InputMultipleFiles
+                 <DatePicker
+                    id='due_date'
+                    label='JatuhT Tempo'
+                    value={data.due_date}
+                    onChange={(value) => setData('due_date', value ?? '')}
+                    errorMessage={errors.due_date}
+                />
+                {/* <InputMultipleFiles
                     id="files"
                     label="Upload File"
                     values={data.files} // file baru
@@ -56,7 +62,7 @@ export default function CitizenFeeForm({ onSubmit, useForm, submitTitle = 'Simpa
                         setData('removed_file_ids', [...data.removed_file_ids, id]);
                     }}
                     errorMessage={errors.files}
-                />
+                /> */}
             </FormCard>
         </form>
     );

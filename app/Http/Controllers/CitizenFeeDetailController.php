@@ -6,6 +6,7 @@ use App\Helpers\Permission\PermissionResolver;
 use App\Http\Requests\GeneralSearchRequest;
 use App\Http\Requests\CitizenFeeDetail\StoreRequest;
 use App\Http\Resources\DefaultResource;
+use App\Interfaces\Services\CitizenFee\CitizenFeeDetailServiceInterface;
 use App\Interfaces\Services\CitizenFee\CitizenFeeServiceInterface;
 use App\Interfaces\Services\User\UserServiceInterface;
 use App\Models\CitizenFee;
@@ -18,6 +19,7 @@ use Spatie\QueryBuilder\AllowedFilter;
 class CitizenFeeDetailController extends Controller
 {
     public function __construct(
+        protected CitizenFeeDetailServiceInterface $service,
         protected CitizenFeeServiceInterface $citizenFeeService,
         protected UserServiceInterface $userService
     ) {
@@ -65,7 +67,7 @@ class CitizenFeeDetailController extends Controller
     {
         Gate::authorize('create', CitizenFee::class);
 
-        CitizenFeeDetail::create($request->validated());
+        $this->service->create($request->validated());
         return redirect()->back()->with('success', self::CREATED_MESSAGE);
     }
 
@@ -133,7 +135,7 @@ class CitizenFeeDetailController extends Controller
 
         Gate::authorize('delete', $citizenFee);
 
-        if (CitizenFeeDetail::where('citizen_fee_id', $citizenFeeId)->where('user_id', $userId)->delete()) {
+        if ($this->service->customDelete($citizenFee, $userId)) {
             return redirect()->back()->with('success', self::DELETED_MESSAGE);
         }
 

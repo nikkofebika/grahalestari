@@ -21,9 +21,10 @@ export default function CitizenFeeCreate() {
     const form = useForm<TCreateCitizenFee>({
         citizen_fee_category_id: null,
         name: '',
-        date: '',
-        files: [],
-        removed_file_ids: [],
+        effective_date: '',
+        due_date: '',
+        // files: [],
+        // removed_file_ids: [],
     });
 
     const submit: FormEventHandler = (e) => {

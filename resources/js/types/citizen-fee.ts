@@ -1,6 +1,7 @@
 import { TCoa } from './coa';
 import { TCreatedUpdatedDeletedInfo, TItemPermissions, TMedia } from './global';
 import { TTenant } from './tenant';
+import { TUser } from './user';
 
 export type TCitizenFeeCategory = {
     id: number;
@@ -40,8 +41,8 @@ export type TCitizenFee = {
     citizen_fee_category_id: number;
     category?: TCitizenFeeCategory;
     name: string;
-    date: string;
-    status: TCitizenFeeStatus;
+    effective_date: string;
+    due_date: string | null;
     total_amount: number;
 
     total_amount_formatted: string;
@@ -52,13 +53,6 @@ export type TCitizenFee = {
 } & TCreatedUpdatedDeletedInfo &
     TItemPermissions;
 
-export type TCitizenFeeStatus = 'in_progress' | 'completed';
-export const citizenFeeStatuses: TCitizenFeeStatus[] = ['in_progress', 'completed'];
-export const citizenFeeStatusLabels: Record<TCitizenFeeStatus, string> = {
-    in_progress: 'Dalam Proses',
-    completed: 'Selesai',
-}
-
 export type TCitizenFeeFilters = {
     search: string;
 };
@@ -66,25 +60,38 @@ export type TCitizenFeeFilters = {
 export type TCreateCitizenFee = {
     citizen_fee_category_id?: number | null;
     name: string;
-    date: string;
-    files: File[];
-    removed_file_ids: number[];
+    effective_date: string;
+    due_date: string | null;
+    // files: File[];
+    // removed_file_ids: number[];
 };
 
-export type TUpdateStatusCitizenFee = {
-    // id: number | null;
-    status: TCitizenFeeStatus | null;
-};
+export type TCitizenFeePaymentStatus = 'not_paid' | 'in_progress' | 'paid' | 'rejected';
+export const citizenFeePaymentStatuses: TCitizenFeePaymentStatus[] = ['not_paid', 'in_progress', 'paid', 'rejected'];
+export const citizenFeePaymentStatusLabels: Record<TCitizenFeePaymentStatus, string> = {
+    not_paid: 'Belum Bayar',
+    in_progress: 'Dalam Proses',
+    paid: 'Lunas',
+    rejected: 'Ditolak',
+}
+
+// export type TUpdateStatusCitizenFee = {
+//     status: TCitizenFeePaymentStatus | null;
+// };
 
 export type TCitizenFeeDetail = {
     id: number;
     citizen_fee_id: number;
     citizen_fee?: TCitizenFee;
-    date: string;
+    payment_at: string;
     amount: number;
+    payment_status: TCitizenFeePaymentStatus;
+    payment_approved_by_id: number | null;
+    payment_approved_by?: TUser;
+    payment_approved_at: string | null;
 
     amount_formatted: string;
-    // media?: TMedia[];
+    media?: TMedia[];
 
     created_at: string;
     updated_at: string;
@@ -98,7 +105,7 @@ export type TCitizenFeeDetailFilters = {
 export type TCreateCitizenFeeDetail = {
     citizen_fee_id?: number | null;
     user_id: number | null;
-    date: string;
+    payment_at: string;
     amount: number;
     // files: File[];
     // removed_file_ids: number[];

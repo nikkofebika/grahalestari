@@ -7,5 +7,6 @@ use App\Models\CitizenFee;
 
 interface CitizenFeeServiceInterface extends BaseServiceInterface
 {
-    public function updateStatus(CitizenFee|int $citizenFee, array $data): bool;
+    public function refreshJournal(CitizenFee|int $citizenFee): void;
+    // public function updateStatus(CitizenFee|int $citizenFee, array $data): bool;
 }

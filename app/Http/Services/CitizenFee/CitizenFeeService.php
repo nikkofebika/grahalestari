@@ -2,7 +2,6 @@
 
 namespace App\Http\Services\CitizenFee;
 
-use App\Enums\CitizenFeeStatus;
 use App\Enums\NormalBalance;
 use App\Http\Services\BaseService;
 use App\Interfaces\Repositories\CitizenFee\CitizenFeeCategoryRepositoryInterface;
@@ -36,13 +35,25 @@ class CitizenFeeService extends BaseService implements CitizenFeeServiceInterfac
         try {
             $citizenFee = $this->repository->create($data);
 
-            if (isset($data['files']) && is_array($data['files']) && count($data['files'])) {
-                foreach ($data['files'] as $file) {
-                    if ($file->isValid()) {
-                        $citizenFee->addMedia($file)->toMediaCollection();
-                    }
-                }
-            }
+            // if (isset($data['files']) && is_array($data['files']) && count($data['files'])) {
+            //     foreach ($data['files'] as $file) {
+            //         if ($file->isValid()) {
+            //             $citizenFee->addMedia($file)->toMediaCollection();
+            //         }
+            //     }
+            // }
+
+            $this->journalService->createJournal([
+                'model_id' => $citizenFee->id,
+                'model_type' => CitizenFee::class,
+                'tenant_id' => $citizenFee->category->tenant_id,
+                'normal_balance' => NormalBalance::CREDIT,
+                'transaction_date' => $citizenFee->effective_date,
+                'amount' => 0,
+                'description' => $citizenFee->name,
+                'debit_account_id' => $citizenFee->category->debit_coa_id,
+                'credit_account_id' => $citizenFee->category->credit_coa_id,
+            ]);
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -52,46 +63,13 @@ class CitizenFeeService extends BaseService implements CitizenFeeServiceInterfac
         return $citizenFee;
     }
 
-    public function updateStatus(CitizenFee|int $citizenFee, array $data): bool
+    public function update(int $id, array $data): bool
     {
-        if (!$citizenFee instanceof CitizenFee) {
-            $citizenFee = $this->findById($citizenFee, load: ['category']);
-        }
-
         DB::beginTransaction();
         try {
-            $citizenFee->update($data);
+            $this->baseRepository->update($id, $data);
+            $this->refreshJournal($id);
 
-            switch ($data['status']) {
-                case CitizenFeeStatus::COMPLETED->value:
-                    if (isset($data['files']) && is_array($data['files']) && count($data['files'])) {
-                        foreach ($data['files'] as $file) {
-                            if ($file->isValid()) {
-                                $citizenFee->addMedia($file)->toMediaCollection();
-                            }
-                        }
-                    }
-
-                    $this->journalService->createJournal([
-                        'model_id' => $citizenFee->id,
-                        'model_type' => CitizenFee::class,
-                        'tenant_id' => $citizenFee->category->tenant_id,
-                        'normal_balance' => NormalBalance::CREDIT,
-                        'transaction_date' => $citizenFee->date,
-                        'amount' => $citizenFee->total_amount,
-                        'description' => $citizenFee->name,
-                        'debit_account_id' => $citizenFee->category->debit_coa_id,
-                        'credit_account_id' => $citizenFee->category->credit_coa_id,
-                    ]);
-                    break;
-
-                default:
-                    DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-                    Journal::where('model_id', $citizenFee->id)->where('model_type', CitizenFee::class)->forceDelete();
-                    $citizenFee->clearMediaCollection();
-                    DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-                    break;
-            }
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -99,5 +77,48 @@ class CitizenFeeService extends BaseService implements CitizenFeeServiceInterfac
         }
 
         return true;
+    }
+
+    public function delete(int $id): bool
+    {
+        $citizenFee = $this->findById($id);
+
+        if (!$citizenFee) {
+            throw new NotFoundHttpException('Data iuran warga tidak ditemukan');
+        }
+
+        DB::beginTransaction();
+        try {
+            DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+            Journal::where('model_id', $citizenFee->id)->where('model_type', CitizenFee::class)->forceDelete();
+            $citizenFee->clearMediaCollection();
+            DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+            $this->baseRepository->delete($id);
+
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
+
+        return true;
+    }
+
+    public function refreshJournal(CitizenFee|int $citizenFee): void
+    {
+        if (!$citizenFee instanceof CitizenFee) {
+            $citizenFee = $this->findById($citizenFee);
+        }
+
+        $data['amount'] = $citizenFee->getTotalAmount();
+
+        if ($citizenFee->effective_date) {
+            $data['transaction_date'] = $citizenFee->effective_date;
+        }
+        if ($citizenFee->name) {
+            $data['description'] = $citizenFee->name;
+        }
+
+        $citizenFee->journal()->update($data);
     }
 }

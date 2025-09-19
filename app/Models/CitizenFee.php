@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Enums\CitizenFeeStatus;
+use App\Enums\CitizenFeePaymentStatus;
 use App\Interfaces\Models\TenantedInterface;
 use App\Traits\Models\CreatedInfo;
 use App\Traits\Models\CustomSoftDeletes;
@@ -22,8 +22,9 @@ class CitizenFee extends BaseModel implements TenantedInterface, HasMedia
     protected $fillable = [
         'citizen_fee_category_id',
         'name',
-        'date',
-        'status',
+        'effective_date',
+        'due_date',
+        // 'status',
     ];
 
     protected $appends = [
@@ -31,13 +32,18 @@ class CitizenFee extends BaseModel implements TenantedInterface, HasMedia
         'total_amount_formatted',
     ];
 
-    protected $casts = [
-        'status' => CitizenFeeStatus::class
-    ];
+    // protected $casts = [
+    //     'status' => CitizenFeeStatus::class
+    // ];
 
-    public function getTotalAmountAttribute(): string
+    public function getTotalAmount(): int
     {
-        return $this->details()->sum('amount');
+        return $this->details()->where('payment_status', CitizenFeePaymentStatus::PAID)->sum('amount');
+    }
+
+    public function getTotalAmountAttribute(): int
+    {
+        return $this->getTotalAmount();
     }
 
     public function getTotalAmountFormattedAttribute(): string
@@ -50,7 +56,7 @@ class CitizenFee extends BaseModel implements TenantedInterface, HasMedia
         $query->whereHas('category', fn($q) => $q->tenanted($user));
     }
 
-    public function journals(): MorphOne
+    public function journal(): MorphOne
     {
         return $this->morphOne(Journal::class, 'model');
     }

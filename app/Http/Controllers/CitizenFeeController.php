@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\CitizenFeeStatus;
+use App\Enums\CitizenFeePaymentStatus;
 use App\Helpers\Permission\PermissionResolver;
 use App\Http\Requests\GeneralSearchRequest;
 use App\Http\Requests\CitizenFee\StoreRequest;
-use App\Http\Requests\CitizenFeeDetail\UpdateStatusRequest;
 use App\Http\Resources\DefaultResource;
 use App\Interfaces\Controllers\HasSearch;
 use App\Interfaces\Services\CitizenFee\CitizenFeeServiceInterface;
 use App\Models\CitizenFee;
+use App\Models\CitizenFeeCategory;
+use App\Models\User;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -136,14 +136,64 @@ class CitizenFeeController extends Controller implements HasSearch
         return redirect()->back()->with('success', self::DELETED_MESSAGE);
     }
 
-    public function updateStatus(UpdateStatusRequest $request, int $id)
+    public function getTotalPaidUsers(\Illuminate\Http\Request $request)
     {
-        $citizenFee = $this->service->findById($id);
+        $items = $request->input('items', []);
 
-        Gate::authorize('update', $citizenFee);
+        // ambil unique category_id
+        $categoryIds = collect($items)
+            ->pluck('citizen_fee_category_id')
+            ->unique()
+            ->values();
 
-        $this->service->updateStatus($citizenFee, $request->validated());
+        // ambil semua kategori sekaligus
+        $citizenFeeCategories = CitizenFeeCategory::whereIn('id', $categoryIds)->get();
 
-        return redirect()->back()->with('success', self::UPDATED_MESSAGE);
+        // ambil tenant_id unik dari kategori
+        $tenantIds = $citizenFeeCategories->pluck('tenant_id')->unique()->values();
+
+        // ambil semua user berdasarkan tenant_id (sekali query)
+        $usersByTenant = User::whereIn('tenant_id', $tenantIds)
+            ->get()
+            ->groupBy('tenant_id');
+
+        // ambil unique id citizen_fee
+        $ids = collect($items)
+            ->pluck('id')
+            ->unique()
+            ->values();
+
+        // ambil semua citizen fee beserta pembayaran
+        $citizenFees = CitizenFee::with(['category' => function ($q) {
+            $q->select('id', 'tenant_id'); // select kolom yang lo mau
+        }])
+            ->withCount(['details as paid_users_count' => function ($q) {
+                $q->where('payment_status', CitizenFeePaymentStatus::PAID);
+            }])
+            ->whereIn('id', $ids)
+            ->get(['id', 'citizen_fee_category_id']);
+
+        // hitung comparasi
+        $result = $citizenFees->mapWithKeys(function ($fee) use ($usersByTenant) {
+            $tenantId = $fee->category->tenant_id;
+            $totalUsers = $usersByTenant[$tenantId]->count() ?? 0;
+            $paidUsers = $fee->paid_users_count; // hasil dari withCount alias
+
+            return [
+                $fee->id => "{$paidUsers}/{$totalUsers}",
+            ];
+        });
+
+        return response()->json($result);
     }
+    // public function updateStatus(UpdateStatusRequest $request, int $id)
+    // {
+    //     $citizenFee = $this->service->findById($id);
+
+    //     Gate::authorize('update', $citizenFee);
+
+    //     $this->service->updateStatus($citizenFee, $request->validated());
+
+    //     return redirect()->back()->with('success', self::UPDATED_MESSAGE);
+    // }
 }

@@ -19,9 +19,10 @@ class StoreRequest extends FormRequest
         return [
             'citizen_fee_category_id' => [new TenantedRule(CitizenFeeCategory::class, 'Kategori iuran warga tidak ditemukan')],
             'name' => [new NameRule],
-            'date' => ['required', 'date'],
-            'files' => ['nullable', 'array'],
-            'files.*' => ['required', 'mimes:' . config('app.file_mimes_types')],
+            'effective_date' => ['required', 'date'],
+            'due_date' => ['nullable', 'date', 'after_or_equal:effective_date'],
+            // 'files' => ['nullable', 'array'],
+            // 'files.*' => ['required', 'mimes:' . config('app.file_mimes_types')],
         ];
     }
 }

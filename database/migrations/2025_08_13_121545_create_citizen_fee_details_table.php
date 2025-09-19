@@ -1,5 +1,7 @@
 <?php
 
+use App\Enums\CitizenFeePaymentStatus;
+use App\Enums\CitizenFeeStatus;
 use App\Models\CitizenFee;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
@@ -17,8 +19,11 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(CitizenFee::class)->constrained();
             $table->foreignIdFor(User::class)->constrained();
-            $table->date('date');
+            $table->timestamp('payment_at');
             $table->integer('amount')->unsigned()->default(0);
+            $table->string('payment_status', 20)->default(CitizenFeePaymentStatus::IN_PROGRESS->value);
+            $table->integer('payment_approved_by_id')->unsigned()->nullable()->index();
+            $table->timestamp('payment_approved_at')->nullable();
             $table->timestamps();
 
             // created/updated/deleted info

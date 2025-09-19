@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\CitizenFeeDetail;
 
-use App\Enums\CitizenFeeStatus;
+use App\Enums\CitizenFeePaymentStatus;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
 
@@ -16,7 +16,7 @@ class UpdateStatusRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'status' => ['required', new Enum(CitizenFeeStatus::class)],
+            'paymet_status' => ['required', new Enum(CitizenFeePaymentStatus::class)],
         ];
     }
 }

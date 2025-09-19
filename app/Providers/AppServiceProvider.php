@@ -21,6 +21,9 @@ class AppServiceProvider extends ServiceProvider
         \App\Interfaces\Repositories\CitizenFee\CitizenFeeCategoryRepositoryInterface::class => \App\Http\Repositories\CitizenFee\CitizenFeeCategoryRepository::class,
         \App\Interfaces\Services\CitizenFee\CitizenFeeCategoryServiceInterface::class => \App\Http\Services\CitizenFee\CitizenFeeCategoryService::class,
 
+        \App\Interfaces\Repositories\CitizenFee\CitizenFeeDetailRepositoryInterface::class => \App\Http\Repositories\CitizenFee\CitizenFeeDetailRepository::class,
+        \App\Interfaces\Services\CitizenFee\CitizenFeeDetailServiceInterface::class => \App\Http\Services\CitizenFee\CitizenFeeDetailService::class,
+
         \App\Interfaces\Repositories\Coa\CoaRepositoryInterface::class => \App\Http\Repositories\Coa\CoaRepository::class,
         \App\Interfaces\Services\Coa\CoaServiceInterface::class => \App\Http\Services\Coa\CoaService::class,
 

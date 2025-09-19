@@ -35,8 +35,12 @@ export default function CitizenFeeShow({ data }: Props) {
                             <TableCell>{data.category?.tenant?.name}</TableCell>
                         </TableRow>
                         <TableRow>
-                            <TableCell className="font-bold">Tanggal Transaksi</TableCell>
-                            <TableCell>{data.date}</TableCell>
+                            <TableCell className="font-bold">Tanggal Efektif</TableCell>
+                            <TableCell>{data.effective_date}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableCell className="font-bold">Jatuh Tempo</TableCell>
+                            <TableCell>{data.due_date}</TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell className="font-bold">Kategori Kegiatan</TableCell>

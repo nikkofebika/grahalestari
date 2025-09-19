@@ -17,8 +17,9 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(CitizenFeeCategory::class)->constrained();
             $table->string('name');
-            $table->date('date');
-            $table->string('status', 20)->default(CitizenFeeStatus::IN_PROGRESS->value);
+            $table->date('effective_date');
+            $table->date('due_date')->nullable();
+            // $table->string('status', 20)->default(CitizenFeeStatus::IN_PROGRESS->value);
             $table->timestamps();
 
             // created/updated/deleted info
