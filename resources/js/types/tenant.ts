@@ -23,6 +23,9 @@ export type TTenant = {
     postal_code: string;
     created_at: string;
     updated_at: string;
+
+    total_users?: number;
+    total_kk?: number;
 } & TCreatedUpdatedDeletedInfo &
     TItemPermissions;
 

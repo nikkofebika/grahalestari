@@ -42,7 +42,12 @@ class RtController extends Controller implements HasSearch
 
         $datas = $this->service->findAllPaginate(
             $this->per_page,
-            fn($q) => $q->whereNotNull('parent_id')->with('leader'),
+            fn($q) => $q->whereNotNull('parent_id')
+                ->with('leader.detail')
+                ->withCount([
+                    'users as total_users',
+                    'users as total_kk' => fn($q) => $q->whereNull('parent_id')
+                ]),
             [AllowedFilter::scope('search')]
         );
 
@@ -56,6 +61,26 @@ class RtController extends Controller implements HasSearch
             'permission_actions' => PermissionResolver::forActions(Rt::class),
         ]);
     }
+    // public function index(GeneralSearchRequest $request): Response
+    // {
+    //     Gate::authorize('viewAny', Rt::class);
+
+    //     $datas = $this->service->findAllPaginate(
+    //         $this->per_page,
+    //         fn($q) => $q->whereNotNull('parent_id')->with('leader'),
+    //         [AllowedFilter::scope('search')]
+    //     );
+
+    //     return Inertia::render('rt/index/index', [
+    //         'datas' => DefaultResource::collection($datas),
+    //         'filters' => [
+    //             'search' => $request->filter['search'] ?? ""
+    //         ],
+    //         'page' => $request->page ?? 1,
+    //         'per_page' => $this->per_page,
+    //         'permission_actions' => PermissionResolver::forActions(Rt::class),
+    //     ]);
+    // }
 
     /**
      * Show the form for creating a new resource.

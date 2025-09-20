@@ -55,6 +55,11 @@ class Tenant extends BaseModel
         return $this->hasMany(self::class, 'parent_id');
     }
 
+    public function users(): HasMany
+    {
+        return $this->hasMany(User::class, 'tenant_id');
+    }
+
     public function coas(): HasMany
     {
         return $this->hasMany(Coa::class);

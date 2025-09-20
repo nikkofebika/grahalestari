@@ -3,7 +3,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { ContactRoundIcon, GroupIcon, LayoutGrid, MegaphoneIcon, UserPenIcon, Users } from 'lucide-react';
+import { BanknoteIcon, BookTextIcon, ChartNoAxesCombinedIcon, ContactRoundIcon, FileTextIcon, GroupIcon, HandCoinsIcon, LandmarkIcon, LayoutGrid, ListTreeIcon, MegaphoneIcon, ReceiptTextIcon, ScaleIcon, UserPenIcon, Users } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const masterData: NavItem[] = [
@@ -30,13 +30,13 @@ const masterData: NavItem[] = [
     {
         title: 'RW',
         href: '/rw',
-        icon: GroupIcon,
+        icon: LandmarkIcon,
         allowUserType: ['god', 'admin_rw'],
     },
     {
         title: 'RT',
         href: '/rt',
-        icon: GroupIcon,
+        icon: LandmarkIcon,
         allowUserType: ['god', 'admin_rw', 'admin_rt'],
     },
     {
@@ -48,13 +48,13 @@ const masterData: NavItem[] = [
     {
         title: 'Iuran Warga',
         href: '/kategori-iuran-warga',
-        icon: ContactRoundIcon,
+        icon: HandCoinsIcon,
         allowUserType: ['god', 'admin_rw', 'admin_rt'],
     },
     {
         title: 'Kegiatan Profit',
         href: '/kategori-kegiatan-profit',
-        icon: ContactRoundIcon,
+        icon: BanknoteIcon,
         allowUserType: ['god', 'admin_rw', 'admin_rt'],
     },
 ];
@@ -73,13 +73,13 @@ const generalFeature: NavItem[] = [
     {
         title: 'Iuran Warga',
         href: '/iuran-warga',
-        icon: ContactRoundIcon,
+        icon: HandCoinsIcon,
         allowUserType: ['god', 'admin_rw', 'admin_rt'],
     },
     {
         title: 'Kegiatan Profit',
         href: '/kegiatan-profit',
-        icon: ContactRoundIcon,
+        icon: BanknoteIcon,
         allowUserType: ['god', 'admin_rw', 'admin_rt'],
     },
 ];
@@ -88,32 +88,32 @@ const financeFeature: NavItem[] = [
     {
         title: 'COA',
         href: '/coas',
-        icon: MegaphoneIcon,
+        icon: ListTreeIcon,
     },
     {
         title: 'Transaksi',
         href: '/transactions',
-        icon: MegaphoneIcon,
+        icon: ReceiptTextIcon,
     },
     {
         title: 'Jurnal',
         href: '/journals',
-        icon: MegaphoneIcon,
+        icon: FileTextIcon,
     },
     {
         title: 'Ledger',
         href: '/ledger',
-        icon: MegaphoneIcon,
+        icon: BookTextIcon,
     },
     {
         title: 'Posisi Keuangan',
         href: '/tribal',
-        icon: MegaphoneIcon,
+        icon: ScaleIcon,
     },
     {
         title: 'Laporan Keuangan',
         href: '/laporan-keuangan',
-        icon: MegaphoneIcon,
+        icon: ChartNoAxesCombinedIcon,
     },
     // {
     //     title: 'Aduan Masyarakat',

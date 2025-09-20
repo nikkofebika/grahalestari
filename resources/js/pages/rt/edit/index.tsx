@@ -50,7 +50,7 @@ export default function RtEdit({ data }: Props) {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <CreateUpdatePageHeading title="Edit Tenant" backUrl="/rt" />
+            <CreateUpdatePageHeading title="Edit RT" backUrl="/rt" />
             <TenantForm onSubmit={submit} useForm={form} submitTitle="Update" />
         </AppLayout>
     );
