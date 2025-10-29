@@ -119,8 +119,8 @@ class CoaController extends Controller implements HasSearch
         Gate::authorize('update', $coa);
 
         $coa->load([
-            'tenant' => fn($q) => $q->selectMinimalist(),
-            'parent' => fn($q) => $q->selectMinimalist(),
+            'tenant' => fn($q) => $q->withoutGlobalScopes()->selectMinimalist(),
+            'parent' => fn($q) => $q->withoutGlobalScopes()->selectMinimalist(),
         ]);
 
         return Inertia::render('coas/edit/index', [

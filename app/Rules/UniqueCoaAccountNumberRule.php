@@ -11,7 +11,7 @@ use Illuminate\Contracts\Validation\ValidationRule;
  */
 class UniqueCoaAccountNumberRule implements ValidationRule
 {
-    public function __construct(private int $tenantId, private ?Closure $query = null) {}
+    public function __construct(private ?int $tenantId = null, private ?Closure $query = null) {}
 
     /**
      * Run the validation rule.

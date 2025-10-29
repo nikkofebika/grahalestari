@@ -13,10 +13,10 @@ class StoreRequest extends FormRequest
 {
     public function prepareForValidation(): void
     {
+        $user = auth()->user();
         $normalBalance = $this->normal_balance ? $this->normal_balance : $this->segment(2);
         $this->merge([
-            // 'tenant_id' => $this->tenant_id ? $this->tenant_id : auth()->user()->tenant_id,
-            'tenant_id' => $this->tenant_id ? $this->tenant_id : 1,
+            'tenant_id' => $this->tenant_id ? $this->tenant_id : ($user->is_god ? 1 : $user->tenant_id),
             'normal_balance' => $normalBalance,
         ]);
     }
@@ -37,7 +37,7 @@ class StoreRequest extends FormRequest
             'credit_account_id' => [new ExistCoaRule(fn($q) => $q->whereParent(false))],
             'description' => [new VarcharRule],
             'files' => ['nullable', 'array'],
-            'files.*' => ['required', 'mimes:' . config('app.file_mimes_types')],
+            'files.*' => ['required', 'mimes:' . config('app.file_mimes_types'), 'max:' . config('app.max_upload_size')],
         ];
     }
 }

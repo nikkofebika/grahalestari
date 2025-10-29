@@ -1,5 +1,4 @@
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { citizenFeeStatuses, citizenFeeStatusLabels, TCitizenFeeStatus } from '@/types/citizen-fee';
 
 type Props = {
     value: TCitizenFeeStatus;

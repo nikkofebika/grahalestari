@@ -126,6 +126,7 @@ return [
     'root_password' => env('ROOT_PASSWORD'),
     'file_mimes_types' => 'jpg,jpeg,png,webp,pdf,doc,docx,xls,xlsx',
     'image_mimes_types' => 'jpg,jpeg,png,webp',
+    'max_upload_size' => 1024*20,
     'free_trial_min_data' => env('FREE_TRIAL_MIN_DATA', 1),
     'free_trial_max_data' => env('FREE_TRIAL_MAX_DATA', 10),
     'free_trial_max_weeks' => env('FREE_TRIAL_MAX_WEEKS', 2),

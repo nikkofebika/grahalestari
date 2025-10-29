@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\NormalBalance;
 use App\Models\Scopes\TenantedScope;
+use App\Traits\Models\BelongsToTenant;
 use App\Traits\Models\CreatedInfo;
 use App\Traits\Models\CustomSoftDeletes;
 use App\Traits\Models\UpdatedInfo;
@@ -15,7 +16,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 #[ScopedBy([TenantedScope::class])]
 class Coa extends BaseModel
 {
-    use CustomSoftDeletes, CreatedInfo, UpdatedInfo;
+    use BelongsToTenant, CustomSoftDeletes, CreatedInfo, UpdatedInfo;
 
     protected $fillable = [
         'tenant_id',
@@ -46,7 +47,7 @@ class Coa extends BaseModel
     public function scopeWhereParent(Builder $query, bool $isParent = true): void
     {
         if ($isParent) {
-            $query->whereNull('parent_id');
+            $query->withoutGlobalScopes()->whereNull('parent_id');
         } else {
             $query->whereNotNull('parent_id');
         }
@@ -54,7 +55,7 @@ class Coa extends BaseModel
 
     public function parent(): BelongsTo
     {
-        return $this->belongsTo(self::class, 'parent_id');
+        return $this->belongsTo(self::class, 'parent_id')->withoutGlobalScopes();
     }
 
     public function childs(): HasMany
