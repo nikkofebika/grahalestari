@@ -10,4 +10,5 @@ interface CoaServiceInterface extends BaseServiceInterface
     public function getKasAccounts(): Collection;
     public function getPendapatanAccounts(): Collection;
     public function getBiayaAccounts(): Collection;
+    public function getParentCoas(): Collection;
 }

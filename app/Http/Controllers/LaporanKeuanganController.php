@@ -25,9 +25,7 @@ class LaporanKeuanganController extends Controller
         $datas = $this->coaService->findAll(
             fn($q) => $q->selectMinimalist(['normal_balance'])
                 // ->whereIn('id', [2, 3])
-                ->whereNull('parent_id')
-                ->orderBy('parent_id')
-                ->orderBy('account_number')
+                ->whereParent()
                 ->with(
                     'childs',
                     fn($q) => $q->selectMinimalist(['normal_balance'])
@@ -63,65 +61,92 @@ class LaporanKeuanganController extends Controller
 
             return $parentCoa;
         });
+        // dd($datas);
 
-        $coas = $this->coaService->findAll(
-            fn($q) => $q->select('id', 'account_number', 'account_name')
-                ->whereNotNull('parent_id')
-                ->orderBy('parent_id')
-                ->orderBy('account_number'),
-        )->map(function (Coa $coa) {
-            return [
-                'id' => $coa->id,
-                'account_name' => $coa->account_number . ' - ' . $coa->account_name,
-            ];
-        });
+        $coas = $this->coaService->getParentCoas();
 
         $totalPosisiKeuangan = 0;
         $posisiKeuangan = $this->coaService->findAll(
             fn($q) => $q->selectMinimalist(['normal_balance'])
-                ->where('id', 1)
-                ->with(
-                    'childs',
-                    fn($q) => $q->selectMinimalist(['normal_balance'])
-                        ->withSum(['journalDetails as total_debit' => function ($q) use ($period) {
-                            $q->whereHas('journal', fn($jq) => $jq->whereYearMonth($period));
-                        }], 'debit')
-                        ->withSum(['journalDetails as total_credit' => function ($q) use ($period) {
-                            $q->whereHas('journal', fn($jq) => $jq->whereYearMonth($period));
-                        }], 'credit')
-                        ->when($request->filter['coa_id'], fn($q) => $q->where('id', $request->filter['coa_id']))
-                        ->whereHas('journalDetails', fn($q) => $q->whereHas('journal', fn($q) => $q->whereYearMonth($period)))
-                ),
-        )->map(function (Coa $parentCoa) use (&$totalPosisiKeuangan) {
-            $sumTotalSaldo = 0;
+                ->where('parent_id', 1)
+                ->withSum(['journalDetails as total_debit' => function ($q) use ($period) {
+                    $q->whereHas('journal', fn($jq) => $jq->whereYearMonth($period));
+                }], 'debit')
+                ->withSum(['journalDetails as total_credit' => function ($q) use ($period) {
+                    $q->whereHas('journal', fn($jq) => $jq->whereYearMonth($period));
+                }], 'credit')
+                ->when($request->filter['coa_id'], fn($q) => $q->where('id', $request->filter['coa_id']))
+                ->whereHas('journalDetails', fn($q) => $q->whereHas('journal', fn($q) => $q->whereYearMonth($period)))
+        )->map(function (Coa $coa) use (&$totalPosisiKeuangan) {
+            $totalDebit = (int)$coa->total_debit;
+            $totalCredit = (int)$coa->total_credit;
 
-            $parentCoa->childs->map(function (Coa $coa) use (&$sumTotalSaldo) {
-                $totalDebit = (int)$coa->total_debit;
-                $totalCredit = (int)$coa->total_credit;
+            if ($coa->normal_balance->is(NormalBalance::DEBIT->value)) {
+                $totalSaldo = $totalDebit - $totalCredit;
+            } else {
+                $totalSaldo = $totalCredit - $totalDebit;
+            }
 
-                if ($coa->normal_balance->is(NormalBalance::DEBIT->value)) {
-                    $totalSaldo = $totalDebit - $totalCredit;
-                } else {
-                    $totalSaldo = $totalCredit - $totalDebit;
-                }
+            $totalPosisiKeuangan += $totalSaldo;
 
-                $sumTotalSaldo += $totalSaldo;
-
-                $coa->total_saldo = formatNumber($totalSaldo);
-                return $coa;
-            });
-
-            $totalPosisiKeuangan += $sumTotalSaldo;
-
-            $parentCoa->total_saldo = formatNumber($sumTotalSaldo);
-
-            return $parentCoa;
+            $coa->total_saldo = formatNumber($totalSaldo);
+            return $coa;
         });
+
+        //     $totalPosisiKeuangan += $sumTotalSaldo;
+
+        //     $parentCoa->total_saldo = formatNumber($sumTotalSaldo);
+
+        //     return $parentCoa;
+        // });
+        // dd($posisiKeuangan);
         $totalPosisiKeuangan = formatNumber($totalPosisiKeuangan);
+        // $posisiKeuangan = $this->coaService->findAll(
+        //     fn($q) => $q->selectMinimalist(['normal_balance'])
+        //         ->withoutGlobalScopes()
+        //         ->where('id', 1)
+        //         ->with(
+        //             'childs',
+        //             fn($q) => $q->selectMinimalist(['normal_balance'])
+        //                 ->withSum(['journalDetails as total_debit' => function ($q) use ($period) {
+        //                     $q->whereHas('journal', fn($jq) => $jq->whereYearMonth($period));
+        //                 }], 'debit')
+        //                 ->withSum(['journalDetails as total_credit' => function ($q) use ($period) {
+        //                     $q->whereHas('journal', fn($jq) => $jq->whereYearMonth($period));
+        //                 }], 'credit')
+        //                 ->when($request->filter['coa_id'], fn($q) => $q->where('id', $request->filter['coa_id']))
+        //                 ->whereHas('journalDetails', fn($q) => $q->whereHas('journal', fn($q) => $q->whereYearMonth($period)))
+        //         ),
+        // )->map(function (Coa $parentCoa) use (&$totalPosisiKeuangan) {
+        //     $sumTotalSaldo = 0;
+
+        //     $parentCoa->childs->map(function (Coa $coa) use (&$sumTotalSaldo) {
+        //         $totalDebit = (int)$coa->total_debit;
+        //         $totalCredit = (int)$coa->total_credit;
+
+        //         if ($coa->normal_balance->is(NormalBalance::DEBIT->value)) {
+        //             $totalSaldo = $totalDebit - $totalCredit;
+        //         } else {
+        //             $totalSaldo = $totalCredit - $totalDebit;
+        //         }
+
+        //         $sumTotalSaldo += $totalSaldo;
+
+        //         $coa->total_saldo = formatNumber($totalSaldo);
+        //         return $coa;
+        //     });
+
+        //     $totalPosisiKeuangan += $sumTotalSaldo;
+
+        //     $parentCoa->total_saldo = formatNumber($sumTotalSaldo);
+
+        //     return $parentCoa;
+        // });
+        // $totalPosisiKeuangan = formatNumber($totalPosisiKeuangan);
 
         $tribal = $this->coaService->findAll(
             fn($q) => $q->selectMinimalist(['normal_balance'])
-                ->whereNotNull('parent_id')
+                ->whereParent(false)
                 ->orderBy('parent_id')
                 ->orderBy('account_number')
                 ->withSum(['journalDetails as total_debit' => function ($q) use ($period) {

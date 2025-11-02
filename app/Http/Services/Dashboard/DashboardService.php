@@ -44,13 +44,12 @@ class DashboardService
         $smp = 100;
         $sma = 200;
         $d3 = 76;
-        $d4 = 43;
         $s1 = 98;
         $s2 = 51;
         $s3 = 23;
 
         return [
-            'total' => $sd + $smp + $sma + $d3 + $d4 + $s1 + $s2 + $s3,
+            'total' => $sd + $smp + $sma + $d3 + $s1 + $s2 + $s3,
             'users' => [
                 [
                     'education' => Education::SD,
@@ -71,11 +70,6 @@ class DashboardService
                     'education' => Education::D3,
                     'total' => $d3,
                     'fill' => '#76b7b2'
-                ],
-                [
-                    'education' => Education::D4,
-                    'total' => $d4,
-                    'fill' => '#59a14f'
                 ],
                 [
                     'education' => Education::S1,

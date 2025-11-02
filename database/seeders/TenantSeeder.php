@@ -22,10 +22,10 @@ class TenantSeeder extends Seeder
         $dataUserDetail = [
             'birth_date' => date('Y-m-d'),
             'birth_place' => 'Tangerang',
-            'gender' => Gender::MALE,
-            'religion' => Religion::ISLAM,
-            'marital_status' => MaritalStatus::MARRIED,
-            'education' => Education::S1,
+            // 'gender' => Gender::MALE,
+            // 'religion' => Religion::ISLAM,
+            // 'marital_status' => MaritalStatus::MARRIED,
+            // 'education' => Education::S1,
             'job' => 'Frelancer',
             'address' => 'Greaha Lestari J9',
         ];
@@ -40,6 +40,10 @@ class TenantSeeder extends Seeder
             'no_kk' => random_int('0000000000000000', '9999999999999999'),
             'no_ktp' => random_int('0000000000000000', '9999999999999999'),
             'phone' => '08' . random_int('0000000000', '9999999999'),
+            'gender'         => fake()->randomElement(Gender::cases()),
+            'religion'       => fake()->randomElement(Religion::cases()),
+            'marital_status' => fake()->randomElement(MaritalStatus::cases()),
+            'education'      => fake()->randomElement(Education::cases()),
         ]);
 
         $parent = Tenant::create([
@@ -87,6 +91,10 @@ class TenantSeeder extends Seeder
                 'no_kk' => random_int('0000000000000000', '9999999999999999'),
                 'no_ktp' => random_int('0000000000000000', '9999999999999999'),
                 'phone' => '08' . random_int('0000000000', '9999999999'),
+                'gender'         => fake()->randomElement(Gender::cases()),
+                'religion'       => fake()->randomElement(Religion::cases()),
+                'marital_status' => fake()->randomElement(MaritalStatus::cases()),
+                'education'      => fake()->randomElement(Education::cases()),
             ]);
 
             for ($j = 1; $j < 7; $j++) {
@@ -103,6 +111,10 @@ class TenantSeeder extends Seeder
                     'no_kk' => random_int('0000000000000000', '9999999999999999'),
                     'no_ktp' => random_int('0000000000000000', '9999999999999999'),
                     'phone' => '08' . random_int('0000000000', '9999999999'),
+                    'gender'         => fake()->randomElement(Gender::cases()),
+                    'religion'       => fake()->randomElement(Religion::cases()),
+                    'marital_status' => fake()->randomElement(MaritalStatus::cases()),
+                    'education'      => fake()->randomElement(Education::cases()),
                 ]);
             }
         }

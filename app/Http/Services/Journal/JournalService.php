@@ -48,7 +48,18 @@ class JournalService extends BaseService implements JournalServiceInterface
     {
         DB::beginTransaction();
         try {
-            $journal = $this->baseRepository->create($data);
+            // $journal = $this->baseRepository->create($data);
+            $journal = $this->baseRepository->create([
+                'model_id' => $data['model_id'] ?? null,
+                'model_type' => $data['model_type'] ?? null,
+                'tenant_id' => $data['tenant_id'],
+                'transaction_date' => $data['transaction_date'],
+                'normal_balance' => $data['normal_balance'],
+                'amount' => $data['amount'],
+                'description' => $data['description'] ?? null,
+                'created_at' => $data['created_at'] ?? null, // currently used for JournalSeeder
+                'created_by_id' => $data['created_by_id'] ?? null, // currently used for JournalSeeder
+            ]);
 
             if (isset($data['files']) && is_array($data['files']) && count($data['files'])) {
                 foreach ($data['files'] as $file) {

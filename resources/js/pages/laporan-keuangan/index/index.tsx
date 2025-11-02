@@ -49,16 +49,18 @@ type Props = {
 };
 
 export default function LaporanKeuanganIndex({ datas, posisi_keuangan, tribal, filters }: Props) {
-    console.log('tribal', tribal);
-    // console.log('posisi_keuangan', posisi_keuangan);
-
+    console.log('filters', filters)
     const { yearMonth, setYearMonth } = usePeriodYearMonth({ url: route('laporan-keuangan.index'), initialValue: filters.period });
+
+    const periodDate = new Date(filters.period).toLocaleString('en-US', {
+        month: 'long', // "Oct"
+        year: 'numeric' // "2025"
+    });
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <IndexPageHeading title="Laporan Keuangan" />
             <InputMonth id="period" value={yearMonth} onChange={(val) => setYearMonth(val)} />
-            {/* <div className="flex w-full flex-col gap-6 bg-blue-300"> */}
             <div className="">
                 <Tabs defaultValue="laba-rugi-tabs" className='w-full'>
                     <TabsList className='w-full'>
@@ -72,7 +74,7 @@ export default function LaporanKeuanganIndex({ datas, posisi_keuangan, tribal, f
                             <CardHeader>
                                 <CardTitle>Laporan Laba Rugi</CardTitle>
                                 <CardDescription>
-                                    Periode: Januari 2024
+                                    Periode: {periodDate}
                                 </CardDescription>
                             </CardHeader>
                             <CardContent className="grid gap-6">
@@ -142,7 +144,7 @@ export default function LaporanKeuanganIndex({ datas, posisi_keuangan, tribal, f
                                     <TableHeader>
                                         <TableRow className='border-none bg-slate-200'>
                                             <TableCell className="font-bold">LABA BERSIH</TableCell>
-                                            <TableCell className="font-bold text-right text-red-600">Rp {datas.data[0].total_saldo}</TableCell>
+                                            <TableCell className={`font-bold text-right ${parseInt(datas.data[0].total_saldo ?? "0") > 0 ? 'text-green-600' : 'text-red-600'}`}>Rp {datas.data[0].total_saldo}</TableCell>
                                         </TableRow>
                                     </TableHeader>
                                 </Table>
@@ -154,7 +156,7 @@ export default function LaporanKeuanganIndex({ datas, posisi_keuangan, tribal, f
                             <CardHeader>
                                 <CardTitle>Laporan Posisi Keuangan</CardTitle>
                                 <CardDescription>
-                                    Periode: Januari 2024
+                                    Periode: {periodDate}
                                 </CardDescription>
                             </CardHeader>
                             <CardContent className="grid gap-6">
@@ -168,7 +170,7 @@ export default function LaporanKeuanganIndex({ datas, posisi_keuangan, tribal, f
                                     <TableBody>
                                         {posisi_keuangan.datas.data.map((coa) => (
                                             <TableRow key={coa.id}>
-                                                <TableCell>Kas</TableCell>
+                                                <TableCell>{coa.account_name}</TableCell>
                                                 <TableCell className="text-right font-bold text-blue-600">Rp {coa.total_saldo}</TableCell>
                                             </TableRow>
                                         ))}
@@ -188,7 +190,7 @@ export default function LaporanKeuanganIndex({ datas, posisi_keuangan, tribal, f
                             <CardHeader>
                                 <CardTitle>Laporan Neraca</CardTitle>
                                 <CardDescription>
-                                    Periode: Januari 2024
+                                    Periode: {periodDate}
                                 </CardDescription>
                             </CardHeader>
                             <CardContent className="grid gap-6">

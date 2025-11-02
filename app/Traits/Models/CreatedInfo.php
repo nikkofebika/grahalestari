@@ -10,7 +10,9 @@ trait CreatedInfo
     public static function bootCreatedInfo()
     {
         static::creating(function (self $model) {
-            $model->created_by_id = auth()->id();
+            if (!$model->created_by_id) {
+                $model->created_by_id = auth()->id();
+            }
         });
     }
 

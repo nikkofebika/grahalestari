@@ -29,6 +29,7 @@ class Journal extends BaseModel implements HasMedia
         'normal_balance',
         'amount',
         'description',
+        'created_by_id', // currently used for JournalSeeder
     ];
 
     protected $appends = [

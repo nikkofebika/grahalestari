@@ -20,12 +20,14 @@ use App\Http\Controllers\RwController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\TribalController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\Web\IndexController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', function () {
-    return Inertia::render('welcome');
-})->name('home');
+// Route::get('/', function () {
+//     return Inertia::render('welcome');
+// })->name('home');
+Route::get('/', [IndexController::class, 'index'])->name('home');
 
 Route::controller(\App\Http\Controllers\RegionController::class)
     ->prefix('region')

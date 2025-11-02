@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\NormalBalance;
 use App\Helpers\Permission\PermissionResolver;
-use App\Http\Requests\GeneralSearchRequest;
+use App\Http\Requests\Journal\JouralIndexRequest;
 use App\Http\Requests\Journal\StoreRequest;
 use App\Http\Requests\Journal\UpdateRequest;
 use App\Http\Resources\DefaultResource;
@@ -45,18 +45,20 @@ class JournalController extends Controller implements HasSearch
      *
      * Creates new Journal or returns already existing Journal by email.
      */
-    public function index(GeneralSearchRequest $request)
+    public function index(JouralIndexRequest $request)
     {
         Gate::authorize('viewAny', Journal::class);
 
+        $defaultPeriod = isset(request()->query('filter')['period']) ? null : date('Y-m');
+
         $datas = $this->service->findAll(
-            // $this->per_page,
             fn($q) => $q->with([
                 'createdBy' => fn($q) => $q->selectMinimalist(),
                 'details' => fn($q) => $q->with('coa', fn($q) => $q->selectMinimalist()),
-            ]),
+            ])->when($defaultPeriod, fn($q) => $q->whereYearMonth($defaultPeriod)),
             allowedFilters: [
-                AllowedFilter::exact('tenant_id'),
+                AllowedFilter::scope('period', 'whereYearMonth'),
+                AllowedFilter::scope('coa_id', 'whereCoaId'),
             ],
             allowedIncludes: [
                 'tenant',
@@ -66,10 +68,14 @@ class JournalController extends Controller implements HasSearch
             allowedFields: ['id', 'name'],
         );
 
+        $coas = $this->coaService->getParentCoas();
+
         return Inertia::render('journals/index/index', [
             'datas' => DefaultResource::collection($datas),
+            'coas' => $coas,
             'filters' => [
-                'search' => $request->filter['search'] ?? ""
+                'period' => $request->filter['period'] ?? "",
+                'coa_id' => $request->filter['coa_id'] ?? null
             ],
             'page' => $request->page ?? 1,
             'per_page' => $this->per_page,

@@ -28,7 +28,7 @@ class TribalController extends Controller
 
         $datas = $this->coaService->findAll(
             fn($q) => $q->selectMinimalist(['normal_balance'])
-                ->whereNull('parent_id')
+                ->whereParent()
                 ->with(
                     'childs',
                     fn($q) => $q->selectMinimalist(['normal_balance'])

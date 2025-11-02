@@ -50,13 +50,13 @@ class TransactionController extends Controller implements HasSearch
     {
         Gate::authorize('viewAny', Journal::class);
 
+        $defaultPeriod = isset(request()->query('filter')['period']) ? null : date('Y-m');
+
         $datas = $this->service->findAll(
-            // $this->per_page,
             fn($q) => $q->with([
                 'createdBy' => fn($q) => $q->selectMinimalist(),
-                'details' => fn($q) => $q->with('coa', fn($q) => $q->selectMinimalist()),
                 'detail' => fn($q) => $q->with('coa', fn($q) => $q->selectMinimalist()),
-            ]),
+            ])->when($defaultPeriod, fn($q) => $q->whereYearMonth($defaultPeriod)),
             allowedFilters: [
                 AllowedFilter::scope('period', 'whereYearMonth'),
                 AllowedFilter::scope('coa_id', 'whereCoaId'),
@@ -71,17 +71,7 @@ class TransactionController extends Controller implements HasSearch
 
         $total = formatNumber($datas->reduce(fn($carry, $journal) => $carry + ($journal->normal_balance->is(NormalBalance::CREDIT->value) ? $journal->amount : -$journal->amount), 0));
 
-        $coas = $this->coaService->findAll(
-            fn($q) => $q->select('id', 'account_number', 'account_name')
-                ->whereNotNull('parent_id')
-                ->orderBy('parent_id')
-                ->orderBy('account_number'),
-        )->map(function (Coa $coa) {
-            return [
-                'id' => $coa->id,
-                'account_name' => $coa->account_number . ' - ' . $coa->account_name,
-            ];
-        });
+        $coas = $this->coaService->getParentCoas();
 
         return Inertia::render('transactions/index/index', [
             'datas' => TransactionResource::collection($datas),

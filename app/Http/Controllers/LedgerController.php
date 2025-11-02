@@ -29,7 +29,7 @@ class LedgerController extends Controller
         $datas = $this->coaService->findAll(
             fn($q) => $q->selectMinimalist(['normal_balance'])
                 ->when($request->filter['coa_id'], fn($q) => $q->where('id', $request->filter['coa_id']))
-                ->whereNotNull('parent_id')
+                ->whereParent(false)
                 ->with([
                     'journalDetails' => fn($q) => $q->selectMinimalist()
                         ->whereHas('journal', fn($q) => $q->whereYearMonth($period))
@@ -61,17 +61,7 @@ class LedgerController extends Controller
             return $coa;
         });
 
-        $coas = $this->coaService->findAll(
-            fn($q) => $q->select('id', 'account_number', 'account_name')
-                ->whereNotNull('parent_id')
-                ->orderBy('parent_id')
-                ->orderBy('account_number'),
-        )->map(function (Coa $coa) {
-            return [
-                'id' => $coa->id,
-                'account_name' => $coa->account_number . ' - ' . $coa->account_name,
-            ];
-        });
+        $coas = $this->coaService->getParentCoas();
 
         return Inertia::render('ledger/index/index', [
             'datas' => GeneralResource::collection($datas),

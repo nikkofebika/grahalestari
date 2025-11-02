@@ -93,3 +93,11 @@ export type TItemPermissions = {
     permissions: Partial<TBasePermission>;
 };
 export type TPermissionActions = Partial<TBaseTPermission>;
+
+
+export type TChart = {
+    label: string;
+    value: number;
+    percentage: number;
+    color: string;
+}

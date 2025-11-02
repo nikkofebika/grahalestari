@@ -16,4 +16,12 @@ enum Gender: string
             self::FEMALE => 'Perempuan'
         };
     }
+
+    public function color(): string
+    {
+        return match ($this) {
+            self::MALE => '#3b82f6',
+            self::FEMALE => '#ec4899'
+        };
+    }
 }
