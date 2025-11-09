@@ -3,7 +3,7 @@ import FormCard from '@/components/form/form-card';
 import InputError from '@/components/input-error';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { toNullable } from '@/helpers/helper';
+import { useAuth } from '@/hooks/use-auth';
 import { TCreateTenant, TTenant } from '@/types/tenant';
 import { TUser } from '@/types/user';
 import { InertiaFormProps } from '@inertiajs/react';
@@ -17,23 +17,26 @@ type Props = {
 };
 
 export default function TenantForm({ onSubmit, useForm, submitTitle = 'Simpan', tenant }: Props) {
+    const auth = useAuth()
     const { data, setData, processing, errors } = useForm;
 
     return (
         <form onSubmit={onSubmit} className="space-y-5">
             <FormCard submitTitle={submitTitle} processing={processing}>
-                <div className="grid gap-2">
-                    <label className="text-sm font-medium">Pilih RW</label>
-                    <CommandSelectInfinite<Pick<TTenant, 'id' | 'name'>>
-                        endpoint="/search-rw"
-                        labelKey="name"
-                        valueKey="id"
-                        value={data.parent_id} // id dari form
-                        onChange={(value) => setData('parent_id', Number(value))} // simpan ke form
-                        initialSelectedItem={tenant?.parent ?? null} // object dari props edit
-                    />
-                    <InputError className="mt-1" message={errors.parent_id} />
-                </div>
+                {auth.user.type === 'god' && (
+                    <div className="grid gap-2">
+                        <label className="text-sm font-medium">Pilih RW</label>
+                        <CommandSelectInfinite<Pick<TTenant, 'id' | 'name'>>
+                            endpoint="/search-rw"
+                            labelKey="name"
+                            valueKey="id"
+                            value={data.parent_id} // id dari form
+                            onChange={(value) => setData('parent_id', Number(value))} // simpan ke form
+                            initialSelectedItem={tenant?.parent ?? null} // object dari props edit
+                        />
+                        <InputError className="mt-1" message={errors.parent_id} />
+                    </div>
+                )}
                 <div className="grid gap-2">
                     <label className="text-sm font-medium">Pilih Ketua RT</label>
                     <CommandSelectInfinite<Pick<TUser, 'id' | 'name'>>
@@ -46,7 +49,7 @@ export default function TenantForm({ onSubmit, useForm, submitTitle = 'Simpan', 
                     />
                     <InputError className="mt-1" message={errors.leader_id} />
                 </div>
-                <div className="grid gap-2">
+                {/* <div className="grid gap-2">
                     <Label htmlFor="name">Nama</Label>
                     <Input
                         id="name"
@@ -57,7 +60,7 @@ export default function TenantForm({ onSubmit, useForm, submitTitle = 'Simpan', 
                         placeholder="Nama"
                     />
                     <InputError className="mt-1" message={errors.name} />
-                </div>
+                </div> */}
                 <div className="grid gap-2">
                     <Label htmlFor="number">Nomor RT</Label>
                     <Input
@@ -73,7 +76,7 @@ export default function TenantForm({ onSubmit, useForm, submitTitle = 'Simpan', 
                     />
                     <InputError className="mt-1" message={errors.number} />
                 </div>
-                <div className="grid gap-2">
+                {/* <div className="grid gap-2">
                     <Label htmlFor="address">Alamat</Label>
                     <Input
                         id="address"
@@ -122,7 +125,7 @@ export default function TenantForm({ onSubmit, useForm, submitTitle = 'Simpan', 
                         placeholder="Kode POS"
                     />
                     <InputError className="mt-1" message={errors.postal_code} />
-                </div>
+                </div> */}
             </FormCard>
         </form>
     );

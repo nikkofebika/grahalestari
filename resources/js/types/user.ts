@@ -4,6 +4,8 @@ import { TTenant } from './tenant';
 
 export type TUser = {
     id: number;
+    parent_id: number | null;
+    parent?: TTenant;
     group_id: number | null;
     group?: TTenant;
     tenant_id: number | null;

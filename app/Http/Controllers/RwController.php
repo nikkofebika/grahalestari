@@ -42,7 +42,11 @@ class RwController extends Controller implements HasSearch
 
         $datas = $this->service->findAllPaginate(
             $this->per_page,
-            fn($q) => $q->with('leader'),
+            fn($q) => $q->with('leader.detail')
+                ->withCount([
+                    'users as total_users',
+                    'users as total_kk' => fn($q) => $q->whereNull('parent_id')
+                ]),
             [
                 AllowedFilter::scope('search')
             ]
@@ -85,7 +89,9 @@ class RwController extends Controller implements HasSearch
      */
     public function show(string $id): Response
     {
-        Gate::authorize('view', Rw::class);
+        $tenant = $this->service->findById($id);
+
+        Gate::authorize('view', $tenant);
 
         $tenant = $this->service->findById($id, load: [
             'leader' => fn($q) => $q->selectMinimalist(),
@@ -103,7 +109,9 @@ class RwController extends Controller implements HasSearch
      */
     public function edit(string $id)
     {
-        Gate::authorize('update', Rw::class);
+        $tenant = $this->service->findById($id);
+
+        Gate::authorize('update', $tenant);
 
         $tenant = $this->service->findById($id);
         return Inertia::render('rw/edit/index', [
@@ -116,7 +124,9 @@ class RwController extends Controller implements HasSearch
      */
     public function update(StoreRequest $request, string $id)
     {
-        Gate::authorize('update', Rw::class);
+        $tenant = $this->service->findById($id);
+
+        Gate::authorize('update', $tenant);
 
         $this->service->update($id, $request->validated());
         return to_route('rw.index')->with('success', self::UPDATED_MESSAGE);

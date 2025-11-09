@@ -2,13 +2,25 @@
 
 namespace App\Http\Requests\Rt;
 
-use App\Rules\LatLngRule;
-use App\Rules\NameRule;
 use App\Rules\TenantNumberRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreRequest extends FormRequest
 {
+    public function prepareForValidation(): void
+    {
+        // only god and admin_rw can create/update rt
+        $user = auth()->user();
+        $parentId = $this->parent_id;
+
+        if ($user->is_admin_rw) {
+            $parentId = $user->group_id;
+        }
+
+        $this->merge([
+            'parent_id' => $parentId,
+        ]);
+    }
     /**
      * Get the validation rules that apply to the request.
      *
@@ -23,12 +35,12 @@ class StoreRequest extends FormRequest
             // 'city_id' => ['required', 'integer'],
             // 'district_id' => ['required', 'integer'],
             // 'village_id' => ['required', 'integer'],
-            'name' => [new NameRule],
+            // 'name' => [new NameRule],
             'number' => ['required', new TenantNumberRule],
-            'latitude' => ['required', 'string', new LatLngRule],
-            'longitude' => ['required', 'string', new LatLngRule],
-            'postal_code' => ['required', 'string', 'size:5'],
-            'address' => ['required', 'string', 'min:2', 'max:100'],
+            // 'latitude' => ['required', 'string', new LatLngRule],
+            // 'longitude' => ['required', 'string', new LatLngRule],
+            // 'postal_code' => ['required', 'string', 'size:5'],
+            // 'address' => ['required', 'string', 'min:2', 'max:100'],
         ];
     }
 }

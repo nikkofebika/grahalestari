@@ -35,14 +35,23 @@ class Tenant extends BaseModel
         'longitude',
     ];
 
+    protected $appends = [
+        'full_name',
+    ];
+
     protected static function booted(): void
     {
         static::addGlobalScope(new TenantedByTenantScope);
     }
 
+    protected function getFullNameAttribute(): string
+    {
+        return ($this->parent_id ? "RT " : "RW ") . $this->number . " - " . $this->name;
+    }
+
     public function parent(): BelongsTo
     {
-        return $this->belongsTo(self::class, 'parent_id');
+        return $this->belongsTo(self::class, 'parent_id')->withoutGlobalScopes();
     }
 
     public function leader(): BelongsTo

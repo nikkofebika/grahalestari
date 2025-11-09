@@ -45,6 +45,7 @@ Route::prefix('dashboard')->controller(DashboardController::class)->group(functi
 Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('search-aduan-masyarakat', [ComplaintController::class, 'search']);
+    Route::put('aduan-masyarakat/{aduan_masyarakat}/handle', [ComplaintController::class, 'handle'])->name('aduan-masyarakat.handle');
     Route::resource('aduan-masyarakat', ComplaintController::class);
 
     Route::get('search-coas', [CoaController::class, 'search']);
@@ -58,9 +59,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Route::delete('journals/{journal}/force-delete', [JournalController::class, 'forceDelete'])->name('journals.force-delete');
     Route::resource('journals', JournalController::class)->except(['create', 'store', 'destroy']);
 
-    Route::get('kepala-keluarga/export', [KepalaKeluargaController::class, 'export'])->name('kepala-keluarga.export');
+    Route::get('kepala-keluarga/export/{user_id?}', [KepalaKeluargaController::class, 'export'])->name('kepala-keluarga.export');
     Route::delete('kepala-keluarga/{user_id}/delete-member/{member_id}', [KepalaKeluargaController::class, 'deleteMember'])->name('kepala-keluarga.delete-member');
-    Route::resource('kepala-keluarga', KepalaKeluargaController::class);
+    Route::resource('kepala-keluarga', KepalaKeluargaController::class)->except(['edit', 'update']);
 
     Route::get('search-kategori-iuran-warga', [CitizenFeeCategoryController::class, 'search']);
     Route::resource('kategori-iuran-warga', CitizenFeeCategoryController::class);
@@ -108,6 +109,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('rt', RtController::class);
 
     Route::get('search-users', [UserController::class, 'search']);
+    Route::get('users/export', [UserController::class, 'export'])->name('users.export');
     Route::resource('users', UserController::class);
     Route::resource('roles', RoleController::class);
 });

@@ -12,10 +12,14 @@ class UsersGroupByKK implements FromView, ShouldAutoSize
 {
     use Exportable;
 
+    public function __construct(private ?string $userId = null) {}
+
     public function view(): View
     {
         $userColumns = ['users.id', 'users.parent_id', 'users.group_id', 'users.tenant_id', 'users.name', 'users.email'];
         $users = User::select($userColumns)
+            ->whereNotGod()
+            ->when($this->userId, fn($q) => $q->where('users.id', $this->userId))
             ->with([
                 'detail',
                 'tenant' => fn($q) => $q->selectMinimalist(),

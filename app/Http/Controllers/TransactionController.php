@@ -71,13 +71,14 @@ class TransactionController extends Controller implements HasSearch
 
         $total = formatNumber($datas->reduce(fn($carry, $journal) => $carry + ($journal->normal_balance->is(NormalBalance::CREDIT->value) ? $journal->amount : -$journal->amount), 0));
 
-        $coas = $this->coaService->getParentCoas();
+        $coas = $this->coaService->getParentCoas(fn($q) => $q->whereIn('parent_id', [2, 3]));
 
         return Inertia::render('transactions/index/index', [
             'datas' => TransactionResource::collection($datas),
             'coas' => $coas,
             'filters' => [
-                'period' => $request->filter['period'] ?? ""
+                'period' => $request->filter['period'] ?? "",
+                'coa_id' => $request->filter['coa_id'] ?? null
             ],
             'page' => $request->page ?? 1,
             'per_page' => $this->per_page,

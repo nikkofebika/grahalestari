@@ -8,6 +8,7 @@ import {
     CardFooter
 } from "@/components/ui/card";
 import { Icon } from '@/components/ui/icon';
+import { useAuth } from '@/hooks/use-auth';
 import useDeleteRow from '@/hooks/use-delete-row';
 import usePagination from '@/hooks/use-pagination';
 import useSearch from '@/hooks/use-search';
@@ -34,10 +35,7 @@ type Props = {
 };
 
 export default function TenantIndex({ datas, filters, page: pageSize, per_page }: Props) {
-    console.log('datas', datas)
-
-    const { auth }: any = usePage().props
-    console.log('auth', auth)
+    const auth = useAuth();
 
     const { search, setSearch } = useSearch({
         url: datas.meta.path,
@@ -58,13 +56,13 @@ export default function TenantIndex({ datas, filters, page: pageSize, per_page }
         <AppLayout breadcrumbs={breadcrumbs}>
             <IndexPageHeading title="RT" createUrl="rt/create" />
             {
-                auth.type === 'god' ? (
+                auth.user.type === 'god' ? (
                     <DataTable
                         datas={datas.data}
                         columns={[
                             {
                                 label: 'Nama',
-                                name: 'name',
+                                name: 'full_name',
                             },
                             {
                                 label: 'Nomor RT',
@@ -128,7 +126,7 @@ function RTCard({
                         <p>RT</p>
                     </div>
                     <div>
-                        <h2 className='font-bold text-primary'>{data.name}</h2>
+                        <h2 className='font-bold text-primary'>{data.full_name}</h2>
                         <h2 className='font-medium text-primary/50 text-sm'>{data.leader?.name}</h2>
                     </div>
                 </div>
@@ -140,15 +138,19 @@ function RTCard({
             </CardContent>
             <CardFooter className="flex-col gap-2">
                 <div className="flex justify-between gap-2 w-full">
-                    <Link href={`rt/${data.id}/edit`} className={buttonVariants({ size: 'sm' }) + ' flex-1'}>
-                        <EditIcon /> Edit
-                    </Link>
+                    {
+                        data.permissions?.update && (
+                            <Link href={`rt/${data.id}/edit`} className={buttonVariants({ size: 'sm' }) + ' flex-1'}>
+                                <EditIcon /> Edit
+                            </Link>
+                        )
+                    }
                     <Link href={`rt/${data.id}`} className={buttonVariants({ size: 'sm', variant: 'outline' }) + ' flex-1'}>
                         <EyeIcon /> Detail
                     </Link>
                 </div>
                 {
-                    handleRowDelete && (
+                    (data.permissions?.delete && handleRowDelete) && (
                         <Button onClick={() => {
                             if (confirm('Hapus data RT ?')) handleRowDelete(data.id)
                         }} variant="destructive" className='w-full' disabled={isDeleting}>

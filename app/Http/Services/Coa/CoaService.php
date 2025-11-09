@@ -6,6 +6,7 @@ use App\Http\Services\BaseService;
 use App\Interfaces\Repositories\Coa\CoaRepositoryInterface;
 use App\Interfaces\Services\Coa\CoaServiceInterface;
 use App\Models\Coa;
+use Closure;
 use Illuminate\Support\Collection;
 
 class CoaService extends BaseService implements CoaServiceInterface
@@ -36,12 +37,12 @@ class CoaService extends BaseService implements CoaServiceInterface
         );
     }
 
-    // STATIC FUNCTION, DEDICATED FOR HELPER
-    public function getParentCoas(): Collection
+    public function getParentCoas(?Closure $query = null): Collection
     {
         return $this->findAll(
             fn($q) => $q->select('id', 'account_number', 'account_name')
                 ->whereParent(false)
+                ->when($query, $query)
                 ->orderBy('parent_id')
                 ->orderBy('account_number'),
         )->map(function (Coa $coa) {

@@ -37,8 +37,9 @@ import {
 import { TItemPermissions } from "@/types/global";
 import { Link } from "@inertiajs/react";
 import get from "lodash/get";
-import { EditIcon, EyeIcon, MoreHorizontal, Trash2Icon } from "lucide-react";
+import { EditIcon, EyeIcon, MoreHorizontal, SearchIcon, Trash2Icon } from "lucide-react";
 import { Dispatch, ReactNode, SetStateAction, useState } from "react";
+import { InputGroup, InputGroupAddon, InputGroupInput } from "../ui/input-group";
 
 type Props<T> = {
     datas: T[];
@@ -110,13 +111,14 @@ export default function DataTable<T extends TItemPermissions>({
                         data per halaman
                     </Label>
                 </div>
-                <Input
-                    type="text"
-                    placeholder="Search..."
-                    className="w-80"
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                />
+                <InputGroup className="w-80">
+                    <InputGroupInput placeholder="Search..."
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)} />
+                    <InputGroupAddon>
+                        <SearchIcon />
+                    </InputGroupAddon>
+                </InputGroup>
             </div>
 
             {/* Table */}

@@ -44,7 +44,7 @@ export default function KepalaKeluargaIndex({ datas, filters, page: pageSize, pe
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <CustomPageHeading title="Kepala Keluarga">
-                <a href={route('kepala-keluarga.export')} className={buttonVariants({ size: 'sm' }) + ' m-0'}>
+                <a href={route('kepala-keluarga.export')} className={buttonVariants({ variant: 'outline', size: 'sm' }) + ' m-0'}>
                     <DownloadIcon /> Export Data
                 </a>
             </CustomPageHeading>
@@ -79,7 +79,7 @@ export default function KepalaKeluargaIndex({ datas, filters, page: pageSize, pe
                 setPerPage={setPerPage}
                 search={search}
                 getRowDetailUrl={(user) => route('kepala-keluarga.show', user.id)}
-                getRowEditUrl={(user) => route('kepala-keluarga.edit', user.id)}
+                // getRowEditUrl={(user) => route('kepala-keluarga.edit', user.id)}
                 setSearch={setSearch}
                 isDeleting={isDeleting}
                 handleRowDelete={handleRowDelete}

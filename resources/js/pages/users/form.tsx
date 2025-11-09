@@ -28,7 +28,7 @@ type Props = {
 
 export default function UserForm({ onSubmit, useForm, submitTitle = 'Simpan', user }: Props) {
     const { data, setData, processing, errors } = useForm;
-    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+    const [previewUrl, setPreviewUrl] = useState<string | null>(user?.image?.original_url ?? null);
 
     return (
         <form onSubmit={onSubmit} className="space-y-5">
@@ -50,7 +50,7 @@ export default function UserForm({ onSubmit, useForm, submitTitle = 'Simpan', us
                     <label className="text-sm font-medium">Kepala Keluarga</label>
                     <CommandSelectInfinite<Pick<TTenant, 'id' | 'name'>>
                         endpoint="/search-users"
-                        query="fields[users]=id,name"
+                        query="filter[where_parent]=1&fields[users]=id,name"
                         labelKey="name"
                         valueKey="id"
                         placeholder="Pilih Kepala Keluarga..."
@@ -208,7 +208,7 @@ export default function UserForm({ onSubmit, useForm, submitTitle = 'Simpan', us
                         value={data.job ?? ''}
                         onChange={(e) => setData('job', e.target.value)}
                         autoComplete="job"
-                        placeholder="Nomor Telepon"
+                        placeholder="Pekerjaan"
                     />
                     <InputError className="mt-1" message={errors.job} />
                 </div>

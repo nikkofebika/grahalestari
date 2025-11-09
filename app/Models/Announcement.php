@@ -20,6 +20,8 @@ class Announcement extends BaseModel
 {
     use BelongsToUser, UpdatedInfo, CustomSoftDeletes;
 
+    protected string $searchKey = 'title';
+
     protected $fillable = [
         'user_id',
         'category',

@@ -79,4 +79,13 @@ class ComplaintPolicy
 
         return true;
     }
+
+    public function handle(User $user, Complaint $complaint): bool
+    {
+        if ($user->type->is(UserType::USER)) {
+            return false;
+        }
+
+        return true;
+    }
 }

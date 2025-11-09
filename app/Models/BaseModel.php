@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 
 abstract class BaseModel extends Model
 {
+    protected string $searchKey = 'name';
+
     protected function serializeDate(DateTimeInterface $date)
     {
         return $date->format('Y-m-d H:i');
@@ -20,7 +22,7 @@ abstract class BaseModel extends Model
 
     public function scopeSearch(Builder $query, string $search): void
     {
-        $query->where('name', 'like', "%{$search}%");
+        $query->where($this->searchKey, 'like', "%{$search}%");
     }
 
     public function scopeActive(Builder $query)

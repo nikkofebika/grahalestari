@@ -12,7 +12,7 @@
             <tr>
                 <th style="background: {{ $backgroundColor }}; font-weight: bold">No KK</th>
                 <th colspan="9" style="background: {{ $backgroundColor }}; font-weight: bold">
-                    {{ $users[$i]->detail?->no_kk }}</th>
+                    '{{ $users[$i]->detail?->no_kk }}</th>
             </tr>
             <tr>
                 <th style="background: {{ $backgroundColor }}; font-weight: bold">Alamat</th>
@@ -35,7 +35,7 @@
             </tr>
             <tr>
                 <td style="background: {{ $backgroundColor }}">{{ $users[$i]->name }}</td>
-                <td style="background: {{ $backgroundColor }}">{{ $users[$i]->detail?->no_ktp }}</td>
+                <td style="background: {{ $backgroundColor }}">'{{ $users[$i]->detail?->no_ktp }}</td>
                 <td style="background: {{ $backgroundColor }}">{{ $users[$i]->detail?->gender }}</td>
                 <td style="background: {{ $backgroundColor }}">{{ $users[$i]->detail?->birth_place }}</td>
                 <td style="background: {{ $backgroundColor }}">{{ $users[$i]->detail?->birth_date }}</td>
@@ -48,7 +48,7 @@
             @foreach ($users[$i]->childs as $user)
                 <tr>
                     <td style="background: {{ $backgroundColor }}">{{ $user->name }}</td>
-                    <td style="background: {{ $backgroundColor }}">{{ $user->detail?->no_ktp }}</td>
+                    <td style="background: {{ $backgroundColor }}">'{{ $user->detail?->no_ktp }}</td>
                     <td style="background: {{ $backgroundColor }}">{{ $user->detail?->gender }}</td>
                     <td style="background: {{ $backgroundColor }}">{{ $user->detail?->birth_place }}</td>
                     <td style="background: {{ $backgroundColor }}">{{ $user->detail?->birth_date }}</td>

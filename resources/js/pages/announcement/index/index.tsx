@@ -74,10 +74,6 @@ export default function AnnouncementIndex({ datas, filters, page: pageSize, per_
                         label: 'Tgl Buat',
                         name: 'created_at',
                     },
-                    {
-                        label: 'Tgl Update',
-                        name: 'updated_at',
-                    },
                 ]}
                 page={page}
                 setPage={setPage}

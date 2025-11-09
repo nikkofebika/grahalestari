@@ -15,14 +15,6 @@ use Illuminate\Validation\Rules\Enum;
 class StoreRequest extends FormRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
-    {
-        return true;
-    }
-
-    /**
      * Get the validation rules that apply to the request.
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
@@ -39,8 +31,8 @@ class StoreRequest extends FormRequest
             'type' => ['required', new Enum(UserType::class)],
             'image' => ['sometimes', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
 
-            "no_kk" => ['nullable', 'string', 'max:16'],
-            "no_ktp" => ['nullable', 'string', 'max:16'],
+            "no_kk" => ['nullable', 'string', 'size:16'],
+            "no_ktp" => ['nullable', 'string', 'size:16'],
             "phone" => ['nullable', new PhoneRule],
             "birth_date" => ['nullable', 'date'],
             "birth_place" => ['nullable', 'string'],

@@ -1,4 +1,3 @@
-import DatePicker from '@/components/form/date-picker';
 import InputDateTime from '@/components/form/input-date-time';
 import InputText from '@/components/form/input-text';
 import IndexPageHeading from '@/components/headings/index-page-heading';

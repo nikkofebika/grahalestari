@@ -27,6 +27,8 @@ export function CommandSelectInfinite<T extends Record<string, string | number>>
     className,
     initialSelectedItem = null,
 }: SelectInfiniteIdProps<T>) {
+    const [allowSearch, setAllowSearch] = useState(true);
+
     const [open, setOpen] = useState(false);
     const [search, setSearch] = useState('');
     const [keySearch, setKeySearch] = useState('');
@@ -54,7 +56,14 @@ export function CommandSelectInfinite<T extends Record<string, string | number>>
             try {
                 const res = await fetch(`${endpoint}?filter[search]=${keySearch}&page=${page}&${query}`);
                 const json = await res.json();
+                console.log('json', json)
                 const newItems = json.data;
+                console.log('newItems', newItems)
+
+                if (page == 1 && newItems.length == 1) {
+                    onChange?.(newItems[0][valueKey]);
+                    setAllowSearch(false);
+                }
 
                 setData((prev) => (page === 1 ? newItems : [...prev, ...newItems.filter((i) => !prev.some((p) => p[valueKey] === i[valueKey]))]));
                 setHasMore(json.current_page == json.last_page);
@@ -83,45 +92,48 @@ export function CommandSelectInfinite<T extends Record<string, string | number>>
                     {selectedItem?.[labelKey] ?? placeholder}
                 </Button>
             </PopoverTrigger>
-            <PopoverContent align="start" sideOffset={4} className="w-full max-w-none min-w-[var(--radix-popover-trigger-width)] p-0">
-                <Command>
-                    <CommandInput placeholder="Cari..." onValueChange={setSearch} className="h-9" />
-                    <CommandList ref={listRef} onScroll={handleScroll} className="max-h-[200px] overflow-y-auto">
-                        <CommandEmpty>Tidak ditemukan</CommandEmpty>
-                        <CommandItem
-                            className="text-muted-foreground"
-                            key="delete-value"
-                            onSelect={() => {
-                                onChange?.(null);
-                                setOpen(false);
-                            }}
-                        >
-                            Reset Data
-                        </CommandItem>
-                        {data.map((item) => (
+            {allowSearch && (
+                <PopoverContent align="start" sideOffset={4} className="w-full max-w-none min-w-[var(--radix-popover-trigger-width)] p-0">
+                    <Command>
+                        <CommandInput placeholder="Cari..." onValueChange={setSearch} className="h-9" />
+                        <CommandList ref={listRef} onScroll={handleScroll} className="max-h-[200px] overflow-y-auto">
+                            <CommandEmpty>Tidak ditemukan</CommandEmpty>
                             <CommandItem
-                                key={item[valueKey]}
+                                disabled
+                                className="text-muted-foreground"
+                                key="delete-value"
                                 onSelect={() => {
-                                    onChange?.(item[valueKey]);
+                                    onChange?.(null);
                                     setOpen(false);
                                 }}
                             >
-                                {item[labelKey]}
+                                Reset Data
                             </CommandItem>
-                        ))}
+                            {data.map((item) => (
+                                <CommandItem
+                                    key={item[valueKey]}
+                                    onSelect={() => {
+                                        onChange?.(item[valueKey]);
+                                        setOpen(false);
+                                    }}
+                                >
+                                    {item[labelKey]}
+                                </CommandItem>
+                            ))}
 
-                        {loading && (
-                            <div className="flex justify-center py-2">
-                                <div className="border-muted-foreground h-4 w-4 animate-spin rounded-full border-2 border-t-transparent" />
-                            </div>
-                        )}
+                            {loading && (
+                                <div className="flex justify-center py-2">
+                                    <div className="border-muted-foreground h-4 w-4 animate-spin rounded-full border-2 border-t-transparent" />
+                                </div>
+                            )}
 
-                        {!loading && !hasMore && data.length > 0 && (
-                            <div className="text-muted-foreground py-2 text-center text-sm">*End of list*</div>
-                        )}
-                    </CommandList>
-                </Command>
-            </PopoverContent>
+                            {!loading && !hasMore && data.length > 0 && (
+                                <div className="text-muted-foreground py-2 text-center text-sm">*End of list*</div>
+                            )}
+                        </CommandList>
+                    </Command>
+                </PopoverContent>
+            )}
         </Popover>
     );
 }

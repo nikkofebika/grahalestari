@@ -27,8 +27,10 @@ class Complaint extends BaseModel
         'longitude',
         'handled_by_id',
         'handled_at',
+        'handled_feedback',
         'done_at',
         'done_by_id',
+        'done_feedback',
         'feedback',
     ];
 

@@ -13,9 +13,11 @@ export type TComplaint = {
     latitude: string | null;
     longitude: string | null;
     handled_at: string | null;
+    handled_feedback: string | null;
     handled_by_id: number | null;
     handled_by?: TUser;
     done_at: string | null;
+    done_feedback: string | null;
     done_by_id: number | null;
     done_by?: TUser;
     feedback: string | null;
@@ -88,4 +90,10 @@ export type TCreateComplaint = {
     // done_at: string | null;
     // done_by_id: number | null;
     // feedback: string | null;
+};
+
+export type THandleComplaintForm = {
+    status: TComplaintStatus | null,
+    handled_at: string | null;
+    handled_feedback: string | null;
 };

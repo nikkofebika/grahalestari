@@ -16,6 +16,7 @@ export type TTenant = {
     village_id: number | null;
     village_name: string | null;
     name: string;
+    full_name: string;
     number: number;
     address: string;
     latitude: string | null;

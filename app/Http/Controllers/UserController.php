@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\User\UsersExport;
 use App\Helpers\Permission\PermissionResolver;
 use App\Http\Requests\GeneralSearchRequest;
+use App\Http\Requests\User\ExportRequest;
 use App\Http\Requests\User\StoreRequest;
 use App\Http\Requests\User\UpdateRequest;
 use App\Http\Resources\DefaultResource;
 use App\Interfaces\Controllers\HasSearch;
+use App\Interfaces\Services\Rt\RtServiceInterface;
 use App\Interfaces\Services\User\UserServiceInterface;
 use App\Models\User;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -18,8 +21,10 @@ use Spatie\QueryBuilder\AllowedFilter;
 
 class UserController extends Controller implements HasSearch
 {
-    public function __construct(protected UserServiceInterface $service)
-    {
+    public function __construct(
+        protected UserServiceInterface $service,
+        protected RtServiceInterface $rtService,
+    ) {
         parent::__construct();
     }
 
@@ -27,17 +32,16 @@ class UserController extends Controller implements HasSearch
     {
         $datas = $this->service->findAllPaginate(
             $this->per_page,
+            allowedFilters: [
+                AllowedFilter::scope('search'),
+                AllowedFilter::scope('where_parent', 'whereParent'),
+            ],
             allowedFields: ['id', 'name']
         );
 
         return \App\Http\Resources\GeneralResource::collection($datas);
     }
 
-    /**
-     * Create new user.
-     *
-     * Creates new user or returns already existing user by email.
-     */
     public function index(GeneralSearchRequest $request)
     {
         Gate::authorize('viewAny', User::class);
@@ -46,13 +50,18 @@ class UserController extends Controller implements HasSearch
             $this->per_page,
             fn($q) => $q->with('tenant', fn($q) => $q->selectMinimalist()),
             [
-                AllowedFilter::scope('search')
+                AllowedFilter::scope('search'),
+                AllowedFilter::scope('where_parent', 'whereParent'),
             ],
             allowedFields: ['id', 'name']
         );
 
+
+        $rts = $this->rtService->findAll(fn($q) => $q->select('id', 'name'));
+
         return Inertia::render('users/index/index', [
             'datas' => DefaultResource::collection($datas),
+            'rts' => $rts,
             'filters' => [
                 'search' => $request->filter['search'] ?? ""
             ],
@@ -62,9 +71,6 @@ class UserController extends Controller implements HasSearch
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create(): Response
     {
         Gate::authorize('create', User::class);
@@ -72,20 +78,14 @@ class UserController extends Controller implements HasSearch
         return Inertia::render('users/create/index');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreRequest $request)
     {
         Gate::authorize('create', User::class);
 
-        $this->service->create($request->validated());
-        return to_route('users.index')->with('success', self::CREATED_MESSAGE);
+        $user = $this->service->create($request->validated());
+        return to_route('users.show', $user)->with('success', self::CREATED_MESSAGE);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id): Response
     {
         $user = $this->service->findById($id);
@@ -107,19 +107,16 @@ class UserController extends Controller implements HasSearch
         ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         $user = $this->service->findById($id);
-
         Gate::authorize('update', $user);
 
         $user->load([
             'group' => fn($q) => $q->selectMinimalist(),
             'tenant' => fn($q) => $q->selectMinimalist(),
             'detail',
+            'image',
         ]);
 
         return Inertia::render('users/edit/index', [
@@ -127,9 +124,6 @@ class UserController extends Controller implements HasSearch
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UpdateRequest $request, string $id)
     {
         $user = $this->service->findById($id);
@@ -137,12 +131,9 @@ class UserController extends Controller implements HasSearch
         Gate::authorize('update', $user);
 
         $this->service->update($id, $request->validated());
-        return to_route('users.index')->with('success', self::UPDATED_MESSAGE);
+        return to_route('users.show', $user)->with('success', self::UPDATED_MESSAGE);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         $user = $this->service->findById($id);
@@ -151,5 +142,10 @@ class UserController extends Controller implements HasSearch
 
         $this->service->delete($id);
         return redirect()->back()->with('success', self::DELETED_MESSAGE);
+    }
+
+    public function export(ExportRequest $request)
+    {
+        return (new UsersExport(auth()->user(), $request->validated('tenant_id')))->download('warga.xlsx');
     }
 }

@@ -59,7 +59,6 @@ export default function JournalIndex({ datas, coas, total, filters, permission_a
     });
 
     const { handleRowDelete, isDeleting } = useDeleteRow({ routeName: 'transactions.force-delete' });
-
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <CustomPageHeading title="Jurnal">

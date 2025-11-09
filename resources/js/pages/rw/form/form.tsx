@@ -89,7 +89,7 @@ export default function TenantForm({ onSubmit, useForm, submitTitle = 'Simpan', 
                     />
                     <InputError message={errors.village_id} />
                 </div>
-                <InputText id="name" label="Nama" value={data.name} onChange={(e) => setData('name', e.target.value)} errorMessage={errors.name} />
+                <InputText id="name" label="Nama Cluster/Perumahan/Wilayah" value={data.name} onChange={(e) => setData('name', e.target.value)} errorMessage={errors.name} />
                 {/* <div className="grid gap-2">
                     <Label htmlFor="number">Nomor RW</Label>
                     <Input

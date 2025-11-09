@@ -44,10 +44,16 @@ class UserService extends BaseService implements UserServiceInterface
 
         $user = $this->findById($id);
 
+        DB::beginTransaction();
         try {
             /** @var User */
             // $this->baseRepository->update($id, $data);
             $user->update($data);
+
+            if (isset($data['image']) && $data['image']->isValid()) {
+                $user->addMedia($data['image'])->toMediaCollection();
+            }
+
             $user->detail->update($data);
             DB::commit();
         } catch (Exception $e) {

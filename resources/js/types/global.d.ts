@@ -94,6 +94,11 @@ export type TItemPermissions = {
 };
 export type TPermissionActions = Partial<TBaseTPermission>;
 
+export type TAuthProps<T = Record<string, unknown>> = T & {
+    auth: {
+        user: TUser
+    }
+}
 
 export type TChart = {
     label: string;

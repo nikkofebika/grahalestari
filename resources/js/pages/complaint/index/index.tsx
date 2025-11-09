@@ -8,6 +8,7 @@ import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { TComplaint, TComplaintFilters } from '@/types/complaint';
 import { TPaginate } from '@/types/global';
+import ComplaintStatusBadge from '../components/complaint-status-badge';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -61,6 +62,7 @@ export default function ComplaintIndex({ datas, filters, page: pageSize, per_pag
                     {
                         label: 'Status',
                         name: 'status',
+                        renderCell: (row) => <ComplaintStatusBadge status={row.status} />
                     },
                     {
                         label: 'Lokasi',
@@ -77,10 +79,6 @@ export default function ComplaintIndex({ datas, filters, page: pageSize, per_pag
                     {
                         label: 'Tgl Buat',
                         name: 'created_at',
-                    },
-                    {
-                        label: 'Tgl Update',
-                        name: 'updated_at',
                     },
                 ]}
                 page={page}

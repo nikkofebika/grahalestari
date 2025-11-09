@@ -13,12 +13,15 @@ use App\Interfaces\Controllers\HasSearch;
 use App\Interfaces\Services\User\UserServiceInterface;
 use App\Models\User;
 use Exception;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
 use Spatie\QueryBuilder\AllowedFilter;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class KepalaKeluargaController extends Controller implements HasSearch
 {
@@ -92,9 +95,14 @@ class KepalaKeluargaController extends Controller implements HasSearch
     /**
      * Display the specified resource.
      */
-    public function show(string $id): Response
+    public function show(string $id): Response|RedirectResponse
     {
-        $user = $this->service->findById($id);
+        $user = $this->service->findById($id, fn($q) => $q->with('detail'));
+        abort_if(!$user, 404);
+
+        if ($user->parent_id) {
+            return redirect()->route('kepala-keluarga.index')->with('error', "$user->name bukan kepala keluarga");
+        }
 
         Gate::authorize('view', $user);
 
@@ -109,22 +117,22 @@ class KepalaKeluargaController extends Controller implements HasSearch
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
-    {
-        $user = $this->service->findById($id);
+    // public function edit(string $id)
+    // {
+    //     $user = $this->service->findById($id);
 
-        Gate::authorize('update', $user);
+    //     Gate::authorize('update', $user);
 
-        $user->load([
-            'group' => fn($q) => $q->selectMinimalist(),
-            'tenant' => fn($q) => $q->selectMinimalist(),
-            'detail',
-        ]);
+    //     $user->load([
+    //         'group' => fn($q) => $q->selectMinimalist(),
+    //         'tenant' => fn($q) => $q->selectMinimalist(),
+    //         'detail',
+    //     ]);
 
-        return Inertia::render('kepala-keluarga/edit/index', [
-            'data' => $user
-        ]);
-    }
+    //     return Inertia::render('kepala-keluarga/edit/index', [
+    //         'data' => $user
+    //     ]);
+    // }
 
     /**
      * Update the specified resource in storage.
@@ -172,14 +180,14 @@ class KepalaKeluargaController extends Controller implements HasSearch
             return redirect()->back()->with('error', $child->name . ' bukan anggota keluarga ' . $user->name);
         }
 
-        $child->delete();
+        $child->update(['parent_id' => null]);
 
         return redirect()->back()->with('success', self::DELETED_MESSAGE);
     }
 
-    public function export()
+    public function export(?string $id = null)
     {
-        return (new UsersGroupByKK)->download('users-group-by-kk.xlsx');
+        return (new UsersGroupByKK($id))->download('users-group-by-kk.xlsx');
         // return (new UsersGroupByKK)->download('users-group-by-kk.csv', \Maatwebsite\Excel\Excel::CSV, ['Content-Type' => 'text/csv']);
     }
 }

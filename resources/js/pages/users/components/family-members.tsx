@@ -48,21 +48,21 @@ export default function FamilyMembers({ user, familyMembers, showDetailButton, s
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {familyMembers.map((user) => (
-                    <TableRow key={`family-member-${user.id}`}>
-                        <TableCell>{user.name}</TableCell>
-                        <TableCell>{user.detail?.no_ktp}</TableCell>
-                        <TableCell>{user.detail?.gender}</TableCell>
-                        <TableCell>{user.detail?.birth_place}</TableCell>
-                        <TableCell>{user.detail?.birth_date}</TableCell>
-                        <TableCell>{user.detail?.religion}</TableCell>
-                        <TableCell>{user.detail?.education}</TableCell>
-                        <TableCell>{user.detail?.job}</TableCell>
+                {familyMembers.map((familyMember) => (
+                    <TableRow key={`family-member-${familyMember.id}`}>
+                        <TableCell>{familyMember.name}</TableCell>
+                        <TableCell>{familyMember.detail?.no_ktp}</TableCell>
+                        <TableCell>{familyMember.detail?.gender}</TableCell>
+                        <TableCell>{familyMember.detail?.birth_place}</TableCell>
+                        <TableCell>{familyMember.detail?.birth_date}</TableCell>
+                        <TableCell>{familyMember.detail?.religion}</TableCell>
+                        <TableCell>{familyMember.detail?.education}</TableCell>
+                        <TableCell>{familyMember.detail?.job}</TableCell>
                         {(showDetailButton || showDeleteButton) && (
                             <TableCell>
                                 {showDetailButton && (
                                     <Link
-                                        href={route('users.show', user.id)}
+                                        href={route('users.show', familyMember.id)}
                                         title="Detail"
                                         className={buttonVariants({ size: 'sm', variant: 'outline' }) + ' m-0'}
                                     >
@@ -78,9 +78,9 @@ export default function FamilyMembers({ user, familyMembers, showDetailButton, s
                                         </AlertDialogTrigger>
                                         <AlertDialogContent>
                                             <AlertDialogHeader>
-                                                <AlertDialogTitle>Hapus {user.name}?</AlertDialogTitle>
+                                                <AlertDialogTitle>Hapus {familyMember.name} dari daftar keluarga?</AlertDialogTitle>
                                                 <AlertDialogDescription>
-                                                    Aksi ini tidak dapat dibatalkan. Data akan dihapus secara permanen.
+                                                    {familyMember.name} akan dihapus dari daftar anggota keluarga {user.name}.
                                                 </AlertDialogDescription>
                                             </AlertDialogHeader>
                                             <AlertDialogFooter>
@@ -88,7 +88,7 @@ export default function FamilyMembers({ user, familyMembers, showDetailButton, s
                                                 <AlertDialogAction
                                                     className={buttonVariants({ variant: 'destructive' })}
                                                     onClick={() => {
-                                                        handleRowDelete(user.id!);
+                                                        handleRowDelete(familyMember.id!);
                                                     }}
                                                     disabled={isDeleting}
                                                 >

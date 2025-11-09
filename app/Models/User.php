@@ -73,7 +73,7 @@ class User extends Authenticatable implements JWTSubject, TenantedInterface, Has
     {
         static::saving(function (self $model) {
             if (!$model->group_id && $model->tenant_id) {
-                $model->group_id = $model->tenant?->parent?->id;
+                $model->group_id = $model->tenant?->parent_id;
             }
         });
     }
@@ -191,6 +191,16 @@ class User extends Authenticatable implements JWTSubject, TenantedInterface, Has
     {
         $query->where('name', 'like', "%{$search}%")
             ->orWhere('email', 'like', "%{$search}%");
+    }
+
+    public function scopeWhereParent(Builder $query, bool $value = true)
+    {
+        $query->when($value, fn($q) => $q->whereNull('parent_id'), fn($q) => $q->whereNotNull('parent_id'));
+    }
+
+    public function scopeWhereNotGod(Builder $query)
+    {
+        $query->whereNot('type', UserType::GOD);
     }
 
     public function registerMediaCollections(): void

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\Permission\PermissionResolver;
+use App\Http\Requests\Complaint\HandleRequest;
 use App\Http\Requests\GeneralSearchRequest;
 use App\Http\Requests\Complaint\StoreRequest;
 use App\Http\Resources\DefaultResource;
@@ -30,9 +31,6 @@ class ComplaintController extends Controller implements HasSearch
         return \App\Http\Resources\GeneralResource::collection($datas);
     }
 
-    /**
-     * Display a listing of the resource.
-     */
     public function index(GeneralSearchRequest $request): Response
     {
         Gate::authorize('viewAny', Complaint::class);
@@ -56,9 +54,6 @@ class ComplaintController extends Controller implements HasSearch
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create(): Response
     {
         Gate::authorize('create', Complaint::class);
@@ -66,9 +61,6 @@ class ComplaintController extends Controller implements HasSearch
         return Inertia::render('complaint/create/index');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreRequest $request)
     {
         Gate::authorize('create', Complaint::class);
@@ -77,13 +69,12 @@ class ComplaintController extends Controller implements HasSearch
         return to_route('aduan-masyarakat.index')->with('success', self::CREATED_MESSAGE);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id): Response
     {
         $complaint = $this->service->findById($id, load: [
-            'user' => fn($q) => $q->selectMinimalist()
+            'user' => fn($q) => $q->selectMinimalist(),
+            'handledBy' => fn($q) => $q->selectMinimalist(),
+            'doneBy' => fn($q) => $q->selectMinimalist(),
         ]);
 
         Gate::authorize('view', $complaint);
@@ -93,9 +84,6 @@ class ComplaintController extends Controller implements HasSearch
         ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         $complaint = $this->service->findById($id, load: ['user.tenant']);
@@ -107,9 +95,6 @@ class ComplaintController extends Controller implements HasSearch
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(StoreRequest $request, string $id)
     {
         $complaint = $this->service->findById($id);
@@ -120,9 +105,6 @@ class ComplaintController extends Controller implements HasSearch
         return to_route('aduan-masyarakat.index')->with('success', self::UPDATED_MESSAGE);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         $complaint = $this->service->findById($id);
@@ -131,5 +113,15 @@ class ComplaintController extends Controller implements HasSearch
 
         $this->service->delete($id);
         return redirect()->back()->with('success', self::DELETED_MESSAGE);
+    }
+    public function handle(HandleRequest $request, string $id)
+    {
+        $complaint = $this->service->findById($id);
+
+        Gate::authorize('handle', $complaint);
+
+        $this->service->handle($complaint, $request->validated());
+
+        return redirect()->back()->with('success', "Aduan berhasil " . ($request->status === "done" ? "diselesaikan" : "ditangani"));
     }
 }

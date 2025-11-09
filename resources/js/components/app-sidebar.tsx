@@ -46,13 +46,13 @@ const masterData: NavItem[] = [
         allowUserType: ['god', 'admin_rw', 'admin_rt'],
     },
     {
-        title: 'Iuran Warga',
+        title: 'Kategori Iuran Warga',
         href: '/kategori-iuran-warga',
         icon: HandCoinsIcon,
         allowUserType: ['god', 'admin_rw', 'admin_rt'],
     },
     {
-        title: 'Kegiatan Profit',
+        title: 'Kategori Kegiatan Profit',
         href: '/kategori-kegiatan-profit',
         icon: BanknoteIcon,
         allowUserType: ['god', 'admin_rw', 'admin_rt'],

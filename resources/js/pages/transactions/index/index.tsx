@@ -53,7 +53,6 @@ export default function TransactionIndex({ datas, total, coas, filters, permissi
     });
 
     const { handleRowDelete, isDeleting } = useDeleteRow({ routeName: 'transactions.force-delete' });
-
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <CustomPageHeading title="Transaksi">

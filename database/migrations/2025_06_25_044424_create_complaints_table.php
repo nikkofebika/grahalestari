@@ -24,8 +24,10 @@ return new class extends Migration
             $table->string('longitude', 20)->nullable();
             $table->integer('handled_by_id')->nullable();
             $table->timestamp('handled_at')->nullable();
+            $table->text('handled_feedback')->nullable();
             $table->integer('done_by_id')->nullable();
             $table->timestamp('done_at')->nullable();
+            $table->text('done_feedback')->nullable();
             $table->text('feedback')->nullable();
             $table->timestamps();
 

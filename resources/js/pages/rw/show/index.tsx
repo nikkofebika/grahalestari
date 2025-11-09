@@ -33,21 +33,13 @@ export default function RwShow({ data }: Props) {
                     </TableRow>
                     <TableRow>
                         <TableCell className="font-bold">Nama</TableCell>
-                        <TableCell>{data.name}</TableCell>
+                        <TableCell>{data.full_name}</TableCell>
                     </TableRow>
                     <TableRow>
                         <TableCell className="font-bold">Nomor RT</TableCell>
                         <TableCell>{data.number}</TableCell>
                     </TableRow>
                     <LocationInfoShow data={data} />
-                    <TableRow>
-                        <TableCell className="font-bold">Lokasi</TableCell>
-                        <TableCell>
-                            <a href={`https://www.google.com/maps?q=${data.latitude},${data.longitude}`} target="_blank">
-                                Lihat Lokasi
-                            </a>
-                        </TableCell>
-                    </TableRow>
                     <TableRow>
                         <TableCell className="font-bold">Dibuat Pada</TableCell>
                         <TableCell>
@@ -68,6 +60,20 @@ export default function RwShow({ data }: Props) {
                             </TableCell>
                         </TableRow>
                     )}
+                    <TableRow>
+                        <TableCell className="font-bold">Lokasi</TableCell>
+                        <TableCell>
+                            <iframe
+                                src={`https://www.google.com/maps?q=${data.latitude},${data.longitude}&z=15&output=embed`}
+                                width="100%"
+                                height="400"
+                                allowFullScreen
+                                loading="lazy"
+                                className="rounded-xl border-0"
+                                referrerPolicy="no-referrer-when-downgrade"
+                            />
+                        </TableCell>
+                    </TableRow>
                 </Table>
             </DetailCard>
         </AppLayout>

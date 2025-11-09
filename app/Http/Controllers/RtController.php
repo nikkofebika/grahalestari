@@ -50,7 +50,7 @@ class RtController extends Controller implements HasSearch
                 ]),
             [AllowedFilter::scope('search')]
         );
-
+        // dd(DefaultResource::collection($datas));
         return Inertia::render('rt/index/index', [
             'datas' => DefaultResource::collection($datas),
             'filters' => [
@@ -109,7 +109,7 @@ class RtController extends Controller implements HasSearch
     public function show(string $id): Response
     {
         $tenant = $this->service->findById($id, load: [
-            'parent.leader',
+            'parent.leader' => fn($q) => $q->selectMinimalist(),
             'leader' => fn($q) => $q->selectMinimalist(),
             'createdBy' => fn($q) => $q->selectMinimalist(),
             'updatedBy' => fn($q) => $q->selectMinimalist(),

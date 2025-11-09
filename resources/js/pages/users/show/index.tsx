@@ -35,7 +35,7 @@ export default function UserShow({ data, family_members }: Props) {
                     <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
                         {/* Profile Image */}
                         <div className="border-muted h-40 w-40 overflow-hidden border">
-                            <img src={data.image?.original_url} alt="User profile" className="h-full w-full object-cover" />
+                            <img src={data.image?.original_url || '/user-empty.jpg'} alt="User profile" className="h-full w-full object-cover" />
                         </div>
 
                         {/* User Info */}

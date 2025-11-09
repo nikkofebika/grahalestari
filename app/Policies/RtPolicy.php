@@ -37,7 +37,8 @@ class RtPolicy
      */
     public function update(User $user, Rt $rt): bool
     {
-        return !$user->type->is(UserType::USER);
+        return $user->type->is(UserType::ADMIN_RW);
+        // return !$user->type->is(UserType::USER);
     }
 
     /**
