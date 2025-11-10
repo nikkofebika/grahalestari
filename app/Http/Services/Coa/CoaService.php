@@ -8,12 +8,22 @@ use App\Interfaces\Services\Coa\CoaServiceInterface;
 use App\Models\Coa;
 use Closure;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 class CoaService extends BaseService implements CoaServiceInterface
 {
     public function __construct(protected CoaRepositoryInterface $repository)
     {
         parent::__construct($repository);
+    }
+
+    public function create(array $data): Coa
+    {
+        return DB::transaction(function () use ($data) {
+            $coa = $this->baseRepository->create($data);
+            $coa->coaBalances()->create();
+            return $coa;
+        });
     }
 
     public function getKasAccounts(): Collection

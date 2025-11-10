@@ -11,7 +11,6 @@ use App\Http\Resources\Transaction\TransactionResource;
 use App\Interfaces\Controllers\HasSearch;
 use App\Interfaces\Services\Coa\CoaServiceInterface;
 use App\Interfaces\Services\Journal\JournalServiceInterface;
-use App\Models\Coa;
 use App\Models\Journal;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Gate;

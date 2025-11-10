@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
+use App\Interfaces\Models\TenantedInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class CoaBalance extends BaseModel
+class CoaBalance extends BaseModel implements TenantedInterface
 {
     protected $fillable = [
         'coa_id',
@@ -19,6 +20,20 @@ class CoaBalance extends BaseModel
     protected $appends = [
         'closing_balance',
     ];
+
+    protected static function booted(): void
+    {
+        static::creating(function (self $model) {
+            if (!$model->period_month) {
+                $model->period_month = date('m');
+            }
+
+            if (!$model->period_year) {
+                $model->period_year = date('y');
+            }
+        });
+    }
+
 
     public function getClosingBalanceAttribute(): int
     {
@@ -46,6 +61,16 @@ class CoaBalance extends BaseModel
 
             $query->whereHas('coa', $fn);
         }
+    }
+
+    public function scopeFindTenanted(Builder $query, int|string $id, bool $fail = true): self
+    {
+        $query->tenanted()->where('id', $id);
+        if ($fail) {
+            return $query->firstOrFail();
+        }
+
+        return $query->first();
     }
 
     public function coa(): BelongsTo

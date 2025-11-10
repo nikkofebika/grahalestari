@@ -67,4 +67,9 @@ class Coa extends BaseModel
     {
         return $this->hasMany(JournalDetail::class);
     }
+
+    public function coaBalances(): HasMany
+    {
+        return $this->hasMany(CoaBalance::class);
+    }
 }

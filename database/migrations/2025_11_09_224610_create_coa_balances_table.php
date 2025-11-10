@@ -14,14 +14,16 @@ return new class extends Migration
     {
         Schema::create('coa_balances', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Coa::class)->constrained();
-            // $table->foreignIdFor(Tenant::class)->constrained();
+            $table->foreignIdFor(Coa::class)->constrained()->cascadeOnDelete();
+            // $table->integer('tenant_id')->unsigned()->index();
             $table->string('period_month', 2);
             $table->char('period_year', 4);
             $table->integer('opening_balance')->unsigned()->default(0);
             $table->integer('debit')->unsigned()->default(0);
             $table->integer('credit')->unsigned()->default(0);
             $table->timestamps();
+
+            $table->unique(['coa_id', 'period_month', 'period_year']);
         });
     }
 
