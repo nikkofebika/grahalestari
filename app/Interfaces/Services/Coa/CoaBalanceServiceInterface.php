@@ -2,9 +2,10 @@
 
 namespace App\Interfaces\Services\Coa;
 
-use App\Interfaces\Services\BaseServiceInterface;
+use App\Models\Coa;
 
-interface CoaBalanceServiceInterface extends BaseServiceInterface
+interface CoaBalanceServiceInterface
 {
-    public function recalculate(int $coaId, string $year, string $month): void;
+    public function recalculate(Coa|int $coaId, string $year, string $month): void;
+    public function recalculateAll(string $year, string $month): void;
 }

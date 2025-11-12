@@ -5,14 +5,17 @@ namespace App\Http\Services\Journal;
 use App\Enums\NormalBalance;
 use App\Http\Services\BaseService;
 use App\Interfaces\Repositories\Journal\JournalRepositoryInterface;
+use App\Interfaces\Services\Coa\CoaBalanceServiceInterface;
 use App\Interfaces\Services\Journal\JournalServiceInterface;
 use App\Models\Journal;
 use Illuminate\Support\Facades\DB;
 
 class JournalService extends BaseService implements JournalServiceInterface
 {
-    public function __construct(protected JournalRepositoryInterface $repository)
-    {
+    public function __construct(
+        protected JournalRepositoryInterface $repository,
+        protected CoaBalanceServiceInterface $coaBalanceService,
+    ) {
         parent::__construct($repository);
     }
 
@@ -30,6 +33,8 @@ class JournalService extends BaseService implements JournalServiceInterface
                     'debit' => $data['amount'],
                 ]
             ]);
+
+            $this->coaBalanceService->recalculate($data['debit_account_id'], date('Y', strtotime($journal->transaction_date)), date('m', strtotime($journal->transaction_date)));
         } else {
             $journal->details()->createMany([
                 [
@@ -41,6 +46,8 @@ class JournalService extends BaseService implements JournalServiceInterface
                     'credit' => $data['amount'],
                 ]
             ]);
+
+            $this->coaBalanceService->recalculate($data['credit_account_id'], date('Y', strtotime($journal->transaction_date)), date('m', strtotime($journal->transaction_date)));
         }
     }
 

@@ -40,7 +40,7 @@ class CoaBalance extends BaseModel implements TenantedInterface
         return $this->opening_balance + $this->debit - $this->credit;
     }
 
-    public function scopeTenanted(Builder $query)
+    public function scopeTenanted(Builder $query): void
     {
         /** @var \App\Models\User */
         $user = auth()->user();

@@ -21,7 +21,11 @@ class CoaService extends BaseService implements CoaServiceInterface
     {
         return DB::transaction(function () use ($data) {
             $coa = $this->baseRepository->create($data);
-            $coa->coaBalances()->create();
+
+            if ($coa->parent_id) {
+                $coa->coaBalances()->create();
+            }
+
             return $coa;
         });
     }

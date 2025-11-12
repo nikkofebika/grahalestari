@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Enums\NormalBalance;
+use App\Http\Services\Coa\CoaService;
 use App\Models\Coa;
 use App\Models\Rw;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -16,6 +17,8 @@ class CoaSeeder extends Seeder
     public function run(): void
     {
         $now = now();
+
+        $coaService = app(CoaService::class);
 
         collect([
             [
@@ -53,7 +56,8 @@ class CoaSeeder extends Seeder
                 'created_at' => $now,
                 'updated_at' => $now,
             ],
-        ])->each(function ($coa) {
+        ])->each(function ($coa) use ($coaService) {
+            // $coaService->create($coa);
             Coa::withoutEvents(fn() => Coa::withoutGlobalScopes()->create($coa));
         });
 
