@@ -23,9 +23,23 @@ class CoaBalance extends BaseModel implements TenantedInterface
 
     protected static function booted(): void
     {
-        static::creating(function (self $model) {
+        // static::creating(function (self $model) {
+        //     if (!$model->period_month) {
+        //         $model->period_month = date('m');
+        //     }
+
+        //     if (!$model->period_year) {
+        //         $model->period_year = date('y');
+        //     }
+        // });
+
+        static::saving(function (self $model) {
             if (!$model->period_month) {
                 $model->period_month = date('m');
+            }
+
+            if (strlen($model->period_month) === 1) {
+                $model->period_month = '0' . $model->period_month;
             }
 
             if (!$model->period_year) {
@@ -71,6 +85,14 @@ class CoaBalance extends BaseModel implements TenantedInterface
         }
 
         return $query->first();
+    }
+
+    public function scopeWherePeriod(Builder $q, string $period): void
+    {
+        $q->where(
+            fn($q) => $q->where('period_year', date('Y', strtotime($period)))
+                ->where('period_month', date('m', strtotime($period)))
+        );
     }
 
     public function coa(): BelongsTo

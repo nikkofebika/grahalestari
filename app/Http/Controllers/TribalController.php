@@ -38,14 +38,17 @@ class TribalController extends Controller
                         ->withSum(['journalDetails as total_credit' => function ($q) use ($period) {
                             $q->whereHas('journal', fn($jq) => $jq->whereYearMonth($period));
                         }], 'credit')
+                        ->with('coaBalance', fn($q) => $q->select('coa_id', 'opening_balance')->wherePeriod($period))
                 ),
         )
             ->map(function (Coa $parentCoa) {
+                $sumOpeningBalance = 0;
                 $sumTotalDebit = 0;
                 $sumTotalCredit = 0;
                 $sumTotalSaldo = 0;
 
-                $parentCoa->childs->map(function (Coa $coa) use (&$sumTotalDebit, &$sumTotalCredit, &$sumTotalSaldo) {
+                $parentCoa->childs->map(function (Coa $coa) use (&$sumOpeningBalance, &$sumTotalDebit, &$sumTotalCredit, &$sumTotalSaldo) {
+                    $opengingBalance = (int)$coa->coaBalance?->opening_balance ?? 0;
                     $totalDebit = (int)$coa->total_debit;
                     $totalCredit = (int)$coa->total_credit;
 
@@ -53,19 +56,22 @@ class TribalController extends Controller
                     $sumTotalCredit += $totalCredit;
 
                     if ($coa->normal_balance->is(NormalBalance::DEBIT->value)) {
-                        $totalSaldo = $totalDebit - $totalCredit;
+                        $totalSaldo = $opengingBalance + $totalDebit - $totalCredit;
                     } else {
-                        $totalSaldo = $totalCredit - $totalDebit;
+                        $totalSaldo = $opengingBalance + $totalCredit - $totalDebit;
                     }
 
+                    $sumOpeningBalance += $opengingBalance;
                     $sumTotalSaldo += $totalSaldo;
 
+                    $coa->total_opening_balance = formatNumber($opengingBalance);
                     $coa->total_debit = formatNumber($totalDebit);
                     $coa->total_credit = formatNumber($totalCredit);
                     $coa->total_saldo = formatNumber($totalSaldo);
                     return $coa;
                 });
 
+                $parentCoa->total_opening_balance = formatNumber($sumOpeningBalance);
                 $parentCoa->total_debit = formatNumber($sumTotalDebit);
                 $parentCoa->total_credit = formatNumber($sumTotalCredit);
                 $parentCoa->total_saldo = formatNumber($sumTotalSaldo);

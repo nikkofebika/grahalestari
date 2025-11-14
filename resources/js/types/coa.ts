@@ -17,6 +17,7 @@ export type TCoa = {
     total_credit?: string; // currently used in ledger
     total_debit?: string; // currently used in ledger
     total_saldo?: string; // currently used in ledger
+    total_opening_balance?: string; // currently used in ledger
 
     created_at: string;
     updated_at: string;

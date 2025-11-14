@@ -28,7 +28,7 @@ class CoaBalanceService implements CoaBalanceServiceInterface
             [
                 [
                     'coa_id' => $coa->id,
-                    'period_month' => $month,
+                    'period_month' => str_pad($month, 2, '0', STR_PAD_LEFT),
                     'period_year' => $year,
                     'opening_balance' => $openingBalance,
                     'debit' => $debit,
@@ -48,6 +48,49 @@ class CoaBalanceService implements CoaBalanceServiceInterface
             $this->recalculate($coaId, $year, $month);
         }
     }
+
+    // private function recalculateAllPeriod(): void
+    // {
+    //     // ambil periode paling lama
+    //     $oldest = CoaBalance::select('period_month', 'period_year')
+    //         ->orderBy('period_year')
+    //         ->orderBy('period_month')
+    //         ->first();
+
+    //     // ambil periode paling baru
+    //     $latest = CoaBalance::select('period_month', 'period_year')
+    //         ->orderBy('period_year', 'desc')
+    //         ->orderBy('period_month', 'desc')
+    //         ->first();
+
+    //     if (!$oldest || !$latest) {
+    //         return;
+    //     }
+
+    //     $startMonth = (int)$oldest->period_month;
+    //     $startYear  = (int)$oldest->period_year;
+
+    //     $endMonth = (int)$latest->period_month;
+    //     $endYear  = (int)$latest->period_year;
+
+    //     // semua akun yang ingin dihitung
+    //     $coas = Coa::where('parent_id', 1)->pluck('id');
+
+    //     // looping setiap bulan dari yg paling lama sampai terbaru
+    //     while ($startYear < $endYear || ($startYear == $endYear && $startMonth <= $endMonth)) {
+
+    //         foreach ($coas as $coaId) {
+    //             $this->recalculate($coaId, (string)$startYear, str_pad($startMonth, 2, '0', STR_PAD_LEFT));
+    //         }
+
+    //         // naikkan bulan
+    //         $startMonth++;
+    //         if ($startMonth > 12) {
+    //             $startMonth = 1;
+    //             $startYear++;
+    //         }
+    //     }
+    // }
 
     private function calculateOpeningBalance(int $coaId, string $year, string $month): int
     {
@@ -77,6 +120,17 @@ class CoaBalanceService implements CoaBalanceServiceInterface
 
         if ($journal) {
             $this->recalculate($coaId, $prevYear, $prevMonth);
+
+            // ambil saldo bulan sebelumnya setelah dihitung
+            $prevBalance = CoaBalance::where('coa_id', $coaId)
+                ->where('period_year', $prevYear)
+                ->where('period_month', str_pad($prevMonth, 2, '0', STR_PAD_LEFT))
+                ->first();
+
+            if ($prevBalance) {
+                return $prevBalance->opening_balance + $prevBalance->debit - $prevBalance->credit;
+            }
+            // $this->recalculateAllPeriod();
         }
 
         return 0;

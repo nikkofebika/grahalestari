@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 #[ScopedBy([TenantedScope::class])]
 class Coa extends BaseModel
@@ -71,5 +72,10 @@ class Coa extends BaseModel
     public function coaBalances(): HasMany
     {
         return $this->hasMany(CoaBalance::class);
+    }
+
+    public function coaBalance(): HasOne
+    {
+        return $this->hasOne(CoaBalance::class);
     }
 }

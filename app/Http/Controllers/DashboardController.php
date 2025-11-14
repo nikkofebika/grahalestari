@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Services\Dashboard\DashboardService;
 use App\Models\Announcement;
+use App\Models\CoaBalance;
 use App\Models\Complaint;
 use App\Models\UserDetail;
 use Inertia\Inertia;
@@ -86,6 +87,36 @@ class DashboardController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
+
+        // FINANCE REPORT
+        $coaBalances = CoaBalance::tenanted()->get();
+        $latestCoaBalance = $coaBalances->last();
+        $trends = $coaBalances->map(function ($row) {
+            return [
+                'month' => date('M', strtotime("$row->period_year-$row->period_month-01")),
+                'income' => ($row->debit),
+                'expense' => ($row->credit),
+            ];
+        })->toArray();
+
+        $totalIncome = $coaBalances->sum('debit');
+        $totalExpense = $coaBalances->sum('credit');
+        $profit = $totalIncome - $totalExpense;
+
+        $dataFinance = [
+            'total_income' => rupiah($totalIncome),
+            'total_expense' => rupiah($totalExpense),
+            'profit' => rupiah($profit),
+            'profit_percentage' => round($profit / $totalIncome * 100, 1) . '%',
+            'expense_percentage' => round($totalExpense / $totalIncome * 100, 1) . '%',
+            'this_month' => [
+                'income' => rupiah($latestCoaBalance->debit),
+                'expense' => rupiah($latestCoaBalance->credit),
+                'diff' => rupiah($latestCoaBalance->debit - $latestCoaBalance->credit),
+            ],
+            'trends' => $trends
+        ];
+
         return Inertia::render('dashboard/index', [
             'totalUsers' => $totalUsers,
             'genderChart' => $genderChart,
@@ -94,6 +125,7 @@ class DashboardController extends Controller
             'maritalStatusChart' => $maritalStatusChart,
             'announcements' => $announcements,
             'complaints' => $complaints,
+            'finance' => $dataFinance,
             // 'byGender' => Inertia::defer(fn() => $this->service->byGender(), 'demografi'),
             // 'byEducation' => Inertia::defer(fn() => $this->service->byEducation(), 'demografi'),
             // 'byReligion' => Inertia::defer(fn() => $this->service->byReligion(), 'demografi'),

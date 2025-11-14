@@ -45,7 +45,7 @@ export default function TribalIndex({ datas, filters }: Props) {
                                 <>
                                     <TableRow key={coaParent.id}>
                                         <TableCell className="font-bold">{`(${coaParent.account_number}) ${coaParent.account_name}`}</TableCell>
-                                        <TableCell>0</TableCell>
+                                        <TableCell className="text-right">{coaParent.total_opening_balance}</TableCell>
                                         <TableCell className="text-right">{coaParent.total_debit}</TableCell>
                                         <TableCell className="text-right">{coaParent.total_credit}</TableCell>
                                         <TableCell className="text-right">{coaParent.total_saldo}</TableCell>
@@ -57,7 +57,7 @@ export default function TribalIndex({ datas, filters }: Props) {
                                                     {`\u00A0`.repeat(5)} {`(${coa.account_number}) ${coa.account_name}`}
                                                 </CustomLink>
                                             </TableCell>
-                                            <TableCell>0</TableCell>
+                                            <TableCell className="text-right">{coa.total_opening_balance}</TableCell>
                                             <TableCell className="text-right">{coa.total_debit}</TableCell>
                                             <TableCell className="text-right">{coa.total_credit}</TableCell>
                                             <TableCell className="text-right">{coa.total_saldo}</TableCell>
